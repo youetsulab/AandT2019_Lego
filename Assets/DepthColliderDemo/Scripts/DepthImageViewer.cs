@@ -19,9 +19,9 @@ public class DepthImageViewer : MonoBehaviour
 
 	void Start () 
 	{
-		// calculate the foreground rectangle
-		Rect cameraRect = Camera.main.pixelRect;
-		float rectHeight = cameraRect.height;
+        // calculate the foreground rectangle 前景の矩形を計算する
+        Rect cameraRect = Camera.main.pixelRect;//画面上のピクセル座標でどこにカメラが描画されるか。
+        float rectHeight = cameraRect.height;
 		float rectWidth = cameraRect.width;
 		
 		if(rectWidth > rectHeight)
@@ -58,7 +58,8 @@ public class DepthImageViewer : MonoBehaviour
 		if(manager && manager.IsInitialized())
 		{
 			foregroundTex = manager.GetUsersLblTex();
-		}
+            //KinectWrapper.NuiCameraElevationSetAngle(20);//首の角度を変えれます
+        }
 
 		if(manager.IsUserDetected())
 		{
@@ -94,7 +95,11 @@ public class DepthImageViewer : MonoBehaviour
 			}
 		}
 
-	}
+        if () {
+            Debug.Log("");
+        }
+
+    }
 
 	void OnGUI()
 	{
