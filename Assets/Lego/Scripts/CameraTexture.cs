@@ -10,6 +10,7 @@ namespace doRA.LegoLand.CameraTexture
     const int DEPTH_CAMERA_WIDTH = 640;
     const int DEPTH_CAMERA_HEIGHT = 480;
     const int DEPTH_CAMERA_RESOLUTION = DEPTH_CAMERA_WIDTH * DEPTH_CAMERA_HEIGHT;
+    KinectManager manager_;
     [SerializeField] RawImage colorImage_;
     [SerializeField] RawImage depthImage_;
     [SerializeField, Range(0f, 1.0f)] float displayRange_;
@@ -31,6 +32,9 @@ namespace doRA.LegoLand.CameraTexture
         Application.Quit();
       }
 
+      manager_ = KinectManager.Instance;
+      KinectWrapper.NuiCameraElevationSetAngle(-30);
+
       Vector2 inverseY = new Vector2(1, -1);
       colorImage_.GetComponent<Transform>().localScale *= inverseY;
       depthImage_.GetComponent<Transform>().localScale *= inverseY;
@@ -44,20 +48,19 @@ namespace doRA.LegoLand.CameraTexture
     // Update is called once per frame
     void Update()
     {
-      KinectManager manager = KinectManager.Instance;
       Texture2D colorTexture = null;
       Color col;
 
-      if (!(manager && manager.IsInitialized())) return;
+      if (!(manager_ && manager_.IsInitialized())) return;
 
       if (colorImage_ && (colorImage_.texture == null))
       {
-        colorImage_.texture = manager.GetUsersClrTex();
+        colorImage_.texture = manager_.GetUsersClrTex();
       }
 
       colorTexture = (Texture2D)colorImage_.texture;
 
-      depthMap_ = manager.GetRawDepthMap();
+      depthMap_ = manager_.GetRawDepthMap();
 
       for (int y = 0; y < DEPTH_CAMERA_HEIGHT; y++)
       {
@@ -66,7 +69,7 @@ namespace doRA.LegoLand.CameraTexture
           float monoNum = (float)(depthMap_[y * DEPTH_CAMERA_WIDTH + x] >> 3) / 3975f;
           if (monoNum > displayRange_ && (colorTexture != null))
           {
-            Vector2 posColor = manager.GetColorMapPosForDepthPos(new Vector2(x, y));
+            Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
             col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
           }
           else
