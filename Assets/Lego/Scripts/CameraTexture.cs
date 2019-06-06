@@ -7,9 +7,9 @@ namespace doRA.LegoLand.CameraTexture
 {
   public class CameraTexture : MonoBehaviour
   {
-    const int DEPTH_CAMERA_WIDTH = 640;
-    const int DEPTH_CAMERA_HEIGHT = 480;
-    const int DEPTH_CAMERA_RESOLUTION = DEPTH_CAMERA_WIDTH * DEPTH_CAMERA_HEIGHT;
+    private int DEPTH_CAMERA_WIDTH;
+    private int DEPTH_CAMERA_HEIGHT;
+    private int DEPTH_CAMERA_RESOLUTION;
     KinectManager manager_;
     [SerializeField] RawImage colorImage_;
     [SerializeField] RawImage depthImage_;
@@ -31,6 +31,10 @@ namespace doRA.LegoLand.CameraTexture
         Debug.LogError("Color image is not attaced.", colorImage_);
         Application.Quit();
       }
+
+      DEPTH_CAMERA_WIDTH = KinectWrapper.GetDepthWidth();
+      DEPTH_CAMERA_HEIGHT = KinectWrapper.GetDepthHeight();
+      DEPTH_CAMERA_RESOLUTION = DEPTH_CAMERA_WIDTH * DEPTH_CAMERA_HEIGHT;
 
       manager_ = KinectManager.Instance;
       KinectWrapper.NuiCameraElevationSetAngle(-30);
