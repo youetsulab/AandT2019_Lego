@@ -7,12 +7,12 @@ enum LegoColor
 
 public struct RawLegoPixelInfo
 {
-  ushort depth_;
-  Color color_;
+  ushort depth;
+  Color color;
 }
 
 public struct LandscapeCellInfo
 {
-  int index_;
-  LegoColor legoColor_;
+  int index;
+  LegoColor legoColor;
 }
