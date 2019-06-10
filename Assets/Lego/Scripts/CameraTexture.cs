@@ -36,7 +36,7 @@ namespace doRA.LegoLand.CameraTexture
       colorImage_.GetComponent<Transform>().localScale *= inverseY;
       depthImage_.GetComponent<Transform>().localScale *= inverseY;
 
-      depthMap_ = new ushort[LegoGenericData.DEPTH_CAMERA_RESOLUTION];
+      depthMap_ = new ushort[LegoGenericData.DEPTH_CAMERA_WIDTH * LegoGenericData.DEPTH_CAMERA_HEIGHT];
 
       depthTexture_ = new Texture2D(LegoGenericData.DEPTH_CAMERA_WIDTH, LegoGenericData.DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
       depthImage_.texture = depthTexture_;

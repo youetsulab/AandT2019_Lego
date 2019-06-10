@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LandscapeCreate : MonoBehaviour
+public class LandscapeCreate : LegoBase
 {
   private RawLegoPixelInfo[,] rawLegoMap_;
   private RawLegoPixelInfo[,] trimedLegoMap_;
@@ -23,15 +23,15 @@ public class LandscapeCreate : MonoBehaviour
 
   void InitializeMap()
   {
-    rawLegoMap_ = new RawLegoPixelInfo[LegoGenericData.DEPTH_CAMERA_WIDTH, LegoGenericData.DEPTH_CAMERA_HEIGHT];
+    rawLegoMap_ = new RawLegoPixelInfo[DEPTH_CAMERA_WIDTH, DEPTH_CAMERA_HEIGHT];
 
-    landscapeMap_ = new LandscapeCellInfo[LegoGenericData.LANDSCAPE_MAP_WIDTH, LegoGenericData.LANDSCAPE_MAP_HEIGHT];
+    landscapeMap_ = new LandscapeCellInfo[LANDSCAPE_MAP_WIDTH, LANDSCAPE_MAP_HEIGHT];
   }
 
   //#3-1. 
   void FindRectDiagonalPoint()
   {
-    Vector2[] calibrationPoint = new Vector2[LegoGenericData.CALIBRATION_POINT_NUM];
+    Vector2[] calibrationPoint = new Vector2[NUM_CALIBRATION_POINT];
   }
 
   //#3-2.
