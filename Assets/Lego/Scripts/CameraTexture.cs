@@ -7,9 +7,6 @@ namespace doRA.LegoLand.CameraTexture
 {
   public class CameraTexture : MonoBehaviour
   {
-    const int DEPTH_CAMERA_WIDTH = 640;
-    const int DEPTH_CAMERA_HEIGHT = 480;
-    const int DEPTH_CAMERA_RESOLUTION = DEPTH_CAMERA_WIDTH * DEPTH_CAMERA_HEIGHT;
     KinectManager manager_;
     [SerializeField] RawImage colorImage_;
     [SerializeField] RawImage depthImage_;
@@ -39,9 +36,9 @@ namespace doRA.LegoLand.CameraTexture
       colorImage_.GetComponent<Transform>().localScale *= inverseY;
       depthImage_.GetComponent<Transform>().localScale *= inverseY;
 
-      depthMap_ = new ushort[DEPTH_CAMERA_RESOLUTION];
+      depthMap_ = new ushort[LegoGenericData.DEPTH_CAMERA_WIDTH * LegoGenericData.DEPTH_CAMERA_HEIGHT];
 
-      depthTexture_ = new Texture2D(DEPTH_CAMERA_WIDTH, DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
+      depthTexture_ = new Texture2D(LegoGenericData.DEPTH_CAMERA_WIDTH, LegoGenericData.DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
       depthImage_.texture = depthTexture_;
     }
 
@@ -62,11 +59,11 @@ namespace doRA.LegoLand.CameraTexture
 
       depthMap_ = manager_.GetRawDepthMap();
 
-      for (int y = 0; y < DEPTH_CAMERA_HEIGHT; y++)
+      for (int y = 0; y < LegoGenericData.DEPTH_CAMERA_HEIGHT; y++)
       {
-        for (int x = 0; x < DEPTH_CAMERA_WIDTH; x++)
+        for (int x = 0; x < LegoGenericData.DEPTH_CAMERA_WIDTH; x++)
         {
-          float monoNum = (float)(depthMap_[y * DEPTH_CAMERA_WIDTH + x] >> 3) / 3975f;
+          float monoNum = (float)(depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3) / 3975f;
           if (monoNum > displayRange_ && (colorTexture != null))
           {
             Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
