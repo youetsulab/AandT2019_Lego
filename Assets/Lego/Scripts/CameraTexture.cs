@@ -11,6 +11,8 @@ namespace doRA.LegoLand.CameraTexture
     [SerializeField] RawImage colorImage_;
     [SerializeField] RawImage depthImage_;
     [SerializeField, Range(0f, 1.0f)] float displayRange_;
+    [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
+    [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
     private Texture2D depthTexture_;
     ushort[] depthMap_;
 
@@ -63,8 +65,13 @@ namespace doRA.LegoLand.CameraTexture
       {
         for (int x = 0; x < LegoGenericData.DEPTH_CAMERA_WIDTH; x++)
         {
-          float monoNum = (float)(depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3) / 3975f;
-          if (monoNum > displayRange_ && (colorTexture != null))
+          int depthData = depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3;
+          float monoNum = (float)(depthData) / 3975f;
+          if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
+          {
+            col = new Color(0, 0, 0, 255);
+          }
+          else if (monoNum >= displayRange_ && (colorTexture != null))
           {
             Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
             col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
