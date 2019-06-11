@@ -82,81 +82,7 @@ public class Calibration : MonoBehaviour
     colorTexture = manager_.GetUsersClrTex();
     depthMap_ = manager_.GetRawDepthMap();
 
-    //画面の4分の1ずつ描画し、矩形の端点を見つける。
-    //左上
-    for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
-    {
-
-      /*
-      この部分の描写
-      ----------------------
-      |**********          |
-      |********            |
-      |******              |
-      |****                |
-      |**                  |
-      ----------------------
-       */
-      if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-      {
-        int x = i, y = 0;
-
-        while (x >= 0)
-        {
-          SetPixelForXY(x, y, colorTexture);
-
-          x--; y++;
-        }
-      }
-
-      /*
-      この部分の描写
-      ----------------------
-      |          **********|
-      |        **********  |
-      |      **********    |
-      |    **********      |
-      |  **********        |
-      ----------------------
-       */
-      else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
-      {
-        int x = i, y = 0;
-
-        while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          SetPixelForXY(x, y, colorTexture);
-
-          x--; y++;
-        }
-      }
-
-      /*
-      この部分の描写
-      ----------------------
-      |                    |
-      |                  **|
-      |                ****|
-      |              ******|
-      |           *********|
-      ----------------------
-       */
-      else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
-      {
-        int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
-
-        while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          SetPixelForXY(x, y, colorTexture);
-
-          x--; y++;
-        }
-      }
-      else
-      {
-        Application.Quit();
-      }
-    }
+    ScanFrom4EndPoint(colorTexture);
     depthTexture_.Apply();
   }
 
@@ -176,4 +102,329 @@ public class Calibration : MonoBehaviour
     }
     depthTexture_.SetPixel(x, y, col);
   }
+
+  //左上から順番にではなく、4つの端点から中心に向かって走査する
+  void ScanFrom4EndPoint(Texture2D colorTexture)
+  {
+    ScanFromLeftUp();
+    ScanFromRightUp();
+    ScanFromLeftLow();
+    ScanFromRightLow();
+
+    void ScanFromLeftUp()
+    {
+      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      {
+
+        /*
+        この部分の描写
+        ----------------------
+        |**********          |
+        |********            |
+        |******              |
+        |****                |
+        |**                  |
+        ----------------------
+         */
+        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= 0)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |          **********|
+        |        **********  |
+        |      **********    |
+        |    **********      |
+        |  **********        |
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |                    |
+        |                  **|
+        |                ****|
+        |              ******|
+        |           *********|
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
+        {
+          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+        else
+        {
+          Application.Quit();
+        }
+      }
+    }
+
+    //[TODO]
+    void ScanFromRightUp()
+    {
+      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      {
+
+        /*
+        この部分の描写
+        ----------------------
+        |**********          |
+        |********            |
+        |******              |
+        |****                |
+        |**                  |
+        ----------------------
+         */
+        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= 0)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |          **********|
+        |        **********  |
+        |      **********    |
+        |    **********      |
+        |  **********        |
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |                    |
+        |                  **|
+        |                ****|
+        |              ******|
+        |           *********|
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
+        {
+          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+        else
+        {
+          Application.Quit();
+        }
+      }
+    }
+
+    //[TODO]
+    void ScanFromLeftLow()
+    {
+      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      {
+
+        /*
+        この部分の描写
+        ----------------------
+        |**********          |
+        |********            |
+        |******              |
+        |****                |
+        |**                  |
+        ----------------------
+         */
+        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= 0)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |          **********|
+        |        **********  |
+        |      **********    |
+        |    **********      |
+        |  **********        |
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |                    |
+        |                  **|
+        |                ****|
+        |              ******|
+        |           *********|
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
+        {
+          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+        else
+        {
+          Application.Quit();
+        }
+      }
+    }
+
+    //[TODO]
+    void ScanFromRightLow()
+    {
+      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      {
+
+        /*
+        この部分の描写
+        ----------------------
+        |**********          |
+        |********            |
+        |******              |
+        |****                |
+        |**                  |
+        ----------------------
+         */
+        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= 0)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |          **********|
+        |        **********  |
+        |      **********    |
+        |    **********      |
+        |  **********        |
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
+        {
+          int x = i, y = 0;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+
+        /*
+        この部分の描写
+        ----------------------
+        |                    |
+        |                  **|
+        |                ****|
+        |              ******|
+        |           *********|
+        ----------------------
+         */
+        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
+        {
+          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
+
+          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          {
+            SetPixelForXY(x, y, colorTexture);
+
+            x--; y++;
+          }
+        }
+        else
+        {
+          Application.Quit();
+        }
+      }
+    }
+  }
+
+
+
 }
+
+
