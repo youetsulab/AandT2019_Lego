@@ -27,6 +27,8 @@ public class LegoBase : MonoBehaviour
   protected static readonly int LANDSCAPE_MAP_WIDTH = 32;
   protected static readonly int CALIBRATION_DEPTH = 100;
   protected static readonly int NUM_CALIBRATION_POINT = 4;
+  public static readonly float MAX_DEPTH_NUM = 3975f;
+
   protected bool isCalibrated = false;
   protected int cameraAngle;
 

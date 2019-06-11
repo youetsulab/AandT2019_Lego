@@ -27,4 +27,5 @@ public static class LegoGenericData
   public static readonly int LANDSCAPE_MAP_WIDTH = 32;
   public static readonly int CALIBRATION_DEPTH = 100;
   public static readonly int NUM_CALIBRATION_POINT = 4;
+  public static readonly float MAX_DEPTH_NUM = 3975f;
 }
