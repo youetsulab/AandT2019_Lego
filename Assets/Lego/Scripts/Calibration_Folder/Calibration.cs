@@ -8,23 +8,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class Calibration : MonoBehaviour
 {
   private float timeLeft__1FPS_;
   private float timeLeft__15FPS_;
   private KinectManager manager_;
+  private LegoBase lego_;
   [SerializeField] RawImage depthImage_;
-  [SerializeField, Range(0f, 1.0f)] float displayRange_;
   [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
   [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
   private static readonly int upperBasePixelDepthValue_ = 860;
   private static readonly int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
-  ushort[] depthMap_;
-  List<BasePixelInfo> basePixelMap_;
+  private ushort[] depthMap_;
+  private List<BasePixelInfo> basePixelMap_;
+  private List<Vector3> baseCoordinateAndDepth;
 
-  struct BasePixelInfo
+  private struct BasePixelInfo
   {
     public int sectionNumber;
     public ushort depth;
@@ -41,6 +42,7 @@ public class Calibration : MonoBehaviour
     }
 
     manager_ = KinectManager.Instance;
+    lego_ = LegoBase.GetInstance();
 
     Vector2 inverseY = new Vector2(1, -1);
     depthImage_.GetComponent<Transform>().localScale *= inverseY;
@@ -51,6 +53,7 @@ public class Calibration : MonoBehaviour
     depthImage_.texture = depthTexture_;
 
     basePixelMap_ = new List<BasePixelInfo>();
+    baseCoordinateAndDepth = new List<Vector3>();
     timeLeft__1FPS_ = 1.0f;
     timeLeft__15FPS_ = 0.04f;
   }
@@ -80,19 +83,20 @@ public class Calibration : MonoBehaviour
     if (timeLeft__1FPS_ <= 0.0f)
     {
       timeLeft__1FPS_ = 1.0f;
-      Vector3 section0 = CalcBaseDepthAverageAndPoint(0);
-      Vector3 section1 = CalcBaseDepthAverageAndPoint(1);
-      Vector3 section2 = CalcBaseDepthAverageAndPoint(2);
-      Vector3 section3 = CalcBaseDepthAverageAndPoint(3);
-      Debug.Log("Coordinate0:" + section0.x + ", " + section0.y + " Depth value:" + section0.z);
-      Debug.Log("Coordinate1:" + section1.x + ", " + section1.y + " Depth value:" + section1.z);
-      Debug.Log("Coordinate2:" + section2.x + ", " + section2.y + " Depth value:" + section2.z);
-      Debug.Log("Coordinate3:" + section3.x + ", " + section3.y + " Depth value:" + section3.z);
+      baseCoordinateAndDepth.Clear();
+      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(0));
+      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(1));
+      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(2));
+      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(3));
+      Debug.Log("Coordinate0:" + baseCoordinateAndDepth[0].x + ", " + baseCoordinateAndDepth[0].y + " Depth value:" + baseCoordinateAndDepth[0].z);
+      Debug.Log("Coordinate1:" + baseCoordinateAndDepth[1].x + ", " + baseCoordinateAndDepth[1].y + " Depth value:" + baseCoordinateAndDepth[1].z);
+      Debug.Log("Coordinate2:" + baseCoordinateAndDepth[2].x + ", " + baseCoordinateAndDepth[2].y + " Depth value:" + baseCoordinateAndDepth[2].z);
+      Debug.Log("Coordinate3:" + baseCoordinateAndDepth[3].x + ", " + baseCoordinateAndDepth[3].y + " Depth value:" + baseCoordinateAndDepth[3].z);
       basePixelMap_.Clear();
     }
   }
 
-  Vector3 CalcBaseDepthAverageAndPoint(int sectionNum)
+  private Vector3 CalcBaseDepthAverageAndPoint(int sectionNum)
   {
     //x,y: coordinate, z: average of depth value
     float depth = 0, x = 0, y = 0;
@@ -114,7 +118,7 @@ public class Calibration : MonoBehaviour
   }
 
   //左上から順番にではなく、4つの端点から中心に向かって走査する
-  void ScanFrom4EndPoint(Texture2D colorTexture)
+  private void ScanFrom4EndPoint(Texture2D colorTexture)
   {
     ScanFrom4EndPoint_Body();
 
@@ -347,5 +351,11 @@ public class Calibration : MonoBehaviour
       }
     }
     # endregion
+  }
+
+  public void CompleteCalibration()
+  {
+    lego_.PushCalibrationValue(baseCoordinateAndDepth);
+    SceneManager.LoadScene("Main");
   }
 }
