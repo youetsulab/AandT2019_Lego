@@ -94,11 +94,6 @@ public class DepthImageViewer : MonoBehaviour
 				}
 			}
 		}
-
-        if () {
-            Debug.Log("");
-        }
-
     }
 
 	void OnGUI()
