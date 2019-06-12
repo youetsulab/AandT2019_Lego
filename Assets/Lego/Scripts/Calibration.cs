@@ -4,25 +4,31 @@
 */
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 
 public class Calibration : MonoBehaviour
 {
+  private float timeLeft__1FPS_;
+  private float timeLeft__15FPS_;
   private KinectManager manager_;
   [SerializeField] RawImage depthImage_;
   [SerializeField, Range(0f, 1.0f)] float displayRange_;
   [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
   [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
-
+  private static readonly int upperBasePixelDepthValue_ = 860;
+  private static readonly int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
   ushort[] depthMap_;
+  List<BasePixelInfo> basePixelMap_;
 
   struct BasePixelInfo
   {
-    ushort depth;
-    int x, y;
+    public int sectionNumber;
+    public ushort depth;
+    public int x, y;
   }
 
   // Start is called before the first frame update
@@ -43,41 +49,83 @@ public class Calibration : MonoBehaviour
 
     depthTexture_ = new Texture2D(LegoGenericData.DEPTH_CAMERA_WIDTH, LegoGenericData.DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
     depthImage_.texture = depthTexture_;
+
+    basePixelMap_ = new List<BasePixelInfo>();
+    timeLeft__1FPS_ = 1.0f;
+    timeLeft__15FPS_ = 0.04f;
   }
 
   void Update()
   {
-    Texture2D colorTexture = null;
+    timeLeft__1FPS_ -= Time.deltaTime;
+    timeLeft__15FPS_ -= Time.deltaTime;
 
     if (!(manager_ && manager_.IsInitialized())) return;
 
-    colorTexture = manager_.GetUsersClrTex();
-    depthMap_ = manager_.GetRawDepthMap();
+    //15fps処理
+    if (timeLeft__15FPS_ <= 0.0f)
+    {
+      timeLeft__15FPS_ = 0.04f;
 
-    ScanFrom4EndPoint(colorTexture);
-    depthTexture_.Apply();
+      Texture2D colorTexture = null;
+
+      colorTexture = manager_.GetUsersClrTex();
+      depthMap_ = manager_.GetRawDepthMap();
+
+      ScanFrom4EndPoint(colorTexture);
+      depthTexture_.Apply();
+    }
+
+    //1fps処理
+    if (timeLeft__1FPS_ <= 0.0f)
+    {
+      timeLeft__1FPS_ = 1.0f;
+      Vector3 section0 = CalcBaseDepthAverageAndPoint(0);
+      Vector3 section1 = CalcBaseDepthAverageAndPoint(1);
+      Vector3 section2 = CalcBaseDepthAverageAndPoint(2);
+      Vector3 section3 = CalcBaseDepthAverageAndPoint(3);
+      Debug.Log("Coordinate0:" + section0.x + ", " + section0.y + " Depth value:" + section0.z);
+      Debug.Log("Coordinate1:" + section1.x + ", " + section1.y + " Depth value:" + section1.z);
+      Debug.Log("Coordinate2:" + section2.x + ", " + section2.y + " Depth value:" + section2.z);
+      Debug.Log("Coordinate3:" + section3.x + ", " + section3.y + " Depth value:" + section3.z);
+      basePixelMap_.Clear();
+    }
   }
 
+  Vector3 CalcBaseDepthAverageAndPoint(int sectionNum)
+  {
+    //x,y: coordinate, z: average of depth value
+    float depth = 0, x = 0, y = 0;
+    int pixelNum = 0;
 
+    if (basePixelMap_ == null) return new Vector3(0, 0, 0);
+
+    foreach (var item in basePixelMap_)
+    {
+      if (item.sectionNumber == sectionNum)
+      {
+        depth += item.depth;
+        x += item.x;
+        y += item.y;
+        pixelNum++;
+      }
+    }
+    return new Vector3(x / pixelNum, y / pixelNum, depth / pixelNum);
+  }
 
   //左上から順番にではなく、4つの端点から中心に向かって走査する
   void ScanFrom4EndPoint(Texture2D colorTexture)
   {
-    /*
-    ScanFromLeftUp();
-    ScanFromRightUp();
-    ScanFromLeftLow();
-    ScanFromRightLow();
-    */
     ScanFrom4EndPoint_Body();
 
     //[TODO]
     //・読みやすいコードへのリファクタリング
     //・走査範囲の厳密化
     #region LocalFunction
-    void SetPixelForXY(int x, int y)
+    void SetPixelForXY(int x, int y, int sectionNum)
     {
       Color col;
+      BasePixelInfo pixel;
       int depthData = depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3;
 
       if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
@@ -90,6 +138,15 @@ public class Calibration : MonoBehaviour
         col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
       }
       depthTexture_.SetPixel(x, y, col);
+
+      if (lowerBasePixelDepthValue_ <= depthData && depthData <= upperBasePixelDepthValue_)
+      {
+        pixel.sectionNumber = sectionNum;
+        pixel.depth = (ushort)depthData;
+        pixel.x = x;
+        pixel.y = y;
+        basePixelMap_.Add(pixel);
+      }
     }
 
     void ScanFrom4EndPoint_Body()
@@ -104,9 +161,9 @@ public class Calibration : MonoBehaviour
       {
         /*
         |--------|---------|
-        |    1   |    2    |
+        |    0   |    1    |
         |------------------| <- horizontal center line 
-        |    3   |    4    |
+        |    2   |    3    |
         |--------|---------|
                  ^
        vertical center line
@@ -114,11 +171,11 @@ public class Calibration : MonoBehaviour
         figure: display
         */
 
-        for (int j = 0; j < 4; j++)
+        for (int section = 0; section < 4; section++)
         {
           if (i < horizontalCenterLine)
           {
-            switch (j)
+            switch (section)
             {
               /*
               case of j = 1:
@@ -134,7 +191,7 @@ public class Calibration : MonoBehaviour
                 x = i; y = 0;
                 while (x >= 0)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y++;
                 }
                 break;
@@ -144,7 +201,7 @@ public class Calibration : MonoBehaviour
                 y = 0;
                 while (x <= displayWidth)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y++;
                 }
                 break;
@@ -154,18 +211,18 @@ public class Calibration : MonoBehaviour
                 y = displayHeight - 1;
                 while (x >= 0)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y--;
                 }
                 break;
 
               case 3:
-                x = displayWidth - 1 - i; 
+                x = displayWidth - 1 - i;
                 y = displayHeight - 1;
 
                 while (x <= displayWidth)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y--;
                 }
                 break;
@@ -173,7 +230,7 @@ public class Calibration : MonoBehaviour
           }
           else if (horizontalCenterLine <= i && i < verticalCenterLine)
           {
-            switch (j)
+            switch (section)
             {
               /*
               case of j = 1:
@@ -189,7 +246,7 @@ public class Calibration : MonoBehaviour
                 x = i; y = 0;
                 while (x >= i - horizontalCenterLine)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y++;
                 }
                 break;
@@ -199,7 +256,7 @@ public class Calibration : MonoBehaviour
 
                 while (x <= displayWidth - (i - horizontalCenterLine))
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y++;
                 }
                 break;
@@ -209,7 +266,7 @@ public class Calibration : MonoBehaviour
 
                 while (x >= i - horizontalCenterLine)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y--;
                 }
                 break;
@@ -219,7 +276,7 @@ public class Calibration : MonoBehaviour
 
                 while (x <= displayWidth - (i - horizontalCenterLine))
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y--;
                 }
                 break;
@@ -228,7 +285,7 @@ public class Calibration : MonoBehaviour
           }
           else if (horizontalCenterLine < i)
           {
-            switch (j)
+            switch (section)
             {
               /*
               case of j = 1:
@@ -245,38 +302,38 @@ public class Calibration : MonoBehaviour
                 y = i - verticalCenterLine;
                 while (x >= i - horizontalCenterLine)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y++;
                 }
                 break;
 
               case 1:
-                x = verticalCenterLine; 
+                x = verticalCenterLine;
                 y = i - verticalCenterLine;
 
                 while (x <= displayWidth - (i - horizontalCenterLine))
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y++;
                 }
                 break;
 
               case 2:
-                x = verticalCenterLine; 
+                x = verticalCenterLine;
                 y = (displayHeight - 1) - (i - verticalCenterLine);
                 while (x >= i - horizontalCenterLine)
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x--; y--;
                 }
                 break;
 
               case 3:
-                x = verticalCenterLine; 
+                x = verticalCenterLine;
                 y = (displayHeight - 1) - (i - verticalCenterLine);
                 while (x <= displayWidth - (i - horizontalCenterLine))
                 {
-                  SetPixelForXY(x, y);
+                  SetPixelForXY(x, y, section);
                   x++; y--;
                 }
                 break;
