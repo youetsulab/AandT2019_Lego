@@ -153,6 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depthImage_: {fileID: 389034792}
+  displayRange_: 0.509
+  upperDisplayRange_: 965
+  lowerDisplayRange_: 447
 --- !u!114 &14345611
 MonoBehaviour:
   m_ObjectHideFlags: 0

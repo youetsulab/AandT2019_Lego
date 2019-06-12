@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+[TODO]
+範囲がガバイ。
+*/
+
+using System.Collections;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
@@ -13,6 +18,12 @@ public class Calibration : MonoBehaviour
 
   private Texture2D depthTexture_;
   ushort[] depthMap_;
+
+  struct BasePixelInfo
+  {
+    ushort depth;
+    int x, y;
+  }
 
   // Start is called before the first frame update
   void Start()
@@ -34,45 +45,6 @@ public class Calibration : MonoBehaviour
     depthImage_.texture = depthTexture_;
   }
 
-  // Update is called once per frame
-  /*
-  void Update()
-  {
-    Texture2D colorTexture = null;
-    Color col;
-
-    if (!(manager_ && manager_.IsInitialized())) return;
-
-    colorTexture = manager_.GetUsersClrTex();
-    depthMap_ = manager_.GetRawDepthMap();
-
-    for (int y = 0; y < LegoGenericData.DEPTH_CAMERA_HEIGHT; y++)
-    {
-      for (int x = 0; x < LegoGenericData.DEPTH_CAMERA_WIDTH; x++)
-      {
-        int depthData = depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3;
-        float monoNum = (float)(depthData) / 3975f;
-        if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
-        {
-          col = new Color(0, 0, 0, 255);
-        }
-        else if (monoNum >= displayRange_ && (colorTexture != null))
-        {
-          Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
-          col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
-        }
-        else
-        {
-          col = new Color(monoNum, monoNum, monoNum, 1.0f);
-        }
-        depthTexture_.SetPixel(x, y, col);
-
-      }
-    }
-    depthTexture_.Apply();
-  }
-  */
-
   void Update()
   {
     Texture2D colorTexture = null;
@@ -86,345 +58,237 @@ public class Calibration : MonoBehaviour
     depthTexture_.Apply();
   }
 
-  void SetPixelForXY(int x, int y, Texture2D colorTexture)
-  {
-    Color col;
-    int depthData = depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3;
 
-    if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
-    {
-      col = new Color(0, 0, 0, 255);
-    }
-    else
-    {
-      Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
-      col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
-    }
-    depthTexture_.SetPixel(x, y, col);
-  }
 
   //左上から順番にではなく、4つの端点から中心に向かって走査する
   void ScanFrom4EndPoint(Texture2D colorTexture)
   {
+    /*
     ScanFromLeftUp();
     ScanFromRightUp();
     ScanFromLeftLow();
     ScanFromRightLow();
-
-    void ScanFromLeftUp()
-    {
-      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
-      {
-
-        /*
-        この部分の描写
-        ----------------------
-        |**********          |
-        |********            |
-        |******              |
-        |****                |
-        |**                  |
-        ----------------------
-         */
-        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= 0)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |          **********|
-        |        **********  |
-        |      **********    |
-        |    **********      |
-        |  **********        |
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |                    |
-        |                  **|
-        |                ****|
-        |              ******|
-        |           *********|
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
-        {
-          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-        else
-        {
-          Application.Quit();
-        }
-      }
-    }
+    */
+    ScanFrom4EndPoint_Body();
 
     //[TODO]
-    void ScanFromRightUp()
+    //・読みやすいコードへのリファクタリング
+    //・走査範囲の厳密化
+    #region LocalFunction
+    void SetPixelForXY(int x, int y)
     {
-      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      Color col;
+      int depthData = depthMap_[y * LegoGenericData.DEPTH_CAMERA_WIDTH + x] >> 3;
+
+      if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
       {
+        col = new Color(0, 0, 0, 255);
+      }
+      else
+      {
+        Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
+        col = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
+      }
+      depthTexture_.SetPixel(x, y, col);
+    }
 
+    void ScanFrom4EndPoint_Body()
+    {
+      int x, y;
+      int displayWidth = LegoGenericData.DEPTH_CAMERA_WIDTH;
+      int displayHeight = LegoGenericData.DEPTH_CAMERA_HEIGHT;
+      int horizontalCenterLine = displayHeight / 2;
+      int verticalCenterLine = displayWidth / 2;
+
+      for (int i = 0; i < (displayWidth / 2) + (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
+      {
         /*
-        この部分の描写
-        ----------------------
-        |**********          |
-        |********            |
-        |******              |
-        |****                |
-        |**                  |
-        ----------------------
-         */
-        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          int x = i, y = 0;
+        |--------|---------|
+        |    1   |    2    |
+        |------------------| <- horizontal center line 
+        |    3   |    4    |
+        |--------|---------|
+                 ^
+       vertical center line
+        number = [j] value
+        figure: display
+        */
 
-          while (x >= 0)
+        for (int j = 0; j < 4; j++)
+        {
+          if (i < horizontalCenterLine)
           {
-            SetPixelForXY(x, y, colorTexture);
+            switch (j)
+            {
+              /*
+              case of j = 1:
+              This step is scanning display as shown below.
+              |--------------------|
+              |********            |
+              |******              |
+              |****                |
+              |**                  |
+              |--------------------|
+              */
+              case 0:
+                x = i; y = 0;
+                while (x >= 0)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y++;
+                }
+                break;
 
-            x--; y++;
+              case 1:
+                x = displayWidth - i;
+                y = 0;
+                while (x <= displayWidth)
+                {
+                  SetPixelForXY(x, y);
+                  x++; y++;
+                }
+                break;
+
+              case 2:
+                x = i;
+                y = displayHeight - 1;
+                while (x >= 0)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y--;
+                }
+                break;
+
+              case 3:
+                x = displayWidth - 1 - i; 
+                y = displayHeight - 1;
+
+                while (x <= displayWidth)
+                {
+                  SetPixelForXY(x, y);
+                  x++; y--;
+                }
+                break;
+            }
           }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |          **********|
-        |        **********  |
-        |      **********    |
-        |    **********      |
-        |  **********        |
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          else if (horizontalCenterLine <= i && i < verticalCenterLine)
           {
-            SetPixelForXY(x, y, colorTexture);
+            switch (j)
+            {
+              /*
+              case of j = 1:
+              This step is scanning display as shown below.
+              |--------------------|
+              |            ********|
+              |          ********  |
+              |        ********    |
+              |      ********      |
+              |--------------------|
+              */
+              case 0:
+                x = i; y = 0;
+                while (x >= i - horizontalCenterLine)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y++;
+                }
+                break;
 
-            x--; y++;
+              case 1:
+                x = displayWidth - i; y = 0;
+
+                while (x <= displayWidth - (i - horizontalCenterLine))
+                {
+                  SetPixelForXY(x, y);
+                  x++; y++;
+                }
+                break;
+
+              case 2:
+                x = i; y = displayHeight - 1;
+
+                while (x >= i - horizontalCenterLine)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y--;
+                }
+                break;
+
+              case 3:
+                x = (displayWidth - i - 1); y = displayHeight - 1;
+
+                while (x <= displayWidth - (i - horizontalCenterLine))
+                {
+                  SetPixelForXY(x, y);
+                  x++; y--;
+                }
+                break;
+            }
+
           }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |                    |
-        |                  **|
-        |                ****|
-        |              ******|
-        |           *********|
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
-        {
-          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
+          else if (horizontalCenterLine < i)
           {
-            SetPixelForXY(x, y, colorTexture);
+            switch (j)
+            {
+              /*
+              case of j = 1:
+              This step is scanning display as shown below.
+              |--------------------|
+              |                    |
+              |                  **|
+              |                ****|
+              |              ******|
+              |--------------------|
+              */
+              case 0:
+                x = verticalCenterLine - 1;
+                y = i - verticalCenterLine;
+                while (x >= i - horizontalCenterLine)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y++;
+                }
+                break;
 
-            x--; y++;
+              case 1:
+                x = verticalCenterLine; 
+                y = i - verticalCenterLine;
+
+                while (x <= displayWidth - (i - horizontalCenterLine))
+                {
+                  SetPixelForXY(x, y);
+                  x++; y++;
+                }
+                break;
+
+              case 2:
+                x = verticalCenterLine; 
+                y = (displayHeight - 1) - (i - verticalCenterLine);
+                while (x >= i - horizontalCenterLine)
+                {
+                  SetPixelForXY(x, y);
+                  x--; y--;
+                }
+                break;
+
+              case 3:
+                x = verticalCenterLine; 
+                y = (displayHeight - 1) - (i - verticalCenterLine);
+                while (x <= displayWidth - (i - horizontalCenterLine))
+                {
+                  SetPixelForXY(x, y);
+                  x++; y--;
+                }
+                break;
+            }
           }
-        }
-        else
-        {
-          Application.Quit();
+          else
+          {
+            Application.Quit();
+          }
         }
       }
     }
-
-    //[TODO]
-    void ScanFromLeftLow()
-    {
-      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
-      {
-
-        /*
-        この部分の描写
-        ----------------------
-        |**********          |
-        |********            |
-        |******              |
-        |****                |
-        |**                  |
-        ----------------------
-         */
-        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= 0)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |          **********|
-        |        **********  |
-        |      **********    |
-        |    **********      |
-        |  **********        |
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |                    |
-        |                  **|
-        |                ****|
-        |              ******|
-        |           *********|
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
-        {
-          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-        else
-        {
-          Application.Quit();
-        }
-      }
-    }
-
-    //[TODO]
-    void ScanFromRightLow()
-    {
-      for (int i = 0; i < (LegoGenericData.DEPTH_CAMERA_WIDTH / 2 + LegoGenericData.DEPTH_CAMERA_HEIGHT / 2); i++)
-      {
-
-        /*
-        この部分の描写
-        ----------------------
-        |**********          |
-        |********            |
-        |******              |
-        |****                |
-        |**                  |
-        ----------------------
-         */
-        if (i < LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= 0)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |          **********|
-        |        **********  |
-        |      **********    |
-        |    **********      |
-        |  **********        |
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i && i < LegoGenericData.DEPTH_CAMERA_WIDTH / 2)
-        {
-          int x = i, y = 0;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-
-        /*
-        この部分の描写
-        ----------------------
-        |                    |
-        |                  **|
-        |                ****|
-        |              ******|
-        |           *********|
-        ----------------------
-         */
-        else if (LegoGenericData.DEPTH_CAMERA_HEIGHT / 2 < i)
-        {
-          int x = LegoGenericData.DEPTH_CAMERA_WIDTH / 2, y = i - LegoGenericData.DEPTH_CAMERA_WIDTH / 2;
-
-          while (x >= i - LegoGenericData.DEPTH_CAMERA_HEIGHT / 2)
-          {
-            SetPixelForXY(x, y, colorTexture);
-
-            x--; y++;
-          }
-        }
-        else
-        {
-          Application.Quit();
-        }
-      }
-    }
+    # endregion
   }
-
-
-
 }
-
-
