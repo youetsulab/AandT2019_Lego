@@ -154,8 +154,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1028, y: 0.0000076293945}
-  m_SizeDelta: {x: 640, y: 480}
+  m_AnchoredPosition: {x: -932, y: 0.0000076293945}
+  m_SizeDelta: {x: 756, y: 425}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &422080781
 MonoBehaviour:
@@ -361,9 +361,9 @@ GameObject:
   - component: {fileID: 1229493061}
   - component: {fileID: 1229493060}
   - component: {fileID: 1229493059}
-  - component: {fileID: 1229493063}
+  - component: {fileID: 1229493064}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: LegoBaseCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,7 +450,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1229493063
+--- !u!114 &1229493064
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -459,12 +459,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1229493058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4886c1d1f57eed24c986a2ab04253821, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ade865373120c94eaea4524446341e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorImage_: {fileID: 422080781}
-  depthImage_: {fileID: 1687063168}
-  displayRange_: 1
 --- !u!1 &1687063166
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,7 +496,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.000011444, y: 0}
   m_SizeDelta: {x: 756, y: 425}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1687063168
@@ -547,7 +544,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1762234449}
   - component: {fileID: 1762234448}
-  - component: {fileID: 1762234447}
   - component: {fileID: 1762234450}
   m_Layer: 0
   m_Name: Main Camera
@@ -556,14 +552,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1762234447
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762234446}
-  m_Enabled: 1
 --- !u!20 &1762234448
 Camera:
   m_ObjectHideFlags: 0
@@ -639,7 +627,7 @@ MonoBehaviour:
   DisplayUserMap: 0
   DisplayColorMap: 0
   DisplaySkeletonLines: 0
-  DisplayMapsWidthPercent: 20
+  DisplayMapsWidthPercent: 120
   SensorHeight: 1
   SensorAngle: 0
   MinUserDistance: 1
