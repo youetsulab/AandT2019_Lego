@@ -359,7 +359,7 @@ public class Calibration : MonoBehaviour
 
   public void CompleteCalibration()
   {
-    lego_.PushCalibrationValue(baseCoordinateAndDepth);
+    lego_.PushCalibrationData(baseCoordinateAndDepth);
     SceneManager.LoadScene("Main");
   }
 }
