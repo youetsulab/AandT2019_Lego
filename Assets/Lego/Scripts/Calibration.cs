@@ -11,12 +11,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Calibration : MonoBehaviour
 {
-  #region Constant Value
-  private static readonly int DEPTH_CAMERA_WIDTH = 640;
-  private static readonly int DEPTH_CAMERA_HEIGHT = 480;
-  public static readonly float MAX_DEPTH_NUM = 3975f;
-  #endregion
-
   private float timeLeft__1FPS_;
   private float timeLeft__15FPS_;
   private KinectManager manager_;
@@ -24,6 +18,7 @@ public class Calibration : MonoBehaviour
   [SerializeField] RawImage depthImage_;
   [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
   [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
+  [SerializeField] private Camera mainCamera_;
   private static readonly int upperBasePixelDepthValue_ = 860;
   private static readonly int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
@@ -48,14 +43,13 @@ public class Calibration : MonoBehaviour
     }
 
     manager_ = KinectManager.Instance;
-    lego_ = LegoBase.Instance;
 
     Vector2 inverseY = new Vector2(1, -1);
     depthImage_.GetComponent<Transform>().localScale *= inverseY;
 
-    depthMap_ = new ushort[DEPTH_CAMERA_WIDTH * DEPTH_CAMERA_HEIGHT];
+    depthMap_ = new ushort[LegoData.DEPTH_CAMERA_WIDTH * LegoData.DEPTH_CAMERA_HEIGHT];
 
-    depthTexture_ = new Texture2D(DEPTH_CAMERA_WIDTH, DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
+    depthTexture_ = new Texture2D(LegoData.DEPTH_CAMERA_WIDTH, LegoData.DEPTH_CAMERA_HEIGHT, TextureFormat.RGBA32, false);
     depthImage_.texture = depthTexture_;
 
     basePixelMap_ = new List<BasePixelInfo>();
@@ -136,7 +130,7 @@ public class Calibration : MonoBehaviour
     {
       Color col;
       BasePixelInfo pixel;
-      int depthData = depthMap_[y * DEPTH_CAMERA_WIDTH + x] >> 3;
+      int depthData = depthMap_[y * LegoData.DEPTH_CAMERA_WIDTH + x] >> 3;
 
       if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
       {
@@ -162,10 +156,10 @@ public class Calibration : MonoBehaviour
     void ScanFrom4EndPoint_Body()
     {
       int x, y;
-      int horizontalCenterLine = DEPTH_CAMERA_HEIGHT / 2;
-      int verticalCenterLine = DEPTH_CAMERA_WIDTH / 2;
+      int horizontalCenterLine = LegoData.DEPTH_CAMERA_HEIGHT / 2;
+      int verticalCenterLine = LegoData.DEPTH_CAMERA_WIDTH / 2;
 
-      for (int i = 0; i < (DEPTH_CAMERA_WIDTH / 2) + (DEPTH_CAMERA_HEIGHT / 2); i++)
+      for (int i = 0; i < (LegoData.DEPTH_CAMERA_WIDTH / 2) + (LegoData.DEPTH_CAMERA_HEIGHT / 2); i++)
       {
         /*
         |--------|---------|
@@ -205,9 +199,9 @@ public class Calibration : MonoBehaviour
                 break;
 
               case 1:
-                x = DEPTH_CAMERA_WIDTH - i;
+                x = LegoData.DEPTH_CAMERA_WIDTH - i;
                 y = 0;
-                while (x <= DEPTH_CAMERA_WIDTH)
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH)
                 {
                   SetPixelForXY(x, y, section);
                   x++; y++;
@@ -216,7 +210,7 @@ public class Calibration : MonoBehaviour
 
               case 2:
                 x = i;
-                y = DEPTH_CAMERA_HEIGHT - 1;
+                y = LegoData.DEPTH_CAMERA_HEIGHT - 1;
                 while (x >= 0)
                 {
                   SetPixelForXY(x, y, section);
@@ -225,10 +219,10 @@ public class Calibration : MonoBehaviour
                 break;
 
               case 3:
-                x = DEPTH_CAMERA_WIDTH - 1 - i;
-                y = DEPTH_CAMERA_HEIGHT - 1;
+                x = LegoData.DEPTH_CAMERA_WIDTH - 1 - i;
+                y = LegoData.DEPTH_CAMERA_HEIGHT - 1;
 
-                while (x <= DEPTH_CAMERA_WIDTH)
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH)
                 {
                   SetPixelForXY(x, y, section);
                   x++; y--;
@@ -260,9 +254,9 @@ public class Calibration : MonoBehaviour
                 break;
 
               case 1:
-                x = DEPTH_CAMERA_WIDTH - i; y = 0;
+                x = LegoData.DEPTH_CAMERA_WIDTH - i; y = 0;
 
-                while (x <= DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
                 {
                   SetPixelForXY(x, y, section);
                   x++; y++;
@@ -270,7 +264,7 @@ public class Calibration : MonoBehaviour
                 break;
 
               case 2:
-                x = i; y = DEPTH_CAMERA_HEIGHT - 1;
+                x = i; y = LegoData.DEPTH_CAMERA_HEIGHT - 1;
 
                 while (x >= i - horizontalCenterLine)
                 {
@@ -280,9 +274,9 @@ public class Calibration : MonoBehaviour
                 break;
 
               case 3:
-                x = (DEPTH_CAMERA_WIDTH - i - 1); y = DEPTH_CAMERA_HEIGHT - 1;
+                x = (LegoData.DEPTH_CAMERA_WIDTH - i - 1); y = LegoData.DEPTH_CAMERA_HEIGHT - 1;
 
-                while (x <= DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
                 {
                   SetPixelForXY(x, y, section);
                   x++; y--;
@@ -319,7 +313,7 @@ public class Calibration : MonoBehaviour
                 x = verticalCenterLine;
                 y = i - verticalCenterLine;
 
-                while (x <= DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
                 {
                   SetPixelForXY(x, y, section);
                   x++; y++;
@@ -328,7 +322,7 @@ public class Calibration : MonoBehaviour
 
               case 2:
                 x = verticalCenterLine;
-                y = (DEPTH_CAMERA_HEIGHT - 1) - (i - verticalCenterLine);
+                y = (LegoData.DEPTH_CAMERA_HEIGHT - 1) - (i - verticalCenterLine);
                 while (x >= i - horizontalCenterLine)
                 {
                   SetPixelForXY(x, y, section);
@@ -338,8 +332,8 @@ public class Calibration : MonoBehaviour
 
               case 3:
                 x = verticalCenterLine;
-                y = (DEPTH_CAMERA_HEIGHT - 1) - (i - verticalCenterLine);
-                while (x <= DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
+                y = (LegoData.DEPTH_CAMERA_HEIGHT - 1) - (i - verticalCenterLine);
+                while (x <= LegoData.DEPTH_CAMERA_WIDTH - (i - horizontalCenterLine))
                 {
                   SetPixelForXY(x, y, section);
                   x++; y--;
@@ -359,7 +353,7 @@ public class Calibration : MonoBehaviour
 
   public void CompleteCalibration()
   {
-    lego_.PushCalibrationData(baseCoordinateAndDepth);
+    LegoData.PushCalibrationData(baseCoordinateAndDepth);
     SceneManager.LoadScene("Main");
   }
 }
