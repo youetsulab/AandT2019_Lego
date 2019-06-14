@@ -39,6 +39,7 @@ public class LegoBase : MonoBehaviour
       calibrationDepthAverage_ += LegoData.calibrationCoordinateAndDepth[i].z;
     }
     calibrationDepthAverage_ = calibrationDepthAverage_ / 4;
+    Debug.Log("Depth Average:" + calibrationDepthAverage_);
   }
 
   void Update()
@@ -53,26 +54,46 @@ public class LegoBase : MonoBehaviour
     }
   }
 
-  private LegoBase() { }
-
-  RawLegoPixelInfo[,] GetTexturedata(Texture2D colorTexture)
+  LandscapeCellInfo[,] CreateLandscapeMap()
   {
-    RawLegoPixelInfo[,] cameramap = new RawLegoPixelInfo[LegoData.DEPTH_CAMERA_WIDTH, LegoData.DEPTH_CAMERA_HEIGHT];
+    RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
+    return ConvertRawLegoMap2LandscapeMap(rawLegoMap);
 
-    manager_ = KinectManager.Instance;
-
-    for (int y = 0; y < LegoData.DEPTH_CAMERA_HEIGHT; y++)
+    #region Local Method
+    //Color Texture taken by kinect Camera => Array(RawLegoPixelInfo)
+    RawLegoPixelInfo[,] GetTexturedata(Texture2D colorTexture)
     {
-      for (int x = 0; x < LegoData.DEPTH_CAMERA_WIDTH; x++)
-      {
-        cameramap[x, y].depth = manager_.GetDepthForPixel(x, y);
+      RawLegoPixelInfo[,] cameramap = new RawLegoPixelInfo[LegoData.DEPTH_CAMERA_WIDTH, LegoData.DEPTH_CAMERA_HEIGHT];
 
-        Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
-        cameramap[x, y].color = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
+      manager_ = KinectManager.Instance;
+
+      for (int y = 0; y < LegoData.DEPTH_CAMERA_HEIGHT; y++)
+      {
+        for (int x = 0; x < LegoData.DEPTH_CAMERA_WIDTH; x++)
+        {
+          cameramap[x, y].depth = manager_.GetDepthForPixel(x, y);
+
+          Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x, y));
+          cameramap[x, y].color = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
+        }
       }
+      return cameramap;
     }
 
-    return cameramap;
+    /*
+    // Array(RawLegoPixelInfo) => Array(RawLegoPixelInfo)(キャリブレーションした4点内に切り取る)
+    Vector2 TrimRawLegoMap(RawLegoPixelInfo[,] legoMap)
+    {
+      return new Vector2(1, 1);
+    }
+    */
+
+    // Array(RawLegoPixelInfo) => Array(LandscapeCellInfo)
+    LandscapeCellInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] legoMap)
+    {
+      return new LandscapeCellInfo[1,1];
+    }
+    #endregion
   }
 }
 

@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class Calibration : MonoBehaviour
+public class LegoCalibration : MonoBehaviour
 {
   private float timeLeft__1FPS_;
   private float timeLeft__15FPS_;
@@ -18,7 +18,6 @@ public class Calibration : MonoBehaviour
   [SerializeField] RawImage depthImage_;
   [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
   [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
-  [SerializeField] private Camera mainCamera_;
   private static readonly int upperBasePixelDepthValue_ = 860;
   private static readonly int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
