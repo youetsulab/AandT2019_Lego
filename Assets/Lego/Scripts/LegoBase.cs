@@ -36,7 +36,7 @@ public class LegoBase : MonoBehaviour
 
     for (int i = 0; i < 4; i++)
     {
-      calibrationDepthAverage_ += LegoData.calibrationCoordinateAndDepth[i].z;
+      calibrationDepthAverage_ += LegoData.CalibrationData.calibrationXYAndDepth[i].z;
     }
     calibrationDepthAverage_ = calibrationDepthAverage_ / 4;
     Debug.Log("Depth Average:" + calibrationDepthAverage_);
@@ -91,9 +91,21 @@ public class LegoBase : MonoBehaviour
     // Array(RawLegoPixelInfo) => Array(LandscapeCellInfo)
     LandscapeCellInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] legoMap)
     {
+      Vector3 startVertex = LegoData.CalibrationData.calibrationXYAndDepth[0];
+      Vector3 endVertex = LegoData.CalibrationData.calibrationXYAndDepth[3];
+      int width = (int)endVertex.x - (int)startVertex.x;
+      int height = (int)endVertex.y - (int)startVertex.y;
+      int cellWidth = width / 32;
+      int cellHeight = height / 32;
+
       return new LandscapeCellInfo[1,1];
     }
     #endregion
+  }
+
+  public void OnButtonClicked()
+  {
+    CreateLandscapeMap();
   }
 }
 

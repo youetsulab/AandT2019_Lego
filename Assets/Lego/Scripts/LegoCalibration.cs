@@ -23,7 +23,8 @@ public class LegoCalibration : MonoBehaviour
   private Texture2D depthTexture_;
   private ushort[] depthMap_;
   private List<BasePixelInfo> basePixelMap_;
-  private List<Vector3> baseCoordinateAndDepth;
+  private List<Vector3> baseXYAndDepth_;
+  private Vector3 baseCenter_;
 
   private struct BasePixelInfo
   {
@@ -52,7 +53,7 @@ public class LegoCalibration : MonoBehaviour
     depthImage_.texture = depthTexture_;
 
     basePixelMap_ = new List<BasePixelInfo>();
-    baseCoordinateAndDepth = new List<Vector3>();
+    baseXYAndDepth_ = new List<Vector3>();
     timeLeft__1FPS_ = 1.0f;
     timeLeft__15FPS_ = 0.04f;
   }
@@ -82,20 +83,39 @@ public class LegoCalibration : MonoBehaviour
     if (timeLeft__1FPS_ <= 0.0f)
     {
       timeLeft__1FPS_ = 1.0f;
-      baseCoordinateAndDepth.Clear();
-      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(0));
-      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(1));
-      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(2));
-      baseCoordinateAndDepth.Add(CalcBaseDepthAverageAndPoint(3));
-      Debug.Log("Coordinate0:" + baseCoordinateAndDepth[0].x + ", " + baseCoordinateAndDepth[0].y + " Depth value:" + baseCoordinateAndDepth[0].z);
-      Debug.Log("Coordinate1:" + baseCoordinateAndDepth[1].x + ", " + baseCoordinateAndDepth[1].y + " Depth value:" + baseCoordinateAndDepth[1].z);
-      Debug.Log("Coordinate2:" + baseCoordinateAndDepth[2].x + ", " + baseCoordinateAndDepth[2].y + " Depth value:" + baseCoordinateAndDepth[2].z);
-      Debug.Log("Coordinate3:" + baseCoordinateAndDepth[3].x + ", " + baseCoordinateAndDepth[3].y + " Depth value:" + baseCoordinateAndDepth[3].z);
+      baseXYAndDepth_.Clear();
+      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(0));
+      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(1));
+      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(2));
+      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(3));
+      CalcCenterBaseDepth_And_Point();
+      Debug.Log("XY0:" + (int)baseXYAndDepth_[0].x + ", " + (int)baseXYAndDepth_[0].y + " Depth value:" + (int)baseXYAndDepth_[0].z);
+      Debug.Log("XY1:" + (int)baseXYAndDepth_[1].x + ", " + (int)baseXYAndDepth_[1].y + " Depth value:" + (int)baseXYAndDepth_[1].z);
+      Debug.Log("XY2:" + (int)baseXYAndDepth_[2].x + ", " + (int)baseXYAndDepth_[2].y + " Depth value:" + (int)baseXYAndDepth_[2].z);
+      Debug.Log("XY3:" + (int)baseXYAndDepth_[3].x + ", " + (int)baseXYAndDepth_[3].y + " Depth value:" + (int)baseXYAndDepth_[3].z);
+      Debug.Log("Center XY:" + baseCenter_.x + ", " + baseCenter_.y + "Depth value:" + baseCenter_.z);
       basePixelMap_.Clear();
+    }
+
+    //4つの点からなる2つの直線の交点を求める。
+    //http://imagingsolution.blog.fc2.com/blog-entry-137.html
+    void CalcCenterBaseDepth_And_Point()
+    {
+      if (float.IsNaN(baseXYAndDepth_[0].x) || float.IsNaN(baseXYAndDepth_[1].x) || float.IsNaN(baseXYAndDepth_[2].x) || float.IsNaN(baseXYAndDepth_[3].x)) return;
+      if (float.IsNaN(baseXYAndDepth_[0].y) || float.IsNaN(baseXYAndDepth_[1].y) || float.IsNaN(baseXYAndDepth_[2].y) || float.IsNaN(baseXYAndDepth_[3].y)) return;
+
+      float s1 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[0].y - baseXYAndDepth_[1].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[0].x - baseXYAndDepth_[1].x)) * 0.5f;
+      s1 = Mathf.Abs(s1);
+      float s2 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[1].y - baseXYAndDepth_[2].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[1].x - baseXYAndDepth_[2].x)) * 0.5f;
+      s2 = Mathf.Abs(s2);
+
+      baseCenter_.x = baseXYAndDepth_[0].x + (baseXYAndDepth_[2].x - baseXYAndDepth_[0].x) * s1 / (s1 + s2);
+      baseCenter_.y = baseXYAndDepth_[0].y + (baseXYAndDepth_[2].y - baseXYAndDepth_[0].y) * s1 / (s1 + s2);
+      baseCenter_.z = depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3;
     }
   }
 
-  private Vector3 CalcBaseDepthAverageAndPoint(int sectionNum)
+  private Vector3 CalcBaseDepthAverage_And_Point(int sectionNum)
   {
     //x,y: coordinate, z: average of depth value
     float depth = 0, x = 0, y = 0;
@@ -352,7 +372,7 @@ public class LegoCalibration : MonoBehaviour
 
   public void CompleteCalibration()
   {
-    LegoData.PushCalibrationData(baseCoordinateAndDepth);
+    LegoData.CalibrationData.PushCalibrationData(baseXYAndDepth_);
     SceneManager.LoadScene("Main");
   }
 }
