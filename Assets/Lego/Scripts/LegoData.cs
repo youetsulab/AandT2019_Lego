@@ -22,9 +22,9 @@ public static class LegoData
     internal static void GetCalibrationData()
     {
       calibrationXYAndDepth[0] = new Vector3(PlayerPrefs.GetFloat("X0"), PlayerPrefs.GetFloat("Y0"), PlayerPrefs.GetFloat("D0"));
-      calibrationXYAndDepth[0] = new Vector3(PlayerPrefs.GetFloat("X1"), PlayerPrefs.GetFloat("Y1"), PlayerPrefs.GetFloat("D1"));
-      calibrationXYAndDepth[0] = new Vector3(PlayerPrefs.GetFloat("X2"), PlayerPrefs.GetFloat("Y2"), PlayerPrefs.GetFloat("D2"));
-      calibrationXYAndDepth[0] = new Vector3(PlayerPrefs.GetFloat("X3"), PlayerPrefs.GetFloat("Y3"), PlayerPrefs.GetFloat("D3"));
+      calibrationXYAndDepth[1] = new Vector3(PlayerPrefs.GetFloat("X1"), PlayerPrefs.GetFloat("Y1"), PlayerPrefs.GetFloat("D1"));
+      calibrationXYAndDepth[2] = new Vector3(PlayerPrefs.GetFloat("X2"), PlayerPrefs.GetFloat("Y2"), PlayerPrefs.GetFloat("D2"));
+      calibrationXYAndDepth[3] = new Vector3(PlayerPrefs.GetFloat("X3"), PlayerPrefs.GetFloat("Y3"), PlayerPrefs.GetFloat("D3"));
     }
 
     internal static void SetCalibrationData()

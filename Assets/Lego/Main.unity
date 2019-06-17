@@ -675,6 +675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImage_: {fileID: 422080781}
+  debugImage_: {fileID: 1687063168}
 --- !u!1 &1687063166
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,7 +688,7 @@ GameObject:
   - component: {fileID: 1687063169}
   - component: {fileID: 1687063168}
   m_Layer: 5
-  m_Name: DepthImage
+  m_Name: DebugImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

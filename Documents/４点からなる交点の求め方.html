@@ -1,0 +1,895 @@
+
+<!-- saved from url=(0055)http://imagingsolution.blog.fc2.com/blog-entry-137.html -->
+<html lang="ja" style="height: 100%;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="verify-v1" content="HEhLH3b306R2zzX+2og64uqhIx0JPBvgqoGlU1yuCjo=">
+
+<meta http-equiv="content-style-type" content="text/css">
+<meta http-equiv="content-script-type" content="text/javascript">
+<meta name="keywords" content="画像処理,C++/CLI,OpenCV,数学,光学系,マシンビジョン,画像入力ボード,キャプチャボード,フレームグラバ,画像処理アルゴリズム">
+<meta name="y_key" content="9b1fe6ef33b6dfdd">
+<meta name="copyright" content="">
+<link href="./４点からなる交点の求め方　画像処理ソリューション_files/ec106.css" type="text/css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://imagingsolution.blog.fc2.com/?xml">
+
+
+<link type="text/css" rel="stylesheet" href="./４点からなる交点の求め方　画像処理ソリューション_files/SyntaxHighlighter.css">  
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/shCore.js.ダウンロード"></script>  
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/shBrushCpp.js.ダウンロード"></script> 
+<script type="text/javascript">  
+window.onload = function () {  
+        dp.SyntaxHighlighter.ClipboardSwf = 'http://blog-imgs-27.fc2.com/i/m/a/imagingsolution/clipboard.swf';  
+        dp.SyntaxHighlighter.HighlightAll('code');  
+}  
+</script>
+
+
+<meta name="google-site-verification" content="oKs_Z6uSTO43bSJLSjvzh41Lpz6_7trdZRJWRlfFqtk">
+
+<title>４点からなる交点の求め方　画像処理ソリューション</title>
+
+<link href="./４点からなる交点の求め方　画像処理ソリューション_files/120710style.css" rel="stylesheet" type="text/css" media="all">
+<link type="text/css" rel="stylesheet" charset="UTF-8" href="./４点からなる交点の求め方　画像処理ソリューション_files/translateelement.css"><script type="text/javascript" charset="UTF-8" src="./４点からなる交点の求め方　画像処理ソリューション_files/main_ja.js.ダウンロード"></script><script type="text/javascript" charset="UTF-8" src="./４点からなる交点の求め方　画像処理ソリューション_files/element_main.js.ダウンロード"></script><link type="text/css" href="./４点からなる交点の求め方　画像処理ソリューション_files/index.css"><script src="./４点からなる交点の求め方　画像処理ソリューション_files/comment_toolbar.lang.js.ダウンロード"></script><script charset="utf-8" src="./４点からなる交点の求め方　画像処理ソリューション_files/button.509719336ca39171c37a321231ccaf83.js.ダウンロード"></script></head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" style="position: relative; min-height: 100%; top: 0px;">
+<div id="sh_fc2blogheadbar">
+	<div class="sh_fc2blogheadbar_body">
+		<div id="sh_fc2blogheadbar_menu">
+			<a href="https://blog.fc2.com/" rel="nofollow"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/sh_fc2blogheadbar_logo.png" alt="FC2ブログ"></a>
+		</div>
+		<div id="sh_fc2blogheadbar_search">
+			<form name="barForm" method="get" action="http://imagingsolution.blog.fc2.com/blog-entry-137.html" target="blank">
+				<input class="sh_fc2blogheadbar_searchform" type="text" name="q" value="" maxlength="30" onclick="this.style.color=&#39;#000000&#39;;" onfocus="this.select();" onblur="this.style.color=&#39;#999999&#39;">
+				<input type="hidden" name="charset" value="utf-8">
+				<input class="sh_fc2blogheadbar_searchbtn" type="submit" value="ブログ内検索">
+			</form>
+		</div>
+		<div id="sh_fc2blogheadbar_link_box" class="sh_fc2blogheadbar_link" style="visibility: hidden;"></div>
+	</div>
+</div>
+
+
+
+
+
+
+
+<div class="title_header">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr height="40"><td class="site_title" valign="top"><a href="http://imagingsolution.blog.fc2.com/">画像処理ソリューション</a></td></tr>
+</tbody></table>
+<div class="site_s">これを見れば画像処理の入門から基礎～応用まで全てがわかるのを目指して！</div>
+</div>
+
+<div class="header">
+
+
+　　　
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/" onclick="TopPage" title="TopPage">
+<img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title0a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title0.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-151.html" onclick="画像処理" title="画像処理">
+<img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title1a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title1.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-150.html" onclick="C++/CLI" title="C++/CLI"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title2a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title2.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-149.html" onclick="OpenCV" title="OpenCV"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title3a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title3.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-148.html" onclick="光学系" title="光学系"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title4a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title4.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-147.html" onclick="使える数学" title="使える数学"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title6a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title6.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-145.html" onclick="Excel" title="Excel"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title5a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title5.jpg"></a>
+
+<a class="onMouse" href="http://imagingsolution.blog107.fc2.com/blog-entry-144.html" onclick="参考文献" title="参考文献"><img class="onMouseOver" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title7a.jpg"><img class="onMouseOut" src="./４点からなる交点の求め方　画像処理ソリューション_files/Title7.jpg"></a>
+
+
+<br>
+
+<img src="./４点からなる交点の求め方　画像処理ソリューション_files/TableBorder.jpg" border="0">
+
+</div>
+
+
+
+<a name="pagetop"></a>
+<table width="860" cellpadding="0" cellspacing="0">
+<tbody><tr valign="top">
+  <td width="10"></td>
+  <td width="180">
+
+  
+  
+  
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" background="./４点からなる交点の求め方　画像処理ソリューション_files/SideBack.jpg">  
+
+  <tbody><tr><td><img src="./４点からなる交点の求め方　画像処理ソリューション_files/SideTop.jpg"></td>
+
+  </tr><tr><td align="center">
+        <div id="box_side">
+        
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">翻訳(Translate)</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <div class="plugin-freearea" style="text-align:left">
+  <div id="google_translate_element"><div class="skiptranslate goog-te-gadget" dir="ltr" style=""><div id=":0.targetLanguage" class="goog-te-gadget-simple" style="white-space: nowrap;"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/cleardot.gif" class="goog-te-gadget-icon" alt="" style="background-image: url(&quot;https://translate.googleapis.com/translate_static/img/te_ctrl3.gif&quot;); background-position: -65px 0px;"><span style="vertical-align: middle;"><a aria-haspopup="true" class="goog-te-menu-value" href="javascript:void(0)"><span>言語を選択</span><img src="./４点からなる交点の求め方　画像処理ソリューション_files/cleardot.gif" alt="" width="1" height="1"><span style="border-left: 1px solid rgb(187, 187, 187);">​</span><img src="./４点からなる交点の求め方　画像処理ソリューション_files/cleardot.gif" alt="" width="1" height="1"><span aria-hidden="true" style="color: rgb(118, 118, 118);">▼</span></a></span></div></div></div><script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    autoDisplay: false,
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
+</script><script src="./４点からなる交点の求め方　画像処理ソリューション_files/f.txt" charset="euc-jp"></script>
+</div>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">プロフィール</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <p class="plugin-myimage" style="text-align:left">
+<img src="./４点からなる交点の求め方　画像処理ソリューション_files/noimage.gif" alt="Akira">
+</p>
+<p style="text-align:left">
+ニックネーム:Akira<br>
+東京都の町田事業所に勤務<br>画像処理ソフトの開発を行っています。リンクフリーです！<br>
+
+詳細プロフィールは
+<a href="http://imagingsolution.net/profile/"><strong>こちら</strong></a>
+<br>
+お問い合わせは、こちら↓<br>
+<img src="./４点からなる交点の求め方　画像処理ソリューション_files/gmail1.png"><br>
+【補助HP】<br>
+<a href="http://imagingsolution.web.fc2.com/" title="画像処理ソリューションWeb版" target="_blank">画像処理ソリューションWeb版</a>
+【Newブログ】<br>
+<a href="http://imagingsolution.net/" title="イメージングソリューション" target="_blank">イメージングソリューション</a>
+
+</p>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">スポンサーリンク</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <div class="plugin-freearea" style="text-align:left">
+  <!-- Google Adsense -->
+
+<script type="text/javascript" charset="euc-jp"><!--
+google_ad_client = "pub-1632211064514260";
+/* 160x600, 作成済み 09/02/12 */
+google_ad_slot = "1134950751";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/f(1).txt" charset="euc-jp">
+</script>
+
+
+<!-- Google Adsense -->
+<br>
+</div>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">カテゴリ</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <div>
+	<div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-19.html" title="トップページ">トップページ <!--(1)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-0.html" title="サイトマップ">サイトマップ <!--(13)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-20.html" title="画像処理編">画像処理編 <!--(3)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-21.html" title="C++/CLI編">C++/CLI編 <!--(1)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-22.html" title="OpenCV編">OpenCV編 <!--(1)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-23.html" title="光学系編">光学系編 <!--(1)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-24.html" title="使える数学編">使える数学編 <!--(1)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-25.html" title="Excel編">Excel編 <!--(1)--></a>
+	</div><div style="text-align:left">
+				┗		<a href="http://imagingsolution.blog.fc2.com/blog-category-26.html" title="参考文献編">参考文献編 <!--(2)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-11.html" title="フィルタ処理">フィルタ処理 <!--(38)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-1.html" title="プログラム">プログラム <!--(14)--></a>
+	</div><div style="text-align:left">
+				┗		<a href="http://imagingsolution.blog.fc2.com/blog-category-16.html" title="画像処理">画像処理 <!--(7)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-17.html" title="プログラミング">プログラミング <!--(116)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-7.html" title="C++/CLI">C++/CLI <!--(61)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-27.html" title="C#">C# <!--(4)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-12.html" title="OpenCV【C++/CLI版】">OpenCV【C++/CLI版】 <!--(38)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-15.html" title="DirectShow">DirectShow <!--(3)--></a>
+	</div><div style="text-align:left">
+				┗		<a href="http://imagingsolution.blog.fc2.com/blog-category-13.html" title="VisualStudio">VisualStudio <!--(8)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-2.html" title="光学系">光学系 <!--(16)--></a>
+	</div><div style="text-align:left">
+		┣				<a href="http://imagingsolution.blog.fc2.com/blog-category-18.html" title="レンズ">レンズ <!--(7)--></a>
+	</div><div style="text-align:left">
+				┗		<a href="http://imagingsolution.blog.fc2.com/blog-category-14.html" title="ラインセンサカメラ">ラインセンサカメラ <!--(5)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-4.html" title="使える数学">使える数学 <!--(31)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-10.html" title="エクセルテクニック集">エクセルテクニック集 <!--(8)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-5.html" title="参考文献">参考文献 <!--(29)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-8.html" title="お知らせ">お知らせ <!--(29)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-9.html" title="製品紹介">製品紹介 <!--(25)--></a>
+	</div><div style="text-align:left">
+						<a href="http://imagingsolution.blog.fc2.com/blog-category-28.html" title="Kinect">Kinect <!--(4)--></a>
+	</div></div>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">最近のコメント</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <ul>
+<li style="text-align:left">
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-20.html#comment417" title="&quot;ここから先の計算&quot;の簡素化">mts:最小二乗法による楕円近似 (02/25)</a>
+</li><li style="text-align:left">
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-248.html#comment415" title="">diy solar panels:【OpenCV】色領域の抽出 (02/16)</a>
+</li><li style="text-align:left">
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-113.html#comment414" title="勘違い">ZetaP:判別分析法（大津の二値化） (11/10)</a>
+</li><li style="text-align:left">
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-156.html#comment413" title="m + nの方が遅い場合">ZetaP:フィルタ処理の高速化アルゴリズム（縦横に処理を分ける） (11/10)</a>
+</li><li style="text-align:left">
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-113.html#comment412" title="しきい値の間違いについて">ZetaP:判別分析法（大津の二値化） (11/08)</a>
+</li></ul>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">カレンダー</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <div class="plugin-calender" style="text-align:left">
+	<table summary="カレンダー" class="calender">
+		<caption>
+			<a href="http://imagingsolution.blog.fc2.com/blog-date-201905.html">05</a>
+			| 2019/06 | 
+			<a href="http://imagingsolution.blog.fc2.com/blog-date-201907.html">07</a>
+		</caption>
+		<tbody><tr>
+			<th abbr="日曜日" scope="col" id="sun">S</th>
+			<th abbr="月曜日" scope="col">M</th>
+			<th abbr="火曜日" scope="col">T</th>
+			<th abbr="水曜日" scope="col">W</th>
+			<th abbr="木曜日" scope="col">T</th>
+			<th abbr="金曜日" scope="col">F</th>
+			<th abbr="土曜日" scope="col" id="sat">S</th>
+		</tr>
+		<tr>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>1</td>
+		</tr><tr>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+			<td>7</td>
+			<td>8</td>
+		</tr><tr>
+			<td>9</td>
+			<td>10</td>
+			<td>11</td>
+			<td>12</td>
+			<td>13</td>
+			<td>14</td>
+			<td>15</td>
+		</tr><tr>
+			<td>16</td>
+			<td>17</td>
+			<td>18</td>
+			<td>19</td>
+			<td>20</td>
+			<td>21</td>
+			<td>22</td>
+		</tr><tr>
+			<td>23</td>
+			<td>24</td>
+			<td>25</td>
+			<td>26</td>
+			<td>27</td>
+			<td>28</td>
+			<td>29</td>
+		</tr><tr>
+			<td>30</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>	</tbody></table>
+</div>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+    <table border="0" width="155" cellpadding="0" cellspacing="0" class="side_bg">
+    <tbody><tr><td height="19" class="side_title" style="text-align:left">趣味のブログ</td></tr>
+
+    <tr><td class="side_txt">
+
+      <p style="text-align:left">
+      
+      </p>
+      <div class="plugin-freearea" style="text-align:left">
+	<font size="2"><strong><a href="http://iphonebanzai.blog103.fc2.com/" target="_blank" title="iPhone萬歳！">iPhone萬歳！</a></strong></font><br>
+iPhoneの情報いろいろ。<br>
+
+<font size="2"><strong><a href="http://bloglearning.blog104.fc2.com/" target="_blank" title="ブログ学習帳">ブログ学習帳</a></strong></font><br>
+ブログ、SEO、アフィリエイト情報など（まだまだこれから）<br>
+
+<font size="2"><strong><a href="http://blogs.yahoo.co.jp/left_handed_mouse" target="_blank" title="俺流クラフト日記">俺流クラフト日記</a></strong></font><br>
+ハンドメイド作品の記録（現在、放置中）
+</div>
+      <p style="text-align:left">
+      
+      </p>
+      </td>
+    </tr>
+    </tbody></table>
+ 
+    <!--<div class="plugin_bottom"></div>-->
+  
+    
+
+    
+    
+    
+    
+    
+    </div>
+    
+    </td>
+  </tr>
+
+  <tr><td><img src="./４点からなる交点の求め方　画像処理ソリューション_files/SideBottom.jpg">
+
+</td>
+
+  </tr></tbody></table>
+
+  </td>
+
+  <td width="670" align="center">
+
+  <table width="630" border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr><td>
+  
+  
+
+    <div id="box_main">
+    
+    <table border="0" width="100%" cellpadding="2" cellspacing="0">
+
+    
+    
+<!--  ************************************************** -->  
+    
+    
+<!--最近の記事-->
+    
+<tbody><tr>
+
+
+<td class="recent_txt">
+スポンサーリンク
+
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-1632211064514260";
+/* ImagingTopLeft */
+google_ad_slot = "5007503248";
+google_ad_width = 300;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/f(1).txt">
+</script>
+
+</td>
+
+<td class="recent_txt"> 
+最近の記事
+
+
+<div style="overflow: auto;
+height: 250px;
+border: 0px #C2A858 solid;
+border: 0px #C2A858 solid;
+scrollbar-base-color: #FFFFFF;
+scrollbar-track-color: #FFFFFF;
+scrollbar-face-color: #FFFFFF;
+scrollbar-shadow-color: #C2A858;
+scrollbar-darkshadow-color: #FFFFFF;
+scrollbar-highlight-color: #FFFFFF;
+scrollbar-3dlight-color: #C2A858;
+scrollbar-arrow-color: #C2A858;">
+  
+<a href="http://imagingsolution.blog.fc2.com/blog-entry-349.html">(09/18)&nbsp;&nbsp;計測測定展に光切断のデモを出展しました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-348.html">(08/17)&nbsp;&nbsp;ディジタル画像技術事典200に記事が載りました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-347.html">(06/09)&nbsp;&nbsp;光切断を画像センシング展で公開<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-346.html">(05/14)&nbsp;&nbsp;中国（上海）へ行って来ました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-343.html">(04/12)&nbsp;&nbsp;韓国へ行って来ました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-342.html">(03/10)&nbsp;&nbsp;私の求める新人像<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-341.html">(01/18)&nbsp;&nbsp;エレクトロテストジャパンにカラー光切断法のデモを出展しました。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-340.html">(12/23)&nbsp;&nbsp;ユニークアクセス２００万達成！<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-339.html">(12/10)&nbsp;&nbsp;【カラー光切断法】YouTube動画まとめ<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-338.html">(11/04)&nbsp;&nbsp;国際画像機器展２０１４にカラー光切断法を出展します。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-337.html">(10/05)&nbsp;&nbsp;第25回コンピュータビジョン勉強会＠関東に参加してきました。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-336.html">(09/08)&nbsp;&nbsp;フーリエ変換の記事を追加しました。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-335.html">(08/09)&nbsp;&nbsp;【画像処理】ランキング低下中<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-333.html">(07/06)&nbsp;&nbsp;記事の更新が停滞中．．．<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-332.html">(06/08)&nbsp;&nbsp;画像センシング展２０１４でカラー光切断法のデモを行います。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-331.html">(05/17)&nbsp;&nbsp;カラー光切断法の動画を公開しました。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-330.html">(04/30)&nbsp;&nbsp;ソニーα NEX-5Rで星空撮影<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-328.html">(04/10)&nbsp;&nbsp;カラー光切断法の取込結果を追加しました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-327.html">(03/08)&nbsp;&nbsp;Korea Vision Show 2014へ行ってきました<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-326.html">(02/05)&nbsp;&nbsp;フーリエ変換シリーズを始めます。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-325.html">(01/06)&nbsp;&nbsp;2014年、あけましておめでとうございます。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-324.html">(12/04)&nbsp;&nbsp;カラー光切断法を公開（国際画像機器展2013にて）<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-323.html">(11/13)&nbsp;&nbsp;国際画像機器展2013に出展します<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-322.html">(10/14)&nbsp;&nbsp;「画像処理のためのＣ＃」はじめます。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-321.html">(09/16)&nbsp;&nbsp;【C#,VB.NET】高速描画コントロールをバージョンアップしました。<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-320.html">(09/04)&nbsp;&nbsp;拡大鏡に輝度値表示、ルーラー機能を追加した個人ツールを公開<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-319.html">(08/05)&nbsp;&nbsp;７月の拍手Top５<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-318.html">(07/06)&nbsp;&nbsp;2013年６月人気記事Top5<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-316.html">(05/12)&nbsp;&nbsp;SONY α NEX-5Rレビュー<br></a><a href="http://imagingsolution.blog.fc2.com/blog-entry-315.html">(04/24)&nbsp;&nbsp;SONY α NEX-5RY購入<br></a></div>
+
+</td>
+
+
+</tr> 
+  
+<!--  ************************************************** -->    
+    
+<tr><td class="entry_title" colspan="2"><h1>４点からなる交点の求め方</h1></td></tr>
+<tr><td class="main_txt" colspan="2">
+
+
+
+
+<a href="http://imagingsolution.blog107.fc2.com/"><font size="2" style="font-family: ＭＳ Ｐゴシック; font-weight: bold;">メインページ</font></a><font face="ＭＳ Ｐゴシック" size="2"> ＞ </font><a href="http://imagingsolution.blog107.fc2.com/blog-entry-147.html"><font face="ＭＳ Ｐゴシック" size="2" style="font-weight: bold;">使える数学</font></a><font face="ＭＳ Ｐゴシック" size="2"> <br></font><div style="text-align: right;"><span style="font-size: large;"><font face="ＭＳ Ｐゴシック" size="2"><font size="2"><a href="http://blogranking.fc2.com/in.php?id=263321"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/e_04.gif" alt="" style="border-width: 0px;"></a></font></font></span><font face="ＭＳ Ｐゴシック" size="2"><br></font></div><font face="ＭＳ Ｐゴシック" size="2"><font size="2"><br>下図のように<font size="3" style="font-weight: bold;">４点（P1,P2,P3,P4）</font>からなる２直線（<font size="3" style="font-weight: bold;">P1～P3</font>、<font size="3" style="font-weight: bold;">P2～P4</font>）</font>の交点を求めるのに<br><font size="3" style="font-weight: bold;"><a href="http://imagingsolution.blog107.fc2.com/blog-entry-31.html">外積</a></font><font size="2">を応用した方法を紹介します。</font><br><font size="2">なんだか面倒臭そうと思った方は最後の方の答えを見て頂くと、外積を使った方が良さげだと<br>分かってもらえる？と思います。</font><br><br><img src="./４点からなる交点の求め方　画像処理ソリューション_files/blog137_1.png" alt="４点からなる交点の求め方"><br><font size="2">上図から交点<font size="3"><span style="font-weight: bold;">C1</span></font>の位置を求めるには、点<font size="3"><span style="font-weight: bold;">P1</span></font>～点<font size="3" style="font-weight: bold;">C1</font>と点<font size="3" style="font-weight: bold;">C1</font>～点<font size="3" style="font-weight: bold;">P3</font>までの長さの比が分かれば、<br>点<font size="3" style="font-weight: bold;">P1</font>～点<font size="3" style="font-weight: bold;">P3</font>の直線を求めた比で分割すると交点が求まることが分かります。<br><br>この比は直線<font size="3" style="font-weight: bold;">P2</font></font><font size="2">～</font><font size="2"><span style="font-family: ＭＳ Ｐゴシック;"><font size="3" style="font-weight: bold;">P4</font>と、点</span></font><font size="2"><font size="3" style="font-weight: bold;">P1</font></font><font size="2">、点</font><font size="2"><font size="3" style="font-weight: bold;">P3</font></font><font size="2">までのそれぞれの距離の比で求まります。<br>さらに、この比は</font><font size="2">直線</font><font size="2"><font size="3" style="font-weight: bold;">P2</font></font><font size="2">～</font><font size="2"><font size="3" style="font-weight: bold;">P4</font></font>を底辺とする<font size="3" style="font-weight: bold;">⊿P1P2P4</font>と<font size="3" style="font-weight: bold;">⊿P2P3P4</font>の面積の比で求まります。<br><font size="2">(図中に示した隣り合う両矢印の比は全て等しくなります。)</font><br><br><font size="2">ここでやっと三角形の面積を求めるのに<font size="3"><a href="http://imagingsolution.blog107.fc2.com/blog-entry-52.html" style="font-weight: bold;">外積</a></font>が登場してきます。</font><br><font size="2">外積なので、上図のようにベクトルを<br>　　<br><font size="3" style="font-weight: bold;">　　ベクトルａ１　：　点Ｐ２⇒点Ｐ４<br></font></font><font size="3" style="font-weight: bold;">　　ベクトルａ２　：　点Ｐ１⇒点Ｐ３<br> </font><font size="3" style="font-weight: bold;">　　ベクトルｂ１　：　点Ｐ３⇒点Ｐ２<br></font><font size="2"><font size="3" style="font-weight: bold;">　　ベクトルｂ２　：　点Ｐ２⇒点Ｐ１</font><br></font><font size="2"><br></font><font size="2">と定義します。</font>（向きにご注意下さい。）<br><br><font size="2">こうすることで、<br><font size="3" style="font-weight: bold;">&nbsp; ⊿P1P2P4の面積Ｓ１ = (a1 × b2) / 2<br>&nbsp; ⊿P2P3P4の面積Ｓ２ = (a1 × b1) / 2</font><br>となります。（この計算ではあえて外積の値の絶対値を取っていません。）<br><br>あとは面積Ｓ１とＳ２との比を使うと交点が求まります。<br>このことを整理して点Ｐ１～点Ｐ４の座標を用いて交点の座標を表すと、<br><br><table cellspacing="1" cellpadding="1" border="1" align="" summary="" style="width: 609px; height: 48px;"><tbody><tr><td bgcolor="#ffffcc"><font size="2"><font size="3" style="font-weight: bold;">面積S1　= {(P4.X - P2.X) </font></font><font size="2"><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">*</font></font><font size="2"><font size="3" style="font-weight: bold;"> </font></font><font size="3" style="font-weight: bold;">(P1.Y - P2.Y) - </font><font size="3" style="font-weight: bold;">(P4.Y - P2.Y) </font><font size="2"><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">*</font></font><font size="3" style="font-weight: bold;"> </font><font size="3" style="font-weight: bold;">(P1.X - P2.X)} / 2<br></font><font size="3" style="font-weight: bold;">面積S2　= {(P4.X - P2.X) </font><font size="2"><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">*</font></font><font size="3" style="font-weight: bold;"> </font><font size="3" style="font-weight: bold;">(P2.Y - P3.Y) - </font><font size="3" style="font-weight: bold;">(P4.Y - P2.Y) </font><font size="2"><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">*</font></font><font size="3" style="font-weight: bold;"> </font><font size="3" style="font-weight: bold;">(P2.X - P3.X)} / 2</font></td></tr></tbody></table></font><font size="3" style="font-weight: bold;"><br></font><font size="3"><font size="2">となり、交点の座標は</font></font><font size="3" style="font-weight: bold;"><br><font size="2"><br> <table cellspacing="1" cellpadding="1" border="1" align="" summary="" style="width: 373px; height: 46px;"><tbody><tr><td bgcolor="#ffffcc"><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">C1.X　= P1.X + (P3.X - P1.X) * S1 / (S1 + S2)</font><font size="3" style="font-weight: bold;"><br>       </font><font size="3" style="font-weight: bold; font-family: ＭＳ Ｐゴシック;">C1.Y　= P1.Y + (P3.Y - P1.Y) * S1 / (S1 + S2)</font><font size="3" style="font-weight: bold;"><br> </font></td></tr></tbody></table></font><br></font><font size="3"><font size="2">となります。　</font></font><font size="3" style="font-weight: bold;">　<font size="3" style="font-weight: bold;">.X　</font>、　<font size="3" style="font-weight: bold;">.Y</font>　</font><font size="3"><font size="2">はそれぞれ点の</font></font><font size="3" style="font-weight: bold;"><font size="3" style="font-weight: bold;">Ｘ座標</font></font><font size="3"><font size="2">と</font></font><font size="3" style="font-weight: bold;"><font size="3" style="font-weight: bold;">Ｙ座標</font></font><font size="3"><font size="2">を示します。</font></font><font size="3" style="font-weight: bold;"><br><br></font><font size="3"><font size="2">と、少し回りくどい説明になってしまいましたが、この計算で交点を求めると、<br>下図のような点の配置全てに同じ式で求めることができるので、オススメです。<br><br>これを知らないと、２直線の式を求めて、直線の交点を求めたりもしますが、直線の傾きが<br>水平や垂直だった場合などの条件分けをしないといけないので、結構面倒です。<br>（って、私が昔やっていた方法です．．．）<br><br>（追記）<br>この処理を水玉製作所の川村様がFlashで実現されています。<br>４点からなる交点が簡単に求められるのが、これを下記リンク先を見ると分かると思います。<br><a href="http://www.mztm.jp/2010/08/05/clossline/" target="_blank"><strong><span style="font-size: small;">http://www.mztm.jp/2010/08/05/clossline/</span></strong></a></font></font><font size="3" style="font-weight: bold;"><font size="2"><br><br><img src="./４点からなる交点の求め方　画像処理ソリューション_files/blog137_2.png" alt="４点からなる交点を求める"><br><br><img src="./４点からなる交点の求め方　画像処理ソリューション_files/blog137_3.png" alt="４点からなる交点を求める。"><br><br><img src="./４点からなる交点の求め方　画像処理ソリューション_files/blog137_4.png" alt="４点からなる交点を求める。"><br></font><font size="2"><br></font>　</font></font><div class="fc2_footer" style="text-align:left;vertical-align:middle;height:auto;">
+<div class="fc2button-clap" data-clap-url="//blogvote.fc2.com/pickup/imagingsolution/137/clap" id="fc2button-clap-137" style="vertical-align:top;border:none;display:inline;margin-right:2px;">
+<script type="text/javascript">
+(function(d) {
+var img = new Image();
+d.getElementById("fc2button-clap-137").appendChild(img);
+img.src = '//static.fc2.com/image/clap/number/orange/13.gif';
+(function(s) { s.cursor = 'pointer'; s.border = 0; s.verticalAlign = 'top'; s.margin = '0'; s.padding = '0'; })(img.style);
+var clap = function() { window.open('//blogvote.fc2.com/pickup/imagingsolution/137/clap')};
+if (img.addEventListener) { img.addEventListener('click', clap, false); } else if (img.attachEvent) { img.attachEvent('onclick', clap); }
+})(document);
+</script><img src="./４点からなる交点の求め方　画像処理ソリューション_files/13.gif" style="cursor: pointer; border: 0px; vertical-align: top; margin: 0px; padding: 0px;">
+</div>
+
+<div class="fc2button-twitter" style="vertical-align:top;border:none;margin-right:2px;display:inline-block;*display:inline;">
+<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" style="position: static; visibility: visible; width: 75px; height: 20px;" title="Twitter Tweet Button" src="./４点からなる交点の求め方　画像処理ソリューション_files/tweet_button.d753e00c3e838c1b2558149bd3f6ecb8.ja.html" data-url="http://imagingsolution.blog.fc2.com/blog-entry-137.html"></iframe>
+<script type="text/javascript" charset="utf-8" src="./４点からなる交点の求め方　画像処理ソリューション_files/widgets.js.ダウンロード"></script>
+</div>
+<div class="fc2button-facebook" style="vertical-align:top;border:none;display:inline-block;*display:inline;*margin-right:5px;">
+<iframe src="./４点からなる交点の求め方　画像処理ソリューション_files/like.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:105px; height:21px;" allowtransparency="true"></iframe>
+</div>
+
+</div>
+
+
+
+
+
+
+      <br>
+
+        
+
+
+
+       <div class="state">
+       <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html">【2009/06/06 22:55】</a> | 
+       <a href="http://imagingsolution.blog.fc2.com/blog-category-4.html">使える数学</a>
+        | <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#trackback">TRACKBACK(0)</a>               | <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#comment">COMMENT(9)</a>        | 
+       </div>
+
+
+
+
+
+<!-- ++Begin News Bar Wizard Generated Code++ -->
+  <!--
+  // Created with a Google AJAX Search Wizard
+  // http://code.google.com/apis/ajaxsearch/wizards.html
+  -->
+  <!--
+  // The Following div element will end up holding the actual newsbar.
+  // You can place this anywhere on your page.
+  -->
+  <div id="newsBar-bar"><div class="newsBarBox_gsnb full_gsnb horizontal_gsnb"><div class="newsBarInnerBox_gsnb"><div class="titleBox_gsnb">画像処理ソリューション</div><div class="statusBoxRoot_gsnb"><div class="statusBox_gsnb"><a href="http://news.google.com/nwshp?source=uds&amp;q=%E3%82%AD%E3%83%A3%E3%83%97%E3%83%81%E3%83%A3" target="_self" class="statusItem_gsnb" title="その他の結果: キャプチャ">キャプチャ</a><a href="http://news.google.com/nwshp?source=uds&amp;q=Microsoft" target="_self" class="statusItem_gsnb statusItemSelected_gsnb" title="その他の結果: Microsoft">Microsoft</a></div></div><div class="resultsBox_gsnb compressed_gsnb"></div></div><div class="brandingBox_gsnb"><div class="gsc-branding"><span class="gsc-branding-text">powered by</span><img src="./４点からなる交点の求め方　画像処理ソリューション_files/googlelogo_grey_46x15dp.png" class="gsc-branding-img-noclear" srcset="https://www.google.com/cse/static/images/2x/googlelogo_grey_46x15dp.png 2x"></div></div></div></div>
+  <!-- Ajax Search Api and Stylesheet
+  // Note: If you are already using the AJAX Search API, then do not include it
+  //       or its stylesheet again
+  -->
+  <script src="./４点からなる交点の求め方　画像処理ソリューション_files/api" type="text/javascript"></script><script src="./４点からなる交点の求め方　画像処理ソリューション_files/default+ja.I.js.ダウンロード" type="text/javascript"></script>
+  <style type="text/css">
+    @import url("http://www.google.com/uds/css/gsearch.css");
+  </style>
+  <!-- News Bar Code and Stylesheet -->
+  <script type="text/javascript">
+    window._uds_nbw_donotrepair = true;
+  </script>
+  <script src="./４点からなる交点の求め方　画像処理ソリューション_files/gsnewsbar.js.ダウンロード" type="text/javascript"></script>
+  <style type="text/css">
+    @import url("http://www.google.com/uds/solutions/newsbar/gsnewsbar.css");
+  </style>
+  <script type="text/javascript">
+    function LoadNewsBar() {
+      var newsBar;
+      var options = {
+        largeResultSet : false,
+        title : "画像処理ソリューション",
+        horizontal : true,
+        autoExecuteList : {
+          executeList : ["画像処理", "CCD", "カメラ", "レンズ", "キャプチャ", "Microsoft", "Intel"]
+        }
+      }
+      newsBar = new GSnewsBar(document.getElementById("newsBar-bar"), options);
+    }
+    // arrange for this function to be called during body.onload
+    // event processing
+    GSearch.setOnLoadCallback(LoadNewsBar);
+  </script>
+<!-- ++End News Bar Wizard Generated Code++ -->
+
+
+      <!--
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <rdf:Description
+      rdf:about="http://imagingsolution.blog.fc2.com/blog-entry-137.html"
+      trackback:ping="http://imagingsolution.blog.fc2.com/tb.php/137-836bb8d1"
+      dc:title="４点からなる交点の求め方"
+      dc:identifier="http://imagingsolution.blog.fc2.com/blog-entry-137.html"
+      dc:subject="使える数学"
+      dc:description="メインページ ＞ 使える数学 下図のように４点（P1,P2,P3,P4）からなる２直線（P1～P3、P2～P4）の交点を求めるのに外積を応用した方法を紹介します。なんだか面倒臭そうと思った方は最後の方の答えを見て頂くと、外積を使った方が良さげだと分かってもらえる？と思います。上図から交点C1の位置を求めるには、点P1～点C1と点C1～点P3までの長さの比が分かれば、点P1～点P3の直線を求めた比で分割すると交点が求まることが分かりま..."
+      dc:creator="Akira"
+      dc:date="2009-06-06T22:55:10+09:00" />
+      </rdf:RDF>
+      -->
+
+
+
+スポンサーリンク<br>
+<script type="text/javascript"><!--
+google_ad_client = "pub-1632211064514260";
+/* 336x280, 作成済み 09/02/21 */
+google_ad_slot = "4985388585";
+google_ad_width = 336;
+google_ad_height = 280;
+//-->
+</script>
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/f(1).txt">
+</script>
+
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-1632211064514260";
+/* 468x15, 作成済み 10/04/07 */
+google_ad_slot = "5697138244";
+google_ad_width = 468;
+google_ad_height = 15;
+//-->
+</script>
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/f(1).txt">
+</script>
+
+
+
+      </td>
+
+    </tr>
+    </tbody></table>
+  
+<br>    
+    
+   
+    
+
+    <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#pagetop"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/PageTop.png" border="0"></a>
+        <div class="navi">&lt;&lt;<a href="http://imagingsolution.blog.fc2.com/blog-entry-136.html"><font color="362F2D">【C++/CLI】ラベル背景色の透過設定</font></a> | <a href="http://imagingsolution.blog.fc2.com/"><font color="362F2D">BLOG TOP</font></a> | <a href="http://imagingsolution.blog.fc2.com/blog-entry-138.html"><font color="362F2D">細線化アルゴリズム</font></a>&gt;&gt;</div>
+
+    <a name="comment"></a>
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tbody><tr><td class="entry_title">この記事に対するコメント</td></tr>
+    <tr><td class="main_txt">
+
+      <div class="td"><b></b><br>ご返事ありがとうございます。
+<br>2直線が並行になったとき、交点座標が Infinity（JavaScript 1.3）という特別な値にはなりますが、例外が投げられるということはありませんでした。</div>
+      <div class="state">
+      【2012/10/17 23:26】
+      URL | tsmsogn #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b>Re: 大変参考になりました</b><br>リンクありがとうございました。
+<br>JavaScriptだと計算の分母が０になる場合（２直線が平行になった時の対応）でも大丈夫なんですかね？
+<br>私の記事には、そこまで書いてません．．．(-_-;)
+<br>画像処理ソリューション　Akira
+<br></div>
+      <div class="state">
+      【2012/10/17 20:43】
+      URL | Akira #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b>大変参考になりました</b><br>JavaScript で直線同士の交点座標を求めるのに、よい方法がないかと探しておりました。
+<br>お陰様でスムーズな理解・コーディングができました。ありがとうございました。
+<br>
+<br>また、ブログにも紹介させていただきました。
+<br>もし、不備等あればご指摘いただければと思います。
+<br><a href="http://tsmsogn.com/blog/2012/10/17/easeljs/" target="_blank">http://tsmsogn.com/blog/2012/10/17/easeljs/</a></div>
+      <div class="state">
+      【2012/10/17 19:30】
+      URL | tsmsogn #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b>Re: ブログに掲載しました。</b><br>川村様。はじめまして。
+<br>ブログに掲載頂きありがとうございました。
+<br>このFlashは交点が直感的に求まっているので、触っていてちょっと楽しかったです。
+<br>私もこのFlashと同じ様な事をエクセルでやりましたが、川村様も（私も）２直線の式の連立方程式で交点を求めた事があるのなら、このスッキリとした処理に感動しますよね？！
+<br>
+<br>ここの記事の例は外積の例ですが、
+<br><a href="http://imagingsolution.blog107.fc2.com/blog-entry-147.html" target="_blank">http://imagingsolution.blog107.fc2.com/blog-entry-147.html</a>
+<br>で紹介しているような、内積、外積の処理も結構オススメです。
+<br></div>
+      <div class="state">
+      【2010/08/05 20:37】
+      URL | Akira #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b>ブログに掲載しました。</b><br>はじめまして。川村と申します。
+<br>Flash製作で交点を求めるのに少し苦労しておりました。
+<br>拝見させていただきまして、感動いたしました。
+<br>
+<br>弊社のブログにも紹介させていただきました。
+<br><a href="http://www.mztm.jp/2010/08/05/clossline/" target="_blank">http://www.mztm.jp/2010/08/05/clossline/</a>
+<br>ありがとうございました。
+<br></div>
+      <div class="state">
+      【2010/08/05 20:05】
+      <a href="http://www.mztm.jp/">URL</a> | 川村 #FQjD6uxA      [ <a href="http://imagingsolution.blog.fc2.com/?mode=edit&amp;rno=159">編集</a>] 
+      </div>
+      <hr><div class="td"><b>Re: タイトルなし</b><br>
+<br>galkinさん。ご指摘頂きありがとうございました。
+<br>ご指摘の箇所は修正しておきました。
+<br>今後とも、よろしくお願い致します。</div>
+      <div class="state">
+      【2009/08/10 21:17】
+      URL | Akira #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b></b><br>はじめまして。
+<br>最近、仕事で画像処理の知識が必要になり、参考にさせて頂いてます。
+<br>私も２直線の式から交点を求めていましたが、こんな方法があったのですね！
+<br>
+<br>ところで…
+<br>　⊿P1P2P4の面積Ｓ１ = (a1 × b2) / 2
+<br>  ⊿P2P3P4の面積Ｓ２ = (a1 × b1) / 2
+<br>……ですよね？
+<br>
+<br></div>
+      <div class="state">
+      【2009/08/10 15:06】
+      URL | galkin #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b>Re: タイトルなし</b><br>lppes.nbさん、長らくご愛顧頂きありがとうございます。
+<br>ここに書いてある外積を使った解き方も、以前紹介した「信号処理入門」の本を読んでから、内積や外積に興味を持ち始めて、このような考え方をするようになりました。
+<br>ホント、内積、外積は便利です。</div>
+      <div class="state">
+      【2009/06/08 21:05】
+      URL | Akira #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr><div class="td"><b></b><br>なるほど！これからはこれを使わせていただきます。</div>
+      <div class="state">
+      【2009/06/08 12:20】
+      URL | lopes.nb #-      [ <a href="http://imagingsolution.blog.fc2.com/?no=137">編集</a>] 
+      </div>
+      <hr>
+      </td>
+    </tr>
+    </tbody></table>
+    <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#pagetop"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/PageTop.png" border="0"></a>
+
+    <br>
+    <a name="comment_post">
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tbody><tr><td class="entry_title">この記事に対するコメントの投稿</td></tr>
+    <tr><td class="main_txt">
+
+      <form method="post" action="http://imagingsolution.blog.fc2.com/blog-entry-137.html" name="comment_form">
+      <input type="hidden" name="mode" value="regist">
+      <input type="hidden" name="comment[no]" value="137">
+      <label for="name">NAME▼</label><br>
+      <input id="name" type="text" name="comment[name]" size="30" value=""><br>
+      <label for="mail">MAIL▼</label><br>
+      <input id="mail" type="text" name="comment[mail]" size="30" value=""><br>
+      <label for="url">URL▼</label><br>
+      <input id="url" type="text" name="comment[url]" size="30" value=""><br>
+      <label for="name">SUBJECT▼</label><br>
+      <input id="subject" type="text" name="comment[title]" size="30"><br>
+      <label for="comment">COMMENT▼</label><br>
+      <script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/comment_toolbar_ja.min.js.ダウンロード"></script><div id="tools_container" style="position:relative;width:267px;display: inline-block;"><a href="javascript:;" name="fc2CommentToolbar"></a><iframe id="tools_dialog" frameborder="0" sandbox="allow-scripts allow-same-origin" style="height: 30px;border:0 none;overflow: hidden;width: 267px;" src="./４点からなる交点の求め方　画像処理ソリューション_files/comment_toolbar.html"></iframe><div id="FC2_comment_palette" style="display: none; position: absolute; top: 27px; left: 0px; z-index: 100000;"><iframe src="./４点からなる交点の求め方　画像処理ソリューション_files/palette.html" frameborder="0" style="border: 0 none; height: 200px;"></iframe></div><div id="FC2_comment_icon" style="display: none; position: absolute; top: 27px; left: 0px; z-index: 100000;"><iframe src="./４点からなる交点の求め方　画像処理ソリューション_files/icon.html" frameborder="0" style="border: 0 none; height: 391px;width: 267px;"></iframe></div></div><br>
+      <textarea id="comment" cols="75" rows="8" name="comment[body]"></textarea><br>
+      <label for="pass">PASS▼</label><br>
+      <input id="pass" type="password" name="comment[pass]" size="20"><br>
+      <label for="himitu">SECRET▼</label><br>
+      <input id="himitu" type="checkbox" name="comment[himitu]">管理者にだけ表示を許可する<br>
+      <p><input type="submit" value="送信"></p>
+      </form>
+
+      </td>
+    </tr>
+    </tbody></table>
+    </a><a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#pagetop"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/PageTop.png" border="0"></a>
+    
+    <br>
+
+    
+    <div class="navi"> | <a href="http://imagingsolution.blog.fc2.com/"><font color="#362F2D">BLOG TOP</font></a><font color="#362F2D"> | </font></div><font color="#362F2D">
+
+
+        <a name="trackback"></a>
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tbody><tr><td class="entry_title">この記事に対するトラックバック</td></tr>
+    <tr><td class="main_txt">トラックバックURL
+      <br>→http://imagingsolution.blog.fc2.com/tb.php/137-836bb8d1<br>
+      <a href="javascript:window.location.replace(&#39;http://blog.fc2.com/?url=&#39;+window.location.href);">この記事にトラックバックする(FC2ブログユーザー)</a>
+
+            </td>
+    </tr>
+
+    </tbody></table>
+    <a href="http://imagingsolution.blog.fc2.com/blog-entry-137.html#pagetop"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/PageTop.png" border="0"></a>
+
+    
+    <br>
+
+    </font></div></td>
+  </tr>
+
+  </tbody></table>
+  <table width="100%" cellpadding="0" cellspacing="0">
+  <tbody><tr><td>
+  <!--
+  <img src="http://templates.blog.fc2.com/template/pop-k17/050524_04_down.gif" border="0">  
+  --> 
+        </td></tr>
+  
+  
+  
+  
+  </tbody></table>
+
+  </td>
+    
+
+    
+    
+    
+</tr>
+
+</tbody></table>
+    
+<div align="center">     
+<!-- FC2オンラインカウンター ここから  -->
+現在の閲覧者数:<script language="JavaScript" type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/views.php"></script><script type="text/javascript" language="javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/views_js.php" charset="UTF-8"></script><a href="http://counter.fc2.com/" target="_blank"><span><nobr><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/0.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/0.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/2.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"></nobr><span></span></span></a>
+<noscript><img src="http://counter1.fc2.com/counter_now.php?id=1636852"><br><strong><a href="http://affiliate.fc2.com/">アフィリエイト</a></strong></noscript>
+<!--  FC2オンラインカウンター ここまで -->
+/ 合計                                              
+<!--  FC2カウンター ここから -->
+<script language="JavaScript" type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/counter.php"></script><script type="text/javascript" language="javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/counter_js.php" charset="UTF-8"></script><a href="http://counter.fc2.com/" target="_blank" onmouseover="_FC2COUNTER1636852_0.show_graph(event);" onmouseout="_FC2COUNTER1636852_0.hide_graph(event);"><span><nobr><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/3.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/0.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/0.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/5.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/4.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/8.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"><img border="0" src="./４点からなる交点の求め方　画像処理ソリューション_files/6.gif" alt="FC2無料カウンター" "="" title="FC2無料カウンター" style="display:inline;margin:0px;padding:0px;border:none;"></nobr><span></span></span></a>
+<noscript><img src="http://counter1.fc2.com/counter_img.php?id=1636852"><br><strong><a href="http://affiliate.fc2.com/">アフィリエイト</a></strong></noscript><!--  FC2カウンター ここまで -->
+</div>      
+    
+
+<table width="752" border="0" cellspacing="0" cellpadding="0">
+<tbody><tr height="30"><td align="center" class="copyright">Powered By <a href="http://blog.fc2.com/">FC2ブログ</a>. Copyright ©画像処理ソリューション All Rights Reserved.<br>
+<!-- genre:46 --><!-- sp_banner:1 --><!-- passive:0 --><!-- lang:ja --><!-- HeadBar:1 --><!-- VT:blog --><!-- nad:1 -->  カードローン 自動車保険 </td></tr>
+
+</tbody></table>
+    
+    
+    
+<!-- [FC2  Analyzer]  http://analyzer.fc2.com/  -->
+<script language="javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/processor.php" type="text/javascript"></script><script type="text/javascript" language="javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/analyzer.php" charset="UTF-8"></script><a href="http://fc2.com/"><img id="fc2analyzerimg_" src="./４点からなる交点の求め方　画像処理ソリューション_files/icon61.gif" alt="FC2 Analyzer" style="position: absolute; right: 0px; top: 0px; border: 0px solid rgb(255, 255, 255); z-index: 2147483647; display: none;"></a>
+    <noscript><div align="right"><img src="http://analyzer5.fc2.com:8080/ana/icon.php?uid=68290&ref=&href=&wid=0&hei=0&&col=0"  /><strong><a href="http://seo.fc2.com/keywordrate/">キーワード出現率</a></strong></div></noscript>
+<!-- [FC2 Analyzer]  -->
+    
+    
+<!-- nakanohito -->
+<script language="Javascript">
+<!--
+var refer = document.referrer;
+document.write("<a href='http://nakanohito.jp/'>");
+document.write("<img src='http://nakanohito.jp/an/?u=221119&h=990434&w=48&guid=ON&t=&version=js&refer="+escape(parent.document.referrer)+"&url="+escape(parent.document.URL)+"' border='0' width='48' height='48' />");
+document.write("</a>");
+//-->
+</script><a href="http://nakanohito.jp/"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/saved_resource" border="0" width="48" height="48"></a>
+<noscript>
+<img src="http://nakanohito.jp/an/?u=221119&h=990434&w=48&guid=ON&t=" width="48" height="48" alt="" border="0" />
+</noscript>
+<!-- nakanohito end -->
+    
+    
+
+    
+<!-- google-analytics  -->
+<script type="text/javascript"> var  gaJsHost  = (("https:" == document.location.protocol) ? "https://ssl."  :  "http://www."); document.write(unescape("%3Cscript src='" + gaJsHost  +  "google-analytics.com/ga.js'  type='text/javascript'%3E%3C/script%3E")); </script><script src="./４点からなる交点の求め方　画像処理ソリューション_files/ga.js.ダウンロード" type="text/javascript"></script> <script type!="text/javascript"> var pageTracker = _gat._getTracker("UA-4126498-1"); pageTracker._initData(); pageTracker._trackPageview(); </script> 
+<!-- google-analytics  -->    
+    
+    
+                                 
+    
+    
+    
+<script type="text/javascript" charset="utf-8" src="./４点からなる交点の求め方　画像処理ソリューション_files/comment.js.ダウンロード" defer=""></script>
+<script type="text/javascript" src="./４点からなる交点の求め方　画像処理ソリューション_files/blog_res.js.ダウンロード" defer=""></script>
+
+
+<div id="goog-gt-tt" class="skiptranslate" dir="ltr"><div style="padding: 8px;"><div><div class="logo"><img src="./４点からなる交点の求め方　画像処理ソリューション_files/translate_24dp.png" width="20" height="20" alt="Google 翻訳"></div></div></div><div class="top" style="padding: 8px; float: left; width: 100%;"><h1 class="title gray">原文</h1></div><div class="middle" style="padding: 8px;"><div class="original-text"></div></div><div class="bottom" style="padding: 8px;"><div class="activity-links"><span class="activity-link">翻訳を改善する</span><span class="activity-link"></span></div><div class="started-activity-container"><hr style="color: #CCC; background-color: #CCC; height: 1px; border: none;"><div class="activity-root"></div></div></div><div class="status-message" style="display: none;"></div></div><iframe scrolling="no" frameborder="0" allowtransparency="true" src="./４点からなる交点の求め方　画像処理ソリューション_files/widget_iframe.d753e00c3e838c1b2558149bd3f6ecb8.html" title="Twitter settings iframe" style="display: none;"></iframe><div class="goog-te-spinner-pos"><div class="goog-te-spinner-animation"><svg xmlns="http://www.w3.org/2000/svg" class="goog-te-spinner" width="96px" height="96px" viewBox="0 0 66 66"><circle class="goog-te-spinner-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></div></div><iframe frameborder="0" class="goog-te-menu-frame skiptranslate" title="言語翻訳ウィジェット" style="visibility: visible; box-sizing: content-box; width: 1116px; height: 318px; display: none;" src="./４点からなる交点の求め方　画像処理ソリューション_files/saved_resource.html"></iframe><div id="SL_balloon_obj" alt="0" style="display: block;"><div id="SL_button" class="SL_ImTranslatorLogo" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/imtranslator-s.png&quot;); display: none;"></div><div id="SL_shadow_translation_result2" style="display: none;"></div><div id="SL_shadow_translator" style="left: -10000px; top: -10000px; display: none;"><div id="SL_planshet"><div id="SL_arrow_up" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/up.png&quot;);"></div><div id="SL_Bproviders"></div><div id="SL_alert_bbl" style="display: none;"><div id="SLHKclose" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/delete.png&quot;);"></div><div id="SL_alert_cont"></div></div><div id="SL_TB"><table id="SL_tables" cellspacing="1"><tr><td class="SL_td" width="10%" align="right"><input id="SL_locer" type="checkbox" title="言語をロック"></td><td class="SL_td" width="20%" align="left"><select id="SL_lng_from" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/select.png&quot;) 100% 0px no-repeat rgb(255, 255, 255);"><option value="auto">言語を検出</option><option value="is">アイスランド語</option><option value="ga">アイルランド語</option><option value="az">アゼルバイジャン語</option><option value="af">アフリカーンス語</option><option value="am">アムハラ語</option><option value="ar">アラビア語</option><option value="sq">アルバニア語</option><option value="hy">アルメニア語</option><option value="it">イタリア語</option><option value="yi">イディッシュ語</option><option value="ig">イボ語</option><option value="id">インドネシア語</option><option value="cy">ウェールズ語</option><option value="uk">ウクライナ語</option><option value="uz">ウズベク語</option><option value="ur">ウルドゥ語</option><option value="et">エストニア語</option><option value="eo">エスペラント</option><option value="nl">オランダ語</option><option value="kk">カザフ語</option><option value="ca">カタロニア語</option><option value="gl">ガリシア語</option><option value="kn">カンナダ語</option><option value="el">ギリシャ語</option><option value="ky">キルギス語</option><option value="gu">グジャラート語</option><option value="km">クメール語</option><option value="ka">グルジア語</option><option value="ku">クルド語</option><option value="ht">クレオール語</option><option value="hr">クロアチア語</option><option value="xh">コーサ語</option><option value="co">コルシカ語</option><option value="sm">サモア語</option><option value="jw">ジャワ語</option><option value="sn">ショナ語</option><option value="sd">シンド語</option><option value="si">シンハラ語</option><option value="zu">ズールー語</option><option value="sv">スウェーデン語</option><option value="gd">スコットランド ゲール語</option><option value="es">スペイン語</option><option value="sk">スロバキア語</option><option value="sl">スロベニア語</option><option value="sw">スワヒリ語</option><option value="su">スンダ語</option><option value="ceb">セブアノ語</option><option value="sr">セルビア語</option><option value="st">ソト語</option><option value="so">ソマリ語</option><option value="th">タイ語</option><option value="tl">タガログ語</option><option value="tg">タジク語</option><option value="ta">タミル</option><option value="cs">チェコ語</option><option value="ny">チェワ語</option><option value="te">テルグ語</option><option value="da">デンマーク語</option><option value="de">ドイツ語</option><option value="tr">トルコ語</option><option value="ne">ネパール語</option><option value="no">ノルウェー語</option><option value="ha">ハウサ語</option><option value="ps">パシュト語</option><option value="eu">バスク語</option><option value="haw">ハワイ語</option><option value="hu">ハンガリー語</option><option value="pa">パンジャブ語</option><option value="my">ビルマ語</option><option value="hi">ヒンディー語</option><option value="fi">フィンランド語</option><option value="fr">フランス語</option><option value="fy">フリジア語</option><option value="bg">ブルガリア語</option><option value="vi">ベトナム語</option><option value="iw">ヘブライ語</option><option value="be">ベラルーシ語</option><option value="fa">ペルシア語</option><option value="bn">ベンガル語</option><option value="pl">ポーランド語</option><option value="bs">ボスニア語</option><option value="pt">ポルトガル語</option><option value="mi">マオリ語</option><option value="mk">マケドニア語</option><option value="mr">マラーティー語</option><option value="mg">マラガシ語</option><option value="ml">マラヤーラム語</option><option value="mt">マルタ語</option><option value="ms">マレー語</option><option value="mn">モンゴル語</option><option value="hmn">モン語</option><option value="yo">ヨルバ語</option><option value="lo">ラオ語</option><option value="la">ラテン</option><option value="lv">ラトビア語</option><option value="lt">リトアニア語</option><option value="ro">ルーマニア語</option><option value="lb">ルクセンブルク語</option><option value="ru">ロシア語</option><option value="zh-CN">中国語 (簡体字)</option><option value="zh-TW">中国語 (繁体字)</option><option value="ja">日本語</option><option value="en">英語</option><option value="ko">韓国語</option></select></td><td class="SL_td" width="3" align="center"><div id="SL_switch_b" title="言語を変更" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/switchb.png&quot;);"></div></td><td class="SL_td" width="20%" align="left"><select id="SL_lng_to" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/select.png&quot;) 100% 0px no-repeat rgb(255, 255, 255);"><option value="is">アイスランド語</option><option value="ga">アイルランド語</option><option value="az">アゼルバイジャン語</option><option value="af">アフリカーンス語</option><option value="am">アムハラ語</option><option value="ar">アラビア語</option><option value="sq">アルバニア語</option><option value="hy">アルメニア語</option><option value="it">イタリア語</option><option value="yi">イディッシュ語</option><option value="ig">イボ語</option><option value="id">インドネシア語</option><option value="cy">ウェールズ語</option><option value="uk">ウクライナ語</option><option value="uz">ウズベク語</option><option value="ur">ウルドゥ語</option><option value="et">エストニア語</option><option value="eo">エスペラント</option><option value="nl">オランダ語</option><option value="kk">カザフ語</option><option value="ca">カタロニア語</option><option value="gl">ガリシア語</option><option value="kn">カンナダ語</option><option value="el">ギリシャ語</option><option value="ky">キルギス語</option><option value="gu">グジャラート語</option><option value="km">クメール語</option><option value="ka">グルジア語</option><option value="ku">クルド語</option><option value="ht">クレオール語</option><option value="hr">クロアチア語</option><option value="xh">コーサ語</option><option value="co">コルシカ語</option><option value="sm">サモア語</option><option value="jw">ジャワ語</option><option value="sn">ショナ語</option><option value="sd">シンド語</option><option value="si">シンハラ語</option><option value="zu">ズールー語</option><option value="sv">スウェーデン語</option><option value="gd">スコットランド ゲール語</option><option value="es">スペイン語</option><option value="sk">スロバキア語</option><option value="sl">スロベニア語</option><option value="sw">スワヒリ語</option><option value="su">スンダ語</option><option value="ceb">セブアノ語</option><option value="sr">セルビア語</option><option value="st">ソト語</option><option value="so">ソマリ語</option><option value="th">タイ語</option><option value="tl">タガログ語</option><option value="tg">タジク語</option><option value="ta">タミル</option><option value="cs">チェコ語</option><option value="ny">チェワ語</option><option value="te">テルグ語</option><option value="da">デンマーク語</option><option value="de">ドイツ語</option><option value="tr">トルコ語</option><option value="ne">ネパール語</option><option value="no">ノルウェー語</option><option value="ha">ハウサ語</option><option value="ps">パシュト語</option><option value="eu">バスク語</option><option value="haw">ハワイ語</option><option value="hu">ハンガリー語</option><option value="pa">パンジャブ語</option><option value="my">ビルマ語</option><option value="hi">ヒンディー語</option><option value="fi">フィンランド語</option><option value="fr">フランス語</option><option value="fy">フリジア語</option><option value="bg">ブルガリア語</option><option value="vi">ベトナム語</option><option value="iw">ヘブライ語</option><option value="be">ベラルーシ語</option><option value="fa">ペルシア語</option><option value="bn">ベンガル語</option><option value="pl">ポーランド語</option><option value="bs">ボスニア語</option><option value="pt">ポルトガル語</option><option value="mi">マオリ語</option><option value="mk">マケドニア語</option><option value="mr">マラーティー語</option><option value="mg">マラガシ語</option><option value="ml">マラヤーラム語</option><option value="mt">マルタ語</option><option value="ms">マレー語</option><option value="mn">モンゴル語</option><option value="hmn">モン語</option><option value="yo">ヨルバ語</option><option value="lo">ラオ語</option><option value="la">ラテン</option><option value="lv">ラトビア語</option><option value="lt">リトアニア語</option><option value="ro">ルーマニア語</option><option value="lb">ルクセンブルク語</option><option value="ru">ロシア語</option><option value="zh-CN">中国語 (簡体字)</option><option value="zh-TW">中国語 (繁体字)</option><option selected="selected" value="ja">日本語</option><option value="en">英語</option><option value="ko">韓国語</option></select></td><td class="SL_td" width="5%" align="center"> </td><td class="SL_td" width="8%" align="center"><div id="SL_TTS_voice" title="undefined" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/ttsvoice.png&quot;);"></div></td><td class="SL_td" width="8%" align="center"><div id="SL_copy" title="翻訳をコピー" class="SL_copy" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/copy.png&quot;);"></div></td><td class="SL_td" width="8%" align="center"><div id="SL_bbl_font_patch"></div><div id="SL_bbl_font" title="フォントサイズ" class="SL_bbl_font" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/font.png&quot;);"></div></td><td class="SL_td" width="8%" align="center"><div id="SL_bbl_help" title="ヘルプ" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/bhelp.png&quot;);"></div></td><td class="SL_td" width="15%" align="right"><div id="SL_pin" class="SL_pin_off" title="ピン留めポップアップウィンドウ" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/pin-on.png&quot;);"></div></td></tr></table></div></div><div id="SL_shadow_translation_result" style="visibility: visible;"></div><div id="SL_loading" class="SL_loading" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/loading.gif&quot;);"></div><div id="SL_player2"></div><div id="SL_alert100">スピーチ機能は最大文字数200文字の制限があります</div><div id="SL_Balloon_options" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/bg3.png&quot;) rgb(255, 255, 255);"><div id="SL_arrow_down" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/down.png&quot;);"></div><table id="SL_tbl_opt" width="100%"><tr><td class="SL_td" width="5%" align="center"><input id="SL_BBL_locer" type="checkbox" checked="1" title="翻訳アプリのボタンを表示 3 秒"></td><td class="SL_td" width="5%" align="left"><div id="SL_BBL_IMG" title="翻訳アプリのボタンを表示 3 秒" style="background: url(&quot;chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/img/util/bbl-logo.png&quot;);"></div></td><td class="SL_td" width="70%" align="center"><a href="chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/html/options/options.html?bbl" target="_blank" class="SL_options" title="オプションを表示">オプション</a> : <a href="chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/html/options/options.html?hist" target="_blank" class="SL_options" title="翻訳履歴">履歴</a> : <a href="chrome-extension://noaijdpnepcgjemiklgfkcfbkokogabh/content/html/options/options.html?feed" target="_blank" class="SL_options" title="フィードバック">フィードバック</a> : <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=GD9D8CPW8HFA2" target="_blank" class="SL_options" title="少額の寄付をする">Donate</a></td><td class="SL_td" width="15%" align="right"><span id="SL_Balloon_Close" class="SL_options" title="閉じる">閉じる</span></td></tr></table></div></div></div></body></html>

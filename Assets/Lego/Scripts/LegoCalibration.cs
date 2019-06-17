@@ -17,14 +17,6 @@ struct BasePixelInfo
   public int x, y;
 }
 
-struct HSV
-{
-  //h:0-360 s:0-256 v:-256
-  public int h;
-  public int s;
-  public int v;
-}
-
 public class LegoCalibration : MonoBehaviour
 {
   private float timeLeft__1FPS_;
@@ -32,10 +24,8 @@ public class LegoCalibration : MonoBehaviour
   private KinectManager manager_;
   private LegoBase lego_;
   [SerializeField] RawImage depthImage_;
-  [SerializeField, Range(750f, 1000f)] float upperDisplayRange_;
-  [SerializeField, Range(0f, 850f)] float lowerDisplayRange_;
-  private static readonly int upperBasePixelDepthValue_ = 860;
-  private static readonly int lowerBasePixelDepthValue_ = 840;
+  [SerializeField] private int upperBasePixelDepthValue_ = 860;
+  [SerializeField] private int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
   private Texture2D colorTexture_;
   private ushort[] depthMap_;
@@ -95,6 +85,7 @@ public class LegoCalibration : MonoBehaviour
     if (timeLeft__1FPS_ <= 0.0f)
     {
       timeLeft__1FPS_ = 1.0f;
+
       switch (progressFlag_)
       {
         case 0:
@@ -105,7 +96,7 @@ public class LegoCalibration : MonoBehaviour
             Debug.Log("XY" + i + ":" + (int)baseXYAndDepth_[i].x + ", " + (int)baseXYAndDepth_[i].y + " Depth value:" + (int)baseXYAndDepth_[i].z);
           }
           CalcCenterBaseDepth_And_Point();
-          Debug.Log("Center XY:" + baseCenter_.x + ", " + baseCenter_.y + "Depth value:" + baseCenter_.z);
+          Debug.Log("Center XY:" + (int)baseCenter_.x + ", " + (int)baseCenter_.y + "Depth value:" + (int)baseCenter_.z);
           break;
 
         case 1:
@@ -117,10 +108,12 @@ public class LegoCalibration : MonoBehaviour
           {
             vecXY[i] = manager_.GetColorMapPosForDepthPos(new Vector2(baseXYAndDepth_[i].x, baseXYAndDepth_[i].y));
             colorXY[i] = colorTexture_.GetPixel((int)vecXY[i].x, (int)vecXY[i].y);
-            hsvXY[i] = RGB2HSV(colorXY[i]);
+            hsvXY[i] = LegoGeneric.RGB2HSV(colorXY[i]);
             Debug.Log("XY" + i + ":" + colorXY[i].r + ", " + colorXY[i].g + ", " + colorXY[i].b + ", " + colorXY[i].a);
             Debug.Log("XY" + i + ":" + hsvXY[i].h + ", " + hsvXY[i].s + ", " + hsvXY[i].v);
           }
+          Debug.Log("Center XY:" + (int)baseCenter_.x + ", " + (int)baseCenter_.y + "Depth value:" + (depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3));
+
           break;
 
         case 2:
@@ -137,78 +130,9 @@ public class LegoCalibration : MonoBehaviour
     basePixelMap_.Clear();
   }
 
-  //h:0-360 s:0f-1f v:0f-1f
-  private HSV RGB2HSV(Color rgb)
-  {
-    rgb.r *= 255;
-    rgb.g *= 255;
-    rgb.b *= 255;
-
-    HSV hsv = new HSV();
-    int min, max;
-
-    max = Max_rgb(rgb);
-    min = Min_rgb(rgb);
-    hsv.v = max;
-
-    if (hsv.v == 0f) hsv.s = hsv.h = 0;
-    else
-    {
-      hsv.s = 255 * (max - min) / max;
-
-      if (Mathf.Abs(max - min) < 30)
-      {
-        hsv.h = 0;
-        hsv.s = 0;
-        hsv.v = 255;
-      }
-      else
-      {
-
-        if (max == (int)rgb.r) hsv.h = 60 * (int)(rgb.b - rgb.g) / (max - min);
-        else if (max == (int)rgb.g) hsv.h = 60 * (int)(rgb.r - rgb.b) / (max - min) + 120;
-        else if (max == (int)rgb.b) hsv.h = 60 * (int)(rgb.g - rgb.r) / (max - min) + 240;
-        else Application.Quit();
-      }
-
-      if (hsv.h < 0) hsv.h += 360;
-      else if (hsv.h > 360) hsv.h -= 360;
-    }
-
-    return hsv;
-
-    int Max_rgb(Color c)
-    {
-      if (c.r > c.g)
-      {
-        if (c.r > c.b) return (int)c.r;
-        else return (int)c.b;
-      }
-      else
-      {
-        if (c.g > c.b) return (int)c.g;
-        else return (int)c.b;
-      }
-    }
-
-    int Min_rgb(Color c)
-    {
-      if (c.r < c.g)
-      {
-        if (c.r < c.b) return (int)c.r;
-        else return (int)c.b;
-      }
-      else
-      {
-        if (c.g < c.b) return (int)c.g;
-        else return (int)c.b;
-      }
-    }
-  }
-
-
   //4つの点からなる2つの直線の交点を求め、座標と深度を計算する。
   //http://imagingsolution.blog.fc2.com/blog-entry-137.html
+  //リンク切れの場合:/Documents/4点からなる交点の求め方
   private void CalcCenterBaseDepth_And_Point()
   {
     if (float.IsNaN(baseXYAndDepth_[0].x) || float.IsNaN(baseXYAndDepth_[1].x) || float.IsNaN(baseXYAndDepth_[2].x) || float.IsNaN(baseXYAndDepth_[3].x)) return;
@@ -219,7 +143,7 @@ public class LegoCalibration : MonoBehaviour
     float s2 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[1].y - baseXYAndDepth_[2].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[1].x - baseXYAndDepth_[2].x)) * 0.5f;
     s2 = Mathf.Abs(s2);
 
-    baseCenter_.x = baseXYAndDepth_[0].x + (baseXYAndDepth_[2].x - baseXYAndDepth_[0].x) * s1 / (s1 + s2);
+    baseCenter_.x = baseXYAndDepth_[0].x + (baseXYAndDepth_[1].x - baseXYAndDepth_[0].x) * s1 / (s1 + s2);
     baseCenter_.y = baseXYAndDepth_[0].y + (baseXYAndDepth_[2].y - baseXYAndDepth_[0].y) * s1 / (s1 + s2);
     baseCenter_.z = depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3;
   }
@@ -261,7 +185,7 @@ public class LegoCalibration : MonoBehaviour
       BasePixelInfo pixel;
       int depthData = depthMap_[y * LegoData.DEPTH_CAMERA_WIDTH + x] >> 3;
 
-      if (lowerDisplayRange_ < depthData && depthData < upperDisplayRange_)
+      if (lowerBasePixelDepthValue_ < depthData && depthData < upperBasePixelDepthValue_)
       {
         col = new Color(0, 0, 0, 255);
       }
