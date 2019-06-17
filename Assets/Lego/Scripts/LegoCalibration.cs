@@ -9,6 +9,22 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+struct BasePixelInfo
+{
+  public int sectionNumber;
+  public ushort depth;
+  public int x, y;
+}
+
+struct HSV
+{
+  //h:0-360 s:0-256 v:-256
+  public int h;
+  public int s;
+  public int v;
+}
+
 public class LegoCalibration : MonoBehaviour
 {
   private float timeLeft__1FPS_;
@@ -21,17 +37,13 @@ public class LegoCalibration : MonoBehaviour
   private static readonly int upperBasePixelDepthValue_ = 860;
   private static readonly int lowerBasePixelDepthValue_ = 840;
   private Texture2D depthTexture_;
+  private Texture2D colorTexture_;
   private ushort[] depthMap_;
   private List<BasePixelInfo> basePixelMap_;
   private List<Vector3> baseXYAndDepth_;
   private Vector3 baseCenter_;
+  private int progressFlag_;
 
-  private struct BasePixelInfo
-  {
-    public int sectionNumber;
-    public ushort depth;
-    public int x, y;
-  }
 
   // Start is called before the first frame update
   void Start()
@@ -56,6 +68,8 @@ public class LegoCalibration : MonoBehaviour
     baseXYAndDepth_ = new List<Vector3>();
     timeLeft__1FPS_ = 1.0f;
     timeLeft__15FPS_ = 0.04f;
+
+    progressFlag_ = 0;
   }
 
   void Update()
@@ -70,12 +84,10 @@ public class LegoCalibration : MonoBehaviour
     {
       timeLeft__15FPS_ = 0.04f;
 
-      Texture2D colorTexture = null;
-
-      colorTexture = manager_.GetUsersClrTex();
+      colorTexture_ = manager_.GetUsersClrTex();
       depthMap_ = manager_.GetRawDepthMap();
 
-      ScanFrom4EndPoint(colorTexture);
+      ScanFrom4EndPoint(colorTexture_);
       depthTexture_.Apply();
     }
 
@@ -83,39 +95,137 @@ public class LegoCalibration : MonoBehaviour
     if (timeLeft__1FPS_ <= 0.0f)
     {
       timeLeft__1FPS_ = 1.0f;
-      baseXYAndDepth_.Clear();
-      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(0));
-      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(1));
-      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(2));
-      baseXYAndDepth_.Add(CalcBaseDepthAverage_And_Point(3));
-      CalcCenterBaseDepth_And_Point();
-      Debug.Log("XY0:" + (int)baseXYAndDepth_[0].x + ", " + (int)baseXYAndDepth_[0].y + " Depth value:" + (int)baseXYAndDepth_[0].z);
-      Debug.Log("XY1:" + (int)baseXYAndDepth_[1].x + ", " + (int)baseXYAndDepth_[1].y + " Depth value:" + (int)baseXYAndDepth_[1].z);
-      Debug.Log("XY2:" + (int)baseXYAndDepth_[2].x + ", " + (int)baseXYAndDepth_[2].y + " Depth value:" + (int)baseXYAndDepth_[2].z);
-      Debug.Log("XY3:" + (int)baseXYAndDepth_[3].x + ", " + (int)baseXYAndDepth_[3].y + " Depth value:" + (int)baseXYAndDepth_[3].z);
-      Debug.Log("Center XY:" + baseCenter_.x + ", " + baseCenter_.y + "Depth value:" + baseCenter_.z);
-      basePixelMap_.Clear();
+      switch (progressFlag_)
+      {
+        case 0:
+          baseXYAndDepth_.Clear();
+          for (int i = 0; i < 4; i++)
+          {
+            baseXYAndDepth_.Add(CalcEdgeBaseDepthAverage_And_Point(i));
+            Debug.Log("XY" + i + ":" + (int)baseXYAndDepth_[i].x + ", " + (int)baseXYAndDepth_[i].y + " Depth value:" + (int)baseXYAndDepth_[i].z);
+          }
+          CalcCenterBaseDepth_And_Point();
+          Debug.Log("Center XY:" + baseCenter_.x + ", " + baseCenter_.y + "Depth value:" + baseCenter_.z);
+          break;
+
+        case 1:
+          Debug.Log("Color");
+          Vector2[] vecXY = new Vector2[4];
+          Color[] colorXY = new Color[4];
+          HSV[] hsvXY = new HSV[4];
+          for (int i = 0; i < 4; i++)
+          {
+            vecXY[i] = manager_.GetColorMapPosForDepthPos(new Vector2(baseXYAndDepth_[i].x, baseXYAndDepth_[i].y));
+            colorXY[i] = colorTexture_.GetPixel((int)vecXY[i].x, (int)vecXY[i].y);
+            hsvXY[i] = RGB2HSV(colorXY[i]);
+            Debug.Log("XY" + i + ":" + colorXY[i].r + ", " + colorXY[i].g + ", " + colorXY[i].b + ", " + colorXY[i].a);
+            Debug.Log("XY" + i + ":" + hsvXY[i].h + ", " + hsvXY[i].s + ", " + hsvXY[i].v);
+          }
+          break;
+
+        case 2:
+          LegoData.CalibrationData.PushCalibrationData(baseXYAndDepth_, baseCenter_);
+          SceneManager.LoadScene("Main");
+          break;
+
+        default:
+          LegoData.CalibrationData.PushCalibrationData(baseXYAndDepth_, baseCenter_);
+          SceneManager.LoadScene("Main");
+          break;
+      }
+    }
+    basePixelMap_.Clear();
+  }
+
+  //h:0-360 s:0f-1f v:0f-1f
+  private HSV RGB2HSV(Color rgb)
+  {
+    rgb.r *= 255;
+    rgb.g *= 255;
+    rgb.b *= 255;
+
+    HSV hsv = new HSV();
+    int min, max;
+
+    max = Max_rgb(rgb);
+    min = Min_rgb(rgb);
+    hsv.v = max;
+
+    if (hsv.v == 0f) hsv.s = hsv.h = 0;
+    else
+    {
+      hsv.s = 255 * (max - min) / max;
+
+      if (Mathf.Abs(max - min) < 30)
+      {
+        hsv.h = 0;
+        hsv.s = 0;
+        hsv.v = 255;
+      }
+      else
+      {
+
+        if (max == (int)rgb.r) hsv.h = 60 * (int)(rgb.b - rgb.g) / (max - min);
+        else if (max == (int)rgb.g) hsv.h = 60 * (int)(rgb.r - rgb.b) / (max - min) + 120;
+        else if (max == (int)rgb.b) hsv.h = 60 * (int)(rgb.g - rgb.r) / (max - min) + 240;
+        else Application.Quit();
+      }
+
+      if (hsv.h < 0) hsv.h += 360;
+      else if (hsv.h > 360) hsv.h -= 360;
     }
 
-    //4つの点からなる2つの直線の交点を求める。
-    //http://imagingsolution.blog.fc2.com/blog-entry-137.html
-    void CalcCenterBaseDepth_And_Point()
+    return hsv;
+
+    int Max_rgb(Color c)
     {
-      if (float.IsNaN(baseXYAndDepth_[0].x) || float.IsNaN(baseXYAndDepth_[1].x) || float.IsNaN(baseXYAndDepth_[2].x) || float.IsNaN(baseXYAndDepth_[3].x)) return;
-      if (float.IsNaN(baseXYAndDepth_[0].y) || float.IsNaN(baseXYAndDepth_[1].y) || float.IsNaN(baseXYAndDepth_[2].y) || float.IsNaN(baseXYAndDepth_[3].y)) return;
+      if (c.r > c.g)
+      {
+        if (c.r > c.b) return (int)c.r;
+        else return (int)c.b;
+      }
+      else
+      {
+        if (c.g > c.b) return (int)c.g;
+        else return (int)c.b;
+      }
+    }
 
-      float s1 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[0].y - baseXYAndDepth_[1].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[0].x - baseXYAndDepth_[1].x)) * 0.5f;
-      s1 = Mathf.Abs(s1);
-      float s2 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[1].y - baseXYAndDepth_[2].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[1].x - baseXYAndDepth_[2].x)) * 0.5f;
-      s2 = Mathf.Abs(s2);
-
-      baseCenter_.x = baseXYAndDepth_[0].x + (baseXYAndDepth_[2].x - baseXYAndDepth_[0].x) * s1 / (s1 + s2);
-      baseCenter_.y = baseXYAndDepth_[0].y + (baseXYAndDepth_[2].y - baseXYAndDepth_[0].y) * s1 / (s1 + s2);
-      baseCenter_.z = depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3;
+    int Min_rgb(Color c)
+    {
+      if (c.r < c.g)
+      {
+        if (c.r < c.b) return (int)c.r;
+        else return (int)c.b;
+      }
+      else
+      {
+        if (c.g < c.b) return (int)c.g;
+        else return (int)c.b;
+      }
     }
   }
 
-  private Vector3 CalcBaseDepthAverage_And_Point(int sectionNum)
+
+  //4つの点からなる2つの直線の交点を求め、座標と深度を計算する。
+  //http://imagingsolution.blog.fc2.com/blog-entry-137.html
+  private void CalcCenterBaseDepth_And_Point()
+  {
+    if (float.IsNaN(baseXYAndDepth_[0].x) || float.IsNaN(baseXYAndDepth_[1].x) || float.IsNaN(baseXYAndDepth_[2].x) || float.IsNaN(baseXYAndDepth_[3].x)) return;
+    if (float.IsNaN(baseXYAndDepth_[0].y) || float.IsNaN(baseXYAndDepth_[1].y) || float.IsNaN(baseXYAndDepth_[2].y) || float.IsNaN(baseXYAndDepth_[3].y)) return;
+
+    float s1 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[0].y - baseXYAndDepth_[1].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[0].x - baseXYAndDepth_[1].x)) * 0.5f;
+    s1 = Mathf.Abs(s1);
+    float s2 = ((baseXYAndDepth_[3].x - baseXYAndDepth_[1].x) * (baseXYAndDepth_[1].y - baseXYAndDepth_[2].y) - (baseXYAndDepth_[3].y - baseXYAndDepth_[1].y) * (baseXYAndDepth_[1].x - baseXYAndDepth_[2].x)) * 0.5f;
+    s2 = Mathf.Abs(s2);
+
+    baseCenter_.x = baseXYAndDepth_[0].x + (baseXYAndDepth_[2].x - baseXYAndDepth_[0].x) * s1 / (s1 + s2);
+    baseCenter_.y = baseXYAndDepth_[0].y + (baseXYAndDepth_[2].y - baseXYAndDepth_[0].y) * s1 / (s1 + s2);
+    baseCenter_.z = depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3;
+  }
+
+  //4つの端点の座標と深度を計算する。
+  private Vector3 CalcEdgeBaseDepthAverage_And_Point(int sectionNum)
   {
     //x,y: coordinate, z: average of depth value
     float depth = 0, x = 0, y = 0;
@@ -139,7 +249,7 @@ public class LegoCalibration : MonoBehaviour
   //左上から順番にではなく、4つの端点から中心に向かって走査する
   private void ScanFrom4EndPoint(Texture2D colorTexture)
   {
-    ScanFrom4EndPoint_Body();
+    ScanFrom4EndPoint();
 
     //[TODO]
     //・読みやすいコードへのリファクタリング
@@ -170,9 +280,17 @@ public class LegoCalibration : MonoBehaviour
         pixel.y = y;
         basePixelMap_.Add(pixel);
       }
+
+      if (progressFlag_ > 0)
+      {
+        for (int i = 0; i < 4; i++)
+        {
+          depthTexture_.SetPixel((int)baseXYAndDepth_[i].x, (int)baseXYAndDepth_[i].y, new Color(1, 0, 0, 1));
+        }
+      }
     }
 
-    void ScanFrom4EndPoint_Body()
+    void ScanFrom4EndPoint()
     {
       int x, y;
       int horizontalCenterLine = LegoData.DEPTH_CAMERA_HEIGHT / 2;
@@ -367,12 +485,17 @@ public class LegoCalibration : MonoBehaviour
         }
       }
     }
-    # endregion
+    #endregion
   }
 
-  public void CompleteCalibration()
+  public void NextFlag()
   {
-    LegoData.CalibrationData.PushCalibrationData(baseXYAndDepth_);
-    SceneManager.LoadScene("Main");
+    progressFlag_++;
+  }
+
+  public void PreviousFlag()
+  {
+    progressFlag_--;
+    if (progressFlag_ < 0) progressFlag_ = 0;
   }
 }

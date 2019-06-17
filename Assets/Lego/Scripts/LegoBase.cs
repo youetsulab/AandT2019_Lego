@@ -98,7 +98,23 @@ public class LegoBase : MonoBehaviour
       int cellWidth = width / 32;
       int cellHeight = height / 32;
 
-      return new LandscapeCellInfo[1,1];
+      /*
+      for (int y = 0; y < 32; y++)
+      {
+        for (int x = 0; x < 32; x++)
+        {
+          for (int cy = 0; cy < cellHeight; cy++)
+          {
+            for (int cx = 0; cx < cellWidth; cx++)
+            {
+
+            }
+          }
+        }
+      }
+      */
+
+      return new LandscapeCellInfo[1, 1];
     }
     #endregion
   }

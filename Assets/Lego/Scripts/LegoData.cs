@@ -43,10 +43,13 @@ public static class LegoData
       PlayerPrefs.SetFloat("D1", calibrationXYAndDepth[1].z);
       PlayerPrefs.SetFloat("D2", calibrationXYAndDepth[2].z);
       PlayerPrefs.SetFloat("D3", calibrationXYAndDepth[3].z);
+      PlayerPrefs.SetFloat("CX", calibrationCenter.x);
+      PlayerPrefs.SetFloat("CY", calibrationCenter.y);
+      PlayerPrefs.SetFloat("CD", calibrationCenter.z);
       PlayerPrefs.Save();
     }
 
-    public static void PushCalibrationData(List<Vector3> calibrationArray)
+    public static void PushCalibrationData(List<Vector3> calibrationArray, Vector3 center)
     {
       if (calibrationArray.Count < 4) return;
 
@@ -54,6 +57,7 @@ public static class LegoData
       calibrationXYAndDepth[1] = calibrationArray[1];
       calibrationXYAndDepth[2] = calibrationArray[2];
       calibrationXYAndDepth[3] = calibrationArray[3];
+      calibrationCenter = center;
       isCalibrated = true;
       SetCalibrationData();
     }
