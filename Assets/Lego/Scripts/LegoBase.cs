@@ -115,8 +115,8 @@ public class LegoBase : MonoBehaviour
           {
             for (int cx = 0; cx < cellWidth; cx++)
             {
-              cellColorInfo[cy * cellWidth + cellHeight] = DiscriminateColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
-              cellFloorInfo[cy * cellWidth + cellHeight] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
+              cellColorInfo[cy * cellWidth + cx] = DiscriminateColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
+              cellFloorInfo[cy * cellWidth + cx] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
             }
           }
           landscapleMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorInfo, Enum.GetNames(typeof(LegoColor)).Length);
