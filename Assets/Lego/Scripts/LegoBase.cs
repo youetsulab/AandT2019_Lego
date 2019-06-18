@@ -25,24 +25,14 @@ public class LegoBase : MonoBehaviour
 {
   #region Memeber Value
   [SerializeField]
-  private RawImage colorImage_, debugImage_;
+  private RawImage colorImage_, debugImage1_, debugImage2_;
   private KinectManager manager_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
-  private float calibrationDepthAverage_;
   #endregion
 
   protected void Start()
   {
-    calibrationDepthAverage_ = 0;
     LegoData.CalibrationData.GetCalibrationData();
-
-    for (int i = 0; i < 4; i++)
-    {
-      calibrationDepthAverage_ += LegoData.CalibrationData.calibrationXYAndDepth[i].z;
-    }
-    calibrationDepthAverage_ = calibrationDepthAverage_ / 4;
-    Debug.Log("Depth Average:" + calibrationDepthAverage_);
-
     rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].x - LegoData.CalibrationData.calibrationXYAndDepth[3].x);
     rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].y - LegoData.CalibrationData.calibrationXYAndDepth[3].y);
   }
@@ -59,10 +49,61 @@ public class LegoBase : MonoBehaviour
     }
   }
 
-  LandscapeCellInfo[,] CreateLandscapeMap()
+  void CreateLandScapeTexture()
   {
+
+  }
+
+  //LandscapeCellInfo[,] CreateLandscapeMap()
+  void CreateLandscapeMap()
+  {
+    #region Main
     RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
-    return ConvertRawLegoMap2LandscapeMap(rawLegoMap);
+    LandscapeCellInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
+
+    Texture2D debugTexture = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+
+    for (int y = 0; y < 32; y++)
+    {
+      for (int x = 0; x < 32; x++)
+      {
+        Color color;
+        if (legoMap[x, y].floor == 0) color = Color.white;
+        else
+        {
+          switch (legoMap[x, y].legoColor)
+          {
+            case LegoColor.Black:
+              color = Color.black;
+              break;
+
+            case LegoColor.Red:
+              color = Color.red;
+              break;
+
+            case LegoColor.Blue:
+              color = Color.blue;
+              break;
+
+            case LegoColor.Green:
+              color = Color.green;
+              break;
+            
+            case LegoColor.None:
+              color = Color.yellow;
+              break;
+
+            default:
+              color = Color.white;
+              break;
+          }
+          debugTexture.SetPixel(x, y, color);
+        }
+      }
+    }
+    debugTexture.Apply();
+    debugImage2_.texture = debugTexture;
+    #endregion
 
     #region Local Method
     //指定したエリア内のレゴデータを取得する
@@ -78,6 +119,7 @@ public class LegoBase : MonoBehaviour
         for (int x = 0; x < rawLegoImageWidth_; x++)
         {
           cameramap[x, y].depth = manager_.GetDepthForPixel(x + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].x, y + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].y);
+          cameramap[x, y].depth = (ushort)Mathf.Abs(cameramap[x, y].depth >> 3);
 
           Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].x, y + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].y));
           cameramap[x, y].color = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
@@ -86,22 +128,14 @@ public class LegoBase : MonoBehaviour
         }
       }
       texture.Apply();
-      debugImage_.texture = texture;
+      debugImage1_.texture = texture;
       return cameramap;
     }
-
-    /*
-    // Array(RawLegoPixelInfo) => Array(RawLegoPixelInfo)(キャリブレーションした4点内に切り取る)
-    Vector2 TrimRawLegoMap(RawLegoPixelInfo[,] legoMap)
-    {
-      return new Vector2(1, 1);
-    }
-    */
 
     // Array(RawLegoPixelInfo) => Array(LandscapeCellInfo)
     LandscapeCellInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] cameraMap)
     {
-      LandscapeCellInfo[,] landscapleMap = new LandscapeCellInfo[32, 32];
+      LandscapeCellInfo[,] landscapeMap = new LandscapeCellInfo[32, 32];
       int cellWidth = rawLegoImageWidth_ / 32;
       int cellHeight = rawLegoImageHeight_ / 32;
 
@@ -119,33 +153,34 @@ public class LegoBase : MonoBehaviour
               cellFloorInfo[cy * cellWidth + cx] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
             }
           }
-          landscapleMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorInfo, Enum.GetNames(typeof(LegoColor)).Length);
-          landscapleMap[x, y].floor = LegoGeneric.CalcMode(cellFloorInfo, 6);
+          landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorInfo, Enum.GetNames(typeof(LegoColor)).Length);
+          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorInfo, 6);
         }
       }
 
-      return new LandscapeCellInfo[1, 1];
+      return landscapeMap;
     }
 
     LegoColor DiscriminateColor(Color c)
     {
       HSV hsv = LegoGeneric.RGB2HSV(c);
 
-      if (hsv.h == 0 && hsv.v == 255) return LegoColor.White;
-      if (230 < hsv.h && hsv.h < 250) return LegoColor.Blue;
-      if (hsv.h < 10 || 340 < hsv.h) return LegoColor.Red;
-      if (70 < hsv.h && hsv.h < 110) return LegoColor.Green;
+      if (hsv.h == 0 && hsv.v == 0) return LegoColor.Black;
+      if (165 <= hsv.h && hsv.h < 300) return LegoColor.Blue; //base : 240
+      if (hsv.h < 45 || 300 <= hsv.h) return LegoColor.Red;   //base : 0
+      if (45 <= hsv.h && hsv.h < 165) return LegoColor.Green; //base : 90
       return LegoColor.None;
     }
 
     int DiscriminateLegoHeight(ushort depth)
     {
-      if(depth < calibrationDepthAverage_) return 5;
-      if(calibrationDepthAverage_ <= depth && depth < calibrationDepthAverage_ + 10) return 4;
-      if(calibrationDepthAverage_ + 10 <= depth && depth < calibrationDepthAverage_ + 20) return 3;
-      if(calibrationDepthAverage_ + 20 <= depth && depth < calibrationDepthAverage_ + 30) return 2;
-      if(calibrationDepthAverage_ + 30 <= depth && depth < calibrationDepthAverage_ + 40) return 1;
-      return 0;
+      ushort baseDepth = (ushort)LegoData.CalibrationData.calibrationCenter.z;
+      if (depth > baseDepth - 5) return 0;
+      if (baseDepth - 5 >= depth && depth > baseDepth - 10) return 1;
+      if (baseDepth - 10 >= depth && depth > baseDepth - 20) return 2;
+      if (baseDepth - 20 >= depth && depth > baseDepth - 30) return 3;
+      if (baseDepth - 30 >= depth && depth > baseDepth - 40) return 4;
+      return 5;
     }
     #endregion
   }

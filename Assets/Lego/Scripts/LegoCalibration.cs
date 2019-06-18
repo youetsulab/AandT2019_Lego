@@ -100,6 +100,18 @@ public class LegoCalibration : MonoBehaviour
           break;
 
         case 1:
+          if (float.IsNaN(baseXYAndDepth_[0].x) || float.IsNaN(baseXYAndDepth_[1].x) || float.IsNaN(baseXYAndDepth_[2].x) || float.IsNaN(baseXYAndDepth_[3].x) || float.IsNaN(baseXYAndDepth_[0].y) || float.IsNaN(baseXYAndDepth_[1].y) || float.IsNaN(baseXYAndDepth_[2].y) || float.IsNaN(baseXYAndDepth_[3].y))
+          {
+            Debug.Log("キャリブレーションに失敗しました。");
+            progressFlag_--;
+          }
+          else
+          {
+            progressFlag_++;
+          }
+          break;
+
+        case 2:
           Debug.Log("Color");
           Vector2[] vecXY = new Vector2[4];
           Color[] colorXY = new Color[4];
@@ -109,14 +121,14 @@ public class LegoCalibration : MonoBehaviour
             vecXY[i] = manager_.GetColorMapPosForDepthPos(new Vector2(baseXYAndDepth_[i].x, baseXYAndDepth_[i].y));
             colorXY[i] = colorTexture_.GetPixel((int)vecXY[i].x, (int)vecXY[i].y);
             hsvXY[i] = LegoGeneric.RGB2HSV(colorXY[i]);
-            Debug.Log("XY" + i + ":" + colorXY[i].r + ", " + colorXY[i].g + ", " + colorXY[i].b + ", " + colorXY[i].a);
-            Debug.Log("XY" + i + ":" + hsvXY[i].h + ", " + hsvXY[i].s + ", " + hsvXY[i].v);
+            //Debug.Log("XY" + i + ":" + colorXY[i].r + ", " + colorXY[i].g + ", " + colorXY[i].b + ", " + colorXY[i].a);
+            Debug.Log("XY" + i + ":" + " H:" + hsvXY[i].h + ", S:" + hsvXY[i].s + ", V:" + hsvXY[i].v);
           }
           Debug.Log("Center XY:" + (int)baseCenter_.x + ", " + (int)baseCenter_.y + "Depth value:" + (depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3));
-
           break;
 
-        case 2:
+
+        case 3:
           LegoData.CalibrationData.PushCalibrationData(baseXYAndDepth_, baseCenter_);
           SceneManager.LoadScene("Main");
           break;

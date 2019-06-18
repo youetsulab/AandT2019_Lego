@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using System;
 
 public struct HSV
 {
@@ -14,6 +16,7 @@ public static class LegoGeneric
 {
 
   //h:0-360 s:0f-1f v:0f-1f
+  //[FIXME]
   public static HSV RGB2HSV(Color rgb)
   {
     rgb.r *= 255;
@@ -32,11 +35,12 @@ public static class LegoGeneric
     {
       hsv.s = 255 * (max - min) / max;
 
-      if (Mathf.Abs(max - min) < 30)
+      //黒用の判別
+      if ((Mathf.Abs(max - min) < 30 && max < 50) || max == min)
       {
         hsv.h = 0;
         hsv.s = 0;
-        hsv.v = 255;
+        hsv.v = 0;
       }
       else
       {
@@ -82,18 +86,25 @@ public static class LegoGeneric
     }
   }
 
-	public static T CalcMode<T>(T[] array, int numberOfType)
-	{
+  public static T CalcMode<T>(T[] array, int numberOfType)
+  {
     Dictionary<T, int> dictionary = new Dictionary<T, int>(numberOfType);
 
-		foreach (var item in array)
-		{
-			if(dictionary.ContainsKey(item)) dictionary[item]++;
-			else{
+    foreach (var item in array)
+    {
+      if (dictionary.ContainsKey(item)) dictionary[item]++;
+      else
+      {
         dictionary.Add(item, 0);
       }
     }
 
-    return dictionary.OrderBy(val=>val.Value).First().Key;
+    return dictionary.OrderBy(val => val.Value).First().Key;
+  }
+
+  public static IEnumerator DelayMethod(float waitTime, Action action)
+  {
+    yield return new WaitForSeconds(waitTime);
+    action();
   }
 }
