@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 #region Struct define
 public enum LegoColor
@@ -27,7 +28,10 @@ public class LegoBase : MonoBehaviour
   [SerializeField]
   private RawImage colorImage_, debugImage1_, debugImage2_;
   private KinectManager manager_;
+  private List<LandscapeCellInfo[,]> landscapeMapList;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
+  private bool isCreateLandscapeMap_;
+  private int createNumCount_;
   #endregion
 
   protected void Start()
@@ -35,6 +39,9 @@ public class LegoBase : MonoBehaviour
     LegoData.CalibrationData.GetCalibrationData();
     rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].x - LegoData.CalibrationData.calibrationXYAndDepth[3].x);
     rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].y - LegoData.CalibrationData.calibrationXYAndDepth[3].y);
+    isCreateLandscapeMap_ = false;
+    landscapeMapList = new List<LandscapeCellInfo[,]>();
+    createNumCount_ = 0;
   }
 
   void Update()
@@ -47,21 +54,25 @@ public class LegoBase : MonoBehaviour
     {
       colorImage_.texture = manager_.GetUsersClrTex();
     }
+
+    if (isCreateLandscapeMap_)
+    {
+      CreateLandscapeMap();
+      createNumCount_++;
+    }
+
+    if(createNumCount_ > 60)
+    {
+      CreateLandScapeTexture();
+      landscapeMapList.Clear();
+      createNumCount_ = 0;
+    }
   }
 
   void CreateLandScapeTexture()
   {
-
-  }
-
-  //LandscapeCellInfo[,] CreateLandscapeMap()
-  void CreateLandscapeMap()
-  {
-    #region Main
-    RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
-    LandscapeCellInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
-
     Texture2D debugTexture = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+    LandscapeCellInfo[,] legoMap = CalcLandscapleMapMode();
 
     for (int y = 0; y < 32; y++)
     {
@@ -88,7 +99,7 @@ public class LegoBase : MonoBehaviour
             case LegoColor.Green:
               color = Color.green;
               break;
-            
+
             case LegoColor.None:
               color = Color.yellow;
               break;
@@ -103,6 +114,22 @@ public class LegoBase : MonoBehaviour
     }
     debugTexture.Apply();
     debugImage2_.texture = debugTexture;
+
+    //[TODO] LandscapeCellInfoの統計情報（色、高さ）を計算する。
+    LandscapeCellInfo[,] CalcLandscapleMapMode()
+    {
+      return new LandscapeCellInfo[1, 1];
+    }
+  }
+
+  //LandscapeCellInfo[,] CreateLandscapeMap()
+  void CreateLandscapeMap()
+  {
+    #region Main
+    RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
+    LandscapeCellInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
+    landscapeMapList.Add(legoMap);
+
     #endregion
 
     #region Local Method
@@ -190,7 +217,7 @@ public class LegoBase : MonoBehaviour
 
   public void OnButtonClicked()
   {
-    CreateLandscapeMap();
+    isCreateLandscapeMap_ = !isCreateLandscapeMap_;
   }
 }
 
