@@ -195,7 +195,7 @@ public class LegoBase : MonoBehaviour
         {
           LegoColor[] cellColorInfo = new LegoColor[cellHeight * cellWidth];
           int[] cellFloorInfo = new int[cellWidth * cellHeight];
-          for (int cy = 0; cy < cellWidth; cy++)
+          for (int cy = 0; cy < cellHeight; cy++)
           {
             for (int cx = 0; cx < cellWidth; cx++)
             {
@@ -215,22 +215,34 @@ public class LegoBase : MonoBehaviour
     {
       HSV hsv = LegoGeneric.RGB2HSV(c);
 
+      /*
       if (hsv.h == 0 && hsv.v == 0) return LegoColor.Black;
       if (225 <= hsv.h && hsv.h < 255) return LegoColor.Blue; //base : 240
       if (hsv.h < 15 || 345 <= hsv.h) return LegoColor.Red;   //base : 0
       if (75 <= hsv.h && hsv.h < 105) return LegoColor.Green; //base : 90
-      return LegoColor.None;
+      */
+      /*
+      if (hsv.h == 0 && hsv.v == 0) return LegoColor.Black;
+      if (165 <= hsv.h && hsv.h < 300) return LegoColor.Blue; //base : 240
+      if (hsv.h < 45 || 300 <= hsv.h) return LegoColor.Red;   //base : 0
+      if (45 <= hsv.h && hsv.h < 165) return LegoColor.Green; //base : 90
+      */
+
+      LegoColor max = LegoGeneric.Max_rgb(c);
+      if (c.r > 0.5f && c.g > 0.5f && c.b > 0.5f) return LegoColor.White;
+      else return max;
     }
 
     int DiscriminateLegoHeight(ushort depth)
     {
       ushort baseDepth = (ushort)LegoData.CalibrationData.calibrationCenter.z;
-      if (depth > baseDepth - 5) return 0;
-      if (baseDepth - 5 >= depth && depth > baseDepth - 10) return 1;
+      if (depth > baseDepth - 10) return 0;
+      //if (baseDepth - 5 >= depth && depth > baseDepth - 10) return 1;
       if (baseDepth - 10 >= depth && depth > baseDepth - 20) return 2;
       if (baseDepth - 20 >= depth && depth > baseDepth - 30) return 3;
       if (baseDepth - 30 >= depth && depth > baseDepth - 40) return 4;
-      return 5;
+      if (baseDepth - 40 >= depth && depth > baseDepth - 50) return 5;
+      return 0;
     }
     #endregion
   }

@@ -22,13 +22,15 @@ public class LegoCalibration : MonoBehaviour
   private float timeLeft__1FPS_, timeLeft__15FPS_;
   private KinectManager manager_;
   [SerializeField] RawImage depthImage_;
-  [SerializeField] private int upperBasePixelDepthValue_ = 860;
-  [SerializeField] private int lowerBasePixelDepthValue_ = 840;
+  [SerializeField] private int upperBasePixelDepthValue_ = 420;
+  [SerializeField] private int lowerBasePixelDepthValue_ = 415;
+  [SerializeField] private Text currentlyCalibrationText;
   private Texture2D depthTexture_;
   private Texture2D colorTexture_;
   private ushort[] depthMap_;
   private List<BasePixelInfo> basePixelMap_;
-  private Vector3[] baseXYAndDepth_ = new Vector3[4];
+  private Vector3[] baseXYAndDepth_;
+  private List<Vector3[]> baseXYAndDepthList_;
   private Vector3 baseCenter_;
   private int progressFlag_;
   private int currentlyCalibratedHierarchy_;
@@ -54,11 +56,15 @@ public class LegoCalibration : MonoBehaviour
     depthImage_.texture = depthTexture_;
 
     basePixelMap_ = new List<BasePixelInfo>();
-    baseXYAndDepth_ = new List<Vector3>();
+    baseXYAndDepthList_ = new List<Vector3[]>();
+    baseXYAndDepth_ = new Vector3[4];
     timeLeft__1FPS_ = 1.0f;
     timeLeft__15FPS_ = 0.04f;
 
     progressFlag_ = 0;
+    currentlyCalibratedHierarchy_ = 5;
+
+    currentlyCalibrationText.text = currentlyCalibratedHierarchy_ + "段目のキャリブレーション";
   }
 
   void Update()
@@ -77,6 +83,7 @@ public class LegoCalibration : MonoBehaviour
       depthMap_ = manager_.GetRawDepthMap();
 
       ScanFrom4EndPoint(colorTexture_);
+      if (progressFlag_ == 2) depthTexture_.SetPixel((int)baseCenter_.x, (int)baseCenter_.y, new Color(0, 0, 0, 255));
       depthTexture_.Apply();
     }
 
@@ -88,10 +95,9 @@ public class LegoCalibration : MonoBehaviour
       switch (progressFlag_)
       {
         case 0:
-          baseXYAndDepth_.Clear();
           for (int i = 0; i < 4; i++)
           {
-            baseXYAndDepth_.Add(CalcEdgeBaseDepthAverage_And_Point(i));
+            baseXYAndDepth_[i] = CalcEdgeBaseDepthAverage_And_Point(i);
             Debug.Log("XY" + i + ":" + (int)baseXYAndDepth_[i].x + ", " + (int)baseXYAndDepth_[i].y + " Depth value:" + (int)baseXYAndDepth_[i].z);
           }
           CalcCenterBaseDepth_And_Point();
@@ -106,7 +112,18 @@ public class LegoCalibration : MonoBehaviour
           }
           else
           {
-            progressFlag_++;
+            baseXYAndDepthList_.Add(baseXYAndDepth_);
+            currentlyCalibratedHierarchy_--;
+            if (currentlyCalibratedHierarchy_ < 0)
+            {
+              currentlyCalibrationText.text = "色のデバッグ";
+              progressFlag_++;
+            }
+            else
+            {
+              currentlyCalibrationText.text = currentlyCalibratedHierarchy_ + "段目のキャリブレーション";
+              progressFlag_--;
+            }
           }
           break;
 
@@ -124,6 +141,10 @@ public class LegoCalibration : MonoBehaviour
             Debug.Log("XY" + i + ":" + " H:" + hsvXY[i].h + ", S:" + hsvXY[i].s + ", V:" + hsvXY[i].v);
           }
           Debug.Log("Center XY:" + (int)baseCenter_.x + ", " + (int)baseCenter_.y + "Depth value:" + (depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3));
+          Color centerColor = colorTexture_.GetPixel((int)baseCenter_.x, (int)baseCenter_.y);
+          HSV centerHsv = LegoGeneric.RGB2HSV(centerColor);
+          Debug.Log("Center " + " R:" + centerColor.r + ", G:" + centerColor.g + ", B:" + centerColor.b);
+          Debug.Log("Center " + " H:" + centerHsv.h + ", S:" + centerHsv.s + ", V:" + centerHsv.v);
           break;
 
 

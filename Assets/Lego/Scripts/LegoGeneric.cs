@@ -26,8 +26,44 @@ public static class LegoGeneric
     HSV hsv = new HSV();
     int min, max;
 
-    max = Max_rgb(rgb);
-    min = Min_rgb(rgb);
+    switch (Max_rgb(rgb))
+    {
+      case LegoColor.Red:
+        max = (int)rgb.r;
+        break;
+
+      case LegoColor.Blue:
+        max = (int)rgb.b;
+        break;
+
+      case LegoColor.Green:
+        max = (int)rgb.g;
+        break;
+
+      default:
+        max = (int)rgb.r;
+        break;
+    }
+
+    switch (Min_rgb(rgb))
+    {
+      case LegoColor.Red:
+        min = (int)rgb.r;
+        break;
+
+      case LegoColor.Blue:
+        min = (int)rgb.b;
+        break;
+
+      case LegoColor.Green:
+        min = (int)rgb.g;
+        break;
+
+      default:
+        min = (int)rgb.r;
+        break;
+    }
+
     hsv.v = max;
 
     if (hsv.v == 0f) hsv.s = hsv.h = 0;
@@ -44,10 +80,9 @@ public static class LegoGeneric
       }
       else
       {
-
-        if (max == (int)rgb.r) hsv.h = 60 * (int)(rgb.b - rgb.g) / (max - min);
-        else if (max == (int)rgb.g) hsv.h = 60 * (int)(rgb.r - rgb.b) / (max - min) + 120;
-        else if (max == (int)rgb.b) hsv.h = 60 * (int)(rgb.g - rgb.r) / (max - min) + 240;
+        if (min == (int)rgb.b) hsv.h = 60 * (int)(rgb.g - rgb.r) / (max - min) + 60;
+        else if (min == (int)rgb.r) hsv.h = 60 * (int)(rgb.b - rgb.g) / (max - min) + 180;
+        else if (min == (int)rgb.g) hsv.h = 60 * (int)(rgb.r - rgb.b) / (max - min) + 300;
         else Application.Quit();
       }
 
@@ -57,32 +92,34 @@ public static class LegoGeneric
 
     return hsv;
 
-    int Max_rgb(Color c)
-    {
-      if (c.r > c.g)
-      {
-        if (c.r > c.b) return (int)c.r;
-        else return (int)c.b;
-      }
-      else
-      {
-        if (c.g > c.b) return (int)c.g;
-        else return (int)c.b;
-      }
-    }
 
-    int Min_rgb(Color c)
+  }
+
+  public static LegoColor Max_rgb(Color c)
+  {
+    if (c.r > c.g)
     {
-      if (c.r < c.g)
-      {
-        if (c.r < c.b) return (int)c.r;
-        else return (int)c.b;
-      }
-      else
-      {
-        if (c.g < c.b) return (int)c.g;
-        else return (int)c.b;
-      }
+      if (c.r > c.b) return LegoColor.Red;
+      else return LegoColor.Blue;
+    }
+    else
+    {
+      if (c.g > c.b) return LegoColor.Green;
+      else return LegoColor.Blue;
+    }
+  }
+
+  public static LegoColor Min_rgb(Color c)
+  {
+    if (c.r < c.g)
+    {
+      if (c.r < c.b) return LegoColor.Red;
+      else return LegoColor.Blue;
+    }
+    else
+    {
+      if (c.g < c.b) return LegoColor.Green;
+      else return LegoColor.Blue;
     }
   }
 

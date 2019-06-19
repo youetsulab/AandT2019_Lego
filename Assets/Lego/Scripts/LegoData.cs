@@ -50,9 +50,9 @@ public static class LegoData
       PlayerPrefs.Save();
     }
 
-    public static void PushCalibrationData(List<Vector3> calibrationArray, Vector3 center)
+    public static void PushCalibrationData(Vector3[] calibrationArray, Vector3 center)
     {
-      if (calibrationArray.Count < 4) return;
+      if (calibrationArray.Length < 4) return;
 
       calibrationXYAndDepth[0] = calibrationArray[0];
       calibrationXYAndDepth[1] = calibrationArray[1];
