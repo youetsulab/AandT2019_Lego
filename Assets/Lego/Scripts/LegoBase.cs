@@ -28,10 +28,12 @@ public class LegoBase : MonoBehaviour
   [SerializeField]
   private RawImage colorImage_, debugImage1_, debugImage2_;
   private KinectManager manager_;
-  private List<LandscapeCellInfo[,]> landscapeMapList;
+  private List<LandscapeCellInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
   private bool isCreateLandscapeMap_;
   private int createNumCount_;
+  private static readonly int MAX_CREATE_NUM = 60;
+  private float timeLeft__1FPS_, timeLeft__15FPS_;
   #endregion
 
   protected void Start()
@@ -40,8 +42,11 @@ public class LegoBase : MonoBehaviour
     rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].x - LegoData.CalibrationData.calibrationXYAndDepth[3].x);
     rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].y - LegoData.CalibrationData.calibrationXYAndDepth[3].y);
     isCreateLandscapeMap_ = false;
-    landscapeMapList = new List<LandscapeCellInfo[,]>();
+    landscapeMapList_ = new List<LandscapeCellInfo[,]>();
     createNumCount_ = 0;
+
+    timeLeft__15FPS_ = 0.04f;
+    timeLeft__1FPS_ = 1.0f;
   }
 
   void Update()
@@ -55,34 +60,34 @@ public class LegoBase : MonoBehaviour
       colorImage_.texture = manager_.GetUsersClrTex();
     }
 
-    if (isCreateLandscapeMap_)
+    if (isCreateLandscapeMap_ && (MAX_CREATE_NUM > createNumCount_))
     {
       CreateLandscapeMap();
       createNumCount_++;
     }
 
-    if(createNumCount_ > 60)
+    if (createNumCount_ >= MAX_CREATE_NUM)
     {
       CreateLandScapeTexture();
-      landscapeMapList.Clear();
+      landscapeMapList_.Clear();
       createNumCount_ = 0;
     }
   }
 
   void CreateLandScapeTexture()
   {
-    Texture2D debugTexture = new Texture2D(32, 32, TextureFormat.RGBA32, false);
-    LandscapeCellInfo[,] legoMap = CalcLandscapleMapMode();
+    Texture2D debugTexture = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
+    LandscapeCellInfo[,] landscapeMap = CalcLandscapeMapMode();
 
-    for (int y = 0; y < 32; y++)
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
-      for (int x = 0; x < 32; x++)
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
       {
         Color color;
-        if (legoMap[x, y].floor == 0) color = Color.white;
+        if (landscapeMap[x, y].floor == 0) color = Color.white;
         else
         {
-          switch (legoMap[x, y].legoColor)
+          switch (landscapeMap[x, y].legoColor)
           {
             case LegoColor.Black:
               color = Color.black;
@@ -116,9 +121,28 @@ public class LegoBase : MonoBehaviour
     debugImage2_.texture = debugTexture;
 
     //[TODO] LandscapeCellInfoの統計情報（色、高さ）を計算する。
-    LandscapeCellInfo[,] CalcLandscapleMapMode()
+    LandscapeCellInfo[,] CalcLandscapeMapMode()
     {
-      return new LandscapeCellInfo[1, 1];
+      LandscapeCellInfo[,] lsMap = new LandscapeCellInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
+
+      for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+      {
+        for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+        {
+          int i = 0;
+          LegoColor[] legoColor = new LegoColor[landscapeMapList_.Count];
+          int[] legoHeight = new int[landscapeMapList_.Count];
+          while (i < landscapeMapList_.Count)
+          {
+            legoColor[i] = landscapeMapList_[i][x, y].legoColor;
+            legoHeight[i] = landscapeMapList_[i][x, y].floor;
+            i++;
+          }
+          lsMap[x, y].legoColor = LegoGeneric.CalcMode(legoColor, Enum.GetNames(typeof(LegoColor)).Length);
+          lsMap[x, y].floor = LegoGeneric.CalcMode(legoHeight, LegoData.BUILDING_HIERARCHY_NUM);
+        }
+      }
+      return lsMap;
     }
   }
 
@@ -128,8 +152,7 @@ public class LegoBase : MonoBehaviour
     #region Main
     RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
     LandscapeCellInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
-    landscapeMapList.Add(legoMap);
-
+    landscapeMapList_.Add(legoMap);
     #endregion
 
     #region Local Method
@@ -162,13 +185,13 @@ public class LegoBase : MonoBehaviour
     // Array(RawLegoPixelInfo) => Array(LandscapeCellInfo)
     LandscapeCellInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] cameraMap)
     {
-      LandscapeCellInfo[,] landscapeMap = new LandscapeCellInfo[32, 32];
-      int cellWidth = rawLegoImageWidth_ / 32;
-      int cellHeight = rawLegoImageHeight_ / 32;
+      LandscapeCellInfo[,] landscapeMap = new LandscapeCellInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
+      int cellWidth = rawLegoImageWidth_ / LegoData.LANDSCAPE_MAP_WIDTH;
+      int cellHeight = rawLegoImageHeight_ / LegoData.LANDSCAPE_MAP_HEIGHT;
 
-      for (int y = 0; y < 32; y++)
+      for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
       {
-        for (int x = 0; x < 32; x++)
+        for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
         {
           LegoColor[] cellColorInfo = new LegoColor[cellHeight * cellWidth];
           int[] cellFloorInfo = new int[cellWidth * cellHeight];
@@ -181,7 +204,7 @@ public class LegoBase : MonoBehaviour
             }
           }
           landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorInfo, Enum.GetNames(typeof(LegoColor)).Length);
-          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorInfo, 6);
+          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorInfo, LegoData.BUILDING_HIERARCHY_NUM);
         }
       }
 
@@ -193,9 +216,9 @@ public class LegoBase : MonoBehaviour
       HSV hsv = LegoGeneric.RGB2HSV(c);
 
       if (hsv.h == 0 && hsv.v == 0) return LegoColor.Black;
-      if (165 <= hsv.h && hsv.h < 300) return LegoColor.Blue; //base : 240
-      if (hsv.h < 45 || 300 <= hsv.h) return LegoColor.Red;   //base : 0
-      if (45 <= hsv.h && hsv.h < 165) return LegoColor.Green; //base : 90
+      if (225 <= hsv.h && hsv.h < 255) return LegoColor.Blue; //base : 240
+      if (hsv.h < 15 || 345 <= hsv.h) return LegoColor.Red;   //base : 0
+      if (75 <= hsv.h && hsv.h < 105) return LegoColor.Green; //base : 90
       return LegoColor.None;
     }
 

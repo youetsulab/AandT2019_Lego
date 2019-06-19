@@ -19,10 +19,8 @@ struct BasePixelInfo
 
 public class LegoCalibration : MonoBehaviour
 {
-  private float timeLeft__1FPS_;
-  private float timeLeft__15FPS_;
+  private float timeLeft__1FPS_, timeLeft__15FPS_;
   private KinectManager manager_;
-  private LegoBase lego_;
   [SerializeField] RawImage depthImage_;
   [SerializeField] private int upperBasePixelDepthValue_ = 860;
   [SerializeField] private int lowerBasePixelDepthValue_ = 840;
@@ -30,9 +28,10 @@ public class LegoCalibration : MonoBehaviour
   private Texture2D colorTexture_;
   private ushort[] depthMap_;
   private List<BasePixelInfo> basePixelMap_;
-  private List<Vector3> baseXYAndDepth_;
+  private Vector3[] baseXYAndDepth_ = new Vector3[4];
   private Vector3 baseCenter_;
   private int progressFlag_;
+  private int currentlyCalibratedHierarchy_;
 
 
   // Start is called before the first frame update
@@ -431,7 +430,7 @@ public class LegoCalibration : MonoBehaviour
 
   public void PreviousFlag()
   {
-    progressFlag_--;
+    progressFlag_ -= 2;
     if (progressFlag_ < 0) progressFlag_ = 0;
   }
 }
