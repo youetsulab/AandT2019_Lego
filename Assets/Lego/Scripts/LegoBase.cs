@@ -26,7 +26,7 @@ public class LegoBase : MonoBehaviour
 {
   #region Memeber Value
   [SerializeField]
-  private RawImage colorImage_, debugImage1_, debugImage2_;
+  private RawImage colorImage_, debugImage1_, debugImage2_, debugImage3_;
   private KinectManager manager_;
   private List<LandscapeCellInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
@@ -76,7 +76,8 @@ public class LegoBase : MonoBehaviour
 
   void CreateLandScapeTexture()
   {
-    Texture2D debugTexture = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
+    Texture2D debugTexture1 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
+    Texture2D debugTexture2 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
     LandscapeCellInfo[,] landscapeMap = CalcLandscapeMapMode();
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
@@ -113,12 +114,46 @@ public class LegoBase : MonoBehaviour
               color = Color.white;
               break;
           }
-          debugTexture.SetPixel(x, y, color);
+          debugTexture1.SetPixel(x, y, color);
         }
+
+        switch (landscapeMap[x,y].floor)
+        {
+          case 0:
+            color = Color.white;
+            break;
+
+          case 1:
+            color = Color.green;
+            break;
+
+          case 2:
+            color = Color.yellow;
+            break;
+
+          case 3:
+            color = Color.blue;
+            break;
+
+          case 4:
+            color = Color.red;
+            break;
+
+          case 5:
+            color = Color.black;
+            break;
+
+          default:
+            color = Color.cyan;
+            break;
+        }
+        debugTexture2.SetPixel(x, y, color);
       }
     }
-    debugTexture.Apply();
-    debugImage2_.texture = debugTexture;
+    debugTexture1.Apply();
+    debugTexture2.Apply();
+    debugImage2_.texture = debugTexture1;
+    debugImage3_.texture = debugTexture2;
 
     //[TODO] LandscapeCellInfoの統計情報（色、高さ）を計算する。
     LandscapeCellInfo[,] CalcLandscapeMapMode()
@@ -193,18 +228,18 @@ public class LegoBase : MonoBehaviour
       {
         for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
         {
-          LegoColor[] cellColorInfo = new LegoColor[cellHeight * cellWidth];
-          int[] cellFloorInfo = new int[cellWidth * cellHeight];
+          LegoColor[] cellColorMap = new LegoColor[cellHeight * cellWidth];
+          int[] cellFloorMap = new int[cellWidth * cellHeight];
           for (int cy = 0; cy < cellHeight; cy++)
           {
             for (int cx = 0; cx < cellWidth; cx++)
             {
-              cellColorInfo[cy * cellWidth + cx] = DiscriminateColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
-              cellFloorInfo[cy * cellWidth + cx] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
+              cellColorMap[cy * cellWidth + cx] = DiscriminateColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
+              cellFloorMap[cy * cellWidth + cx] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
             }
           }
-          landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorInfo, Enum.GetNames(typeof(LegoColor)).Length);
-          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorInfo, LegoData.BUILDING_HIERARCHY_NUM);
+          landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorMap, Enum.GetNames(typeof(LegoColor)).Length);
+          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorMap, LegoData.BUILDING_HIERARCHY_NUM);
         }
       }
 
@@ -236,13 +271,12 @@ public class LegoBase : MonoBehaviour
     int DiscriminateLegoHeight(ushort depth)
     {
       ushort baseDepth = (ushort)LegoData.CalibrationData.calibrationCenter.z;
-      if (depth > baseDepth - 10) return 0;
-      //if (baseDepth - 5 >= depth && depth > baseDepth - 10) return 1;
-      if (baseDepth - 10 >= depth && depth > baseDepth - 20) return 2;
-      if (baseDepth - 20 >= depth && depth > baseDepth - 30) return 3;
-      if (baseDepth - 30 >= depth && depth > baseDepth - 40) return 4;
-      if (baseDepth - 40 >= depth && depth > baseDepth - 50) return 5;
-      return 0;
+      if (depth > baseDepth - 3) return 0;
+      if (baseDepth - 3 >= depth && depth > baseDepth - 13) return 1;
+      if (baseDepth - 13 >= depth && depth > baseDepth - 23) return 2;
+      if (baseDepth - 23 >= depth && depth > baseDepth - 33) return 3;
+      if (baseDepth - 33 >= depth && depth > baseDepth - 42) return 4;
+      return 5;
     }
     #endregion
   }

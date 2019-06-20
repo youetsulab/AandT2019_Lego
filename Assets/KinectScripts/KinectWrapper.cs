@@ -35,8 +35,8 @@ public class KinectWrapper
 		public const int DepthImageHeight = 480;
 		public const NuiImageResolution DepthImageResolution = NuiImageResolution.resolution640x480;
 		
-		//public const bool IsNearMode = false;
-		public const bool IsNearMode = true;
+		public const bool IsNearMode = false;
+		//public const bool IsNearMode = true;
 		
 		public const float MinTimeBetweenSameGestures = 0.0f;
 		public const float PoseCompleteDuration = 1.0f;

@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-//[TODO]
-//キャリブレーションをしない選択をした場合でも、まだキャリブレーションがされていない場合はキャリブレーションを実行する。
 public class Init : MonoBehaviour
 {
   [SerializeField]
@@ -13,7 +11,7 @@ public class Init : MonoBehaviour
 
   void Start()
   {
-    if(LegoData.CalibrationData.HasCalibrationData())
+    if (LegoData.CalibrationData.HasCalibrationData())
     {
       LegoData.isCalibrated = true;
     }

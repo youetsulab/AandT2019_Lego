@@ -136,7 +136,7 @@ public static class LegoGeneric
       }
     }
 
-    return dictionary.OrderBy(val => val.Value).First().Key;
+    return dictionary.OrderBy(val => val.Value).Last().Key;
   }
 
   public static IEnumerator DelayMethod(float waitTime, Action action)
