@@ -229,7 +229,7 @@ public class LegoBase : MonoBehaviour
       */
 
       LegoColor max = LegoGeneric.Max_rgb(c);
-      if (c.r > 0.5f && c.g > 0.5f && c.b > 0.5f) return LegoColor.White;
+      if (c.r > 0.6f && c.g > 0.6f && c.b > 0.6f) return LegoColor.White;
       else return max;
     }
 

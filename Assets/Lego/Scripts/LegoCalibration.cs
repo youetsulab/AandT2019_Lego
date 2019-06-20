@@ -3,12 +3,12 @@
 範囲がガバイ。
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
+using System.IO;
 
 struct BasePixelInfo
 {
@@ -19,7 +19,7 @@ struct BasePixelInfo
 
 public class LegoCalibration : MonoBehaviour
 {
-  private float timeLeft__1FPS_, timeLeft__15FPS_;
+  private float timeLeft__1FPS_, timeLeft__15FPS_, timeLeft__12FPM_;
   private KinectManager manager_;
   [SerializeField] RawImage depthImage_;
   [SerializeField] private int upperBasePixelDepthValue_ = 420;
@@ -60,6 +60,7 @@ public class LegoCalibration : MonoBehaviour
     baseXYAndDepth_ = new Vector3[4];
     timeLeft__1FPS_ = 1.0f;
     timeLeft__15FPS_ = 0.04f;
+    timeLeft__12FPM_ = 5.0f;
 
     progressFlag_ = 0;
     currentlyCalibratedHierarchy_ = 5;
@@ -71,6 +72,7 @@ public class LegoCalibration : MonoBehaviour
   {
     timeLeft__1FPS_ -= Time.deltaTime;
     timeLeft__15FPS_ -= Time.deltaTime;
+    timeLeft__12FPM_ -= Time.deltaTime;
 
     if (!(manager_ && manager_.IsInitialized())) return;
 
@@ -159,6 +161,22 @@ public class LegoCalibration : MonoBehaviour
           break;
       }
     }
+    /*
+    //12FPM処理
+    if(timeLeft__12FPM_ < 0)
+    {
+      timeLeft__12FPM_ = 5.0f;
+
+      byte[] pngData = depthTexture_.EncodeToPNG();
+
+      string filePath = EditorUtility.SaveFilePanel("Save Texture", "", depthTexture_.name + ".png", "png");
+
+      if(filePath.Length > 0)
+      {
+        File.WriteAllBytes(filePath, pngData);
+      }
+    }    
+    */
     basePixelMap_.Clear();
   }
 
