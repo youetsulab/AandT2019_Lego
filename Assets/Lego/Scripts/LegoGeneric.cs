@@ -91,8 +91,6 @@ public static class LegoGeneric
     }
 
     return hsv;
-
-
   }
 
   public static LegoColor Max_rgb(Color c)

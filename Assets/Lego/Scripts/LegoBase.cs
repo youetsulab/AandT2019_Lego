@@ -16,7 +16,6 @@ internal struct RawLegoPixelInfo
 
 internal struct LandscapeCellInfo
 {
-  public int index;
   public LegoColor legoColor;
   public int floor;
 }
@@ -30,7 +29,6 @@ public class LegoBase : MonoBehaviour
   private KinectManager manager_;
   private List<LandscapeCellInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
-  private bool isCreateLandscapeMap_;
   private int createNumCount_;
   private static readonly int MAX_CREATE_NUM = 60;
   private float timeLeft__1FPS_, timeLeft__15FPS_;
@@ -39,9 +37,8 @@ public class LegoBase : MonoBehaviour
   protected void Start()
   {
     LegoData.CalibrationData.GetCalibrationData();
-    rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].x - LegoData.CalibrationData.calibrationXYAndDepth[3].x);
-    rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.calibrationXYAndDepth[0].y - LegoData.CalibrationData.calibrationXYAndDepth[3].y);
-    isCreateLandscapeMap_ = false;
+    rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.baseEdgeXY[0].x - LegoData.CalibrationData.baseEdgeXY[3].x);
+    rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.baseEdgeXY[0].y - LegoData.CalibrationData.baseEdgeXY[3].y);
     landscapeMapList_ = new List<LandscapeCellInfo[,]>();
     createNumCount_ = 0;
 
@@ -60,7 +57,7 @@ public class LegoBase : MonoBehaviour
       colorImage_.texture = manager_.GetUsersClrTex();
     }
 
-    if (isCreateLandscapeMap_ && (MAX_CREATE_NUM > createNumCount_))
+    if (MAX_CREATE_NUM > createNumCount_)
     {
       CreateLandscapeMap();
       createNumCount_++;
@@ -106,8 +103,12 @@ public class LegoBase : MonoBehaviour
               color = Color.green;
               break;
 
-            case LegoColor.None:
+            case LegoColor.Yellow:
               color = Color.yellow;
+              break;
+
+            case LegoColor.None:
+              color = Color.gray;
               break;
 
             default:
@@ -117,7 +118,7 @@ public class LegoBase : MonoBehaviour
           debugTexture1.SetPixel(x, y, color);
         }
 
-        switch (landscapeMap[x,y].floor)
+        switch (landscapeMap[x, y].floor)
         {
           case 0:
             color = Color.white;
@@ -203,10 +204,10 @@ public class LegoBase : MonoBehaviour
       {
         for (int x = 0; x < rawLegoImageWidth_; x++)
         {
-          cameramap[x, y].depth = manager_.GetDepthForPixel(x + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].x, y + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].y);
+          cameramap[x, y].depth = manager_.GetDepthForPixel(x + (int)LegoData.CalibrationData.baseEdgeXY[0].x, y + (int)LegoData.CalibrationData.baseEdgeXY[0].y);
           cameramap[x, y].depth = (ushort)Mathf.Abs(cameramap[x, y].depth >> 3);
 
-          Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].x, y + (int)LegoData.CalibrationData.calibrationXYAndDepth[0].y));
+          Vector2 posColor = manager_.GetColorMapPosForDepthPos(new Vector2(x + (int)LegoData.CalibrationData.baseEdgeXY[0].x, y + (int)LegoData.CalibrationData.baseEdgeXY[0].y));
           cameramap[x, y].color = colorTexture.GetPixel((int)posColor.x, (int)posColor.y);
 
           texture.SetPixel(x, y, cameramap[x, y].color);
@@ -261,8 +262,9 @@ public class LegoBase : MonoBehaviour
       if (165 <= hsv.h && hsv.h < 300) return LegoColor.Blue; //base : 240
       if (hsv.h < 45 || 300 <= hsv.h) return LegoColor.Red;   //base : 0
       if (45 <= hsv.h && hsv.h < 165) return LegoColor.Green; //base : 90
-      */
 
+      return LegoColor.None;
+      */
       LegoColor max = LegoGeneric.Max_rgb(c);
       if (c.r > 0.6f && c.g > 0.6f && c.b > 0.6f) return LegoColor.White;
       else return max;
@@ -270,7 +272,7 @@ public class LegoBase : MonoBehaviour
 
     int DiscriminateLegoHeight(ushort depth)
     {
-      ushort baseDepth = (ushort)LegoData.CalibrationData.calibrationCenter.z;
+      ushort baseDepth = LegoData.CalibrationData.baseCenterDepth;
       if (depth > baseDepth - 3) return 0;
       if (baseDepth - 3 >= depth && depth > baseDepth - 13) return 1;
       if (baseDepth - 13 >= depth && depth > baseDepth - 23) return 2;
@@ -286,7 +288,7 @@ public class LegoBase : MonoBehaviour
 
   public void OnButtonClicked()
   {
-    isCreateLandscapeMap_ = !isCreateLandscapeMap_;
+
   }
 }
 
