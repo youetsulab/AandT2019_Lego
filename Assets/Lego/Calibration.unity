@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depthImage_: {fileID: 389034792}
-  upperBasePixelDepthValue_: 850
-  lowerBasePixelDepthValue_: 840
+  upperBasePixelDepthValue_: 840
+  lowerBasePixelDepthValue_: 830
   currentlyCalibrationText: {fileID: 70240162}
 --- !u!114 &14345611
 MonoBehaviour:

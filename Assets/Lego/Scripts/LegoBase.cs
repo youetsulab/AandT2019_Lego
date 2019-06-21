@@ -13,12 +13,6 @@ internal struct RawLegoPixelInfo
   public ushort depth;
   public Color color;
 }
-
-internal struct LandscapeCellInfo
-{
-  public LegoColor legoColor;
-  public int floor;
-}
 #endregion
 
 public class LegoBase : MonoBehaviour
@@ -27,9 +21,10 @@ public class LegoBase : MonoBehaviour
   [SerializeField]
   private RawImage colorImage_, debugImage1_, debugImage2_, debugImage3_;
   private KinectManager manager_;
-  private List<LandscapeCellInfo[,]> landscapeMapList_;
+  private List<LegoBlockInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
   private int createNumCount_;
+  private LegoBlockInfo[,] currentLandscapeMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH,LegoData.LANDSCAPE_MAP_HEIGHT];
   private static readonly int MAX_CREATE_NUM = 60;
   private float timeLeft__1FPS_, timeLeft__15FPS_;
   #endregion
@@ -39,7 +34,7 @@ public class LegoBase : MonoBehaviour
     LegoData.CalibrationData.GetCalibrationData();
     rawLegoImageWidth_ = (int)Mathf.Abs(LegoData.CalibrationData.baseEdgeXY[0].x - LegoData.CalibrationData.baseEdgeXY[3].x);
     rawLegoImageHeight_ = (int)Mathf.Abs(LegoData.CalibrationData.baseEdgeXY[0].y - LegoData.CalibrationData.baseEdgeXY[3].y);
-    landscapeMapList_ = new List<LandscapeCellInfo[,]>();
+    landscapeMapList_ = new List<LegoBlockInfo[,]>();
     createNumCount_ = 0;
 
     timeLeft__15FPS_ = 0.04f;
@@ -75,17 +70,17 @@ public class LegoBase : MonoBehaviour
   {
     Texture2D debugTexture1 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
     Texture2D debugTexture2 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
-    LandscapeCellInfo[,] landscapeMap = CalcLandscapeMapMode();
+    currentLandscapeMap_ = CalcLandscapeMapMode();
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
       {
         Color color;
-        if (landscapeMap[x, y].floor == 0) color = Color.white;
+        if (currentLandscapeMap_[x, y].floor == 0) color = Color.white;
         else
         {
-          switch (landscapeMap[x, y].legoColor)
+          switch (currentLandscapeMap_[x, y].legoColor)
           {
             case LegoColor.Black:
               color = Color.black;
@@ -118,7 +113,7 @@ public class LegoBase : MonoBehaviour
           debugTexture1.SetPixel(x, y, color);
         }
 
-        switch (landscapeMap[x, y].floor)
+        switch (currentLandscapeMap_[x, y].floor)
         {
           case 0:
             color = Color.white;
@@ -156,10 +151,10 @@ public class LegoBase : MonoBehaviour
     debugImage2_.texture = debugTexture1;
     debugImage3_.texture = debugTexture2;
 
-    //[TODO] LandscapeCellInfoの統計情報（色、高さ）を計算する。
-    LandscapeCellInfo[,] CalcLandscapeMapMode()
+    //[TODO] LegoBlockInfoの統計情報（色、高さ）を計算する。
+    LegoBlockInfo[,] CalcLandscapeMapMode()
     {
-      LandscapeCellInfo[,] lsMap = new LandscapeCellInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
+      LegoBlockInfo[,] lsMap = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
 
       for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
       {
@@ -182,12 +177,12 @@ public class LegoBase : MonoBehaviour
     }
   }
 
-  //LandscapeCellInfo[,] CreateLandscapeMap()
+  //LegoBlockInfo[,] CreateLandscapeMap()
   void CreateLandscapeMap()
   {
     #region Main
     RawLegoPixelInfo[,] rawLegoMap = GetTexturedata((Texture2D)colorImage_.texture);
-    LandscapeCellInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
+    LegoBlockInfo[,] legoMap = ConvertRawLegoMap2LandscapeMap(rawLegoMap);
     landscapeMapList_.Add(legoMap);
     #endregion
 
@@ -218,10 +213,10 @@ public class LegoBase : MonoBehaviour
       return cameramap;
     }
 
-    // Array(RawLegoPixelInfo) => Array(LandscapeCellInfo)
-    LandscapeCellInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] cameraMap)
+    // Array(RawLegoPixelInfo) => Array(LegoBlockInfo)
+    LegoBlockInfo[,] ConvertRawLegoMap2LandscapeMap(RawLegoPixelInfo[,] cameraMap)
     {
-      LandscapeCellInfo[,] landscapeMap = new LandscapeCellInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
+      LegoBlockInfo[,] landscapeMap = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
       int cellWidth = rawLegoImageWidth_ / LegoData.LANDSCAPE_MAP_WIDTH;
       int cellHeight = rawLegoImageHeight_ / LegoData.LANDSCAPE_MAP_HEIGHT;
 
@@ -288,7 +283,7 @@ public class LegoBase : MonoBehaviour
 
   public void OnButtonClicked()
   {
-
+    LegoData.legoMap = currentLandscapeMap_;
   }
 }
 
