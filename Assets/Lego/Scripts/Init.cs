@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-//[TODO]
-//キャリブレーションをしない選択をした場合でも、まだキャリブレーションがされていない場合はキャリブレーションを実行する。
 public class Init : MonoBehaviour
 {
   [SerializeField]
@@ -13,7 +11,7 @@ public class Init : MonoBehaviour
 
   void Start()
   {
-    if(LegoData.CalibrationData.HasCalibrationData())
+    if (LegoData.CalibrationData.HasCalibrationData())
     {
       LegoData.isCalibrated = true;
     }
@@ -23,7 +21,7 @@ public class Init : MonoBehaviour
   {
     text_.text = "Calibration画面へ移行します。";
     LegoData.isInitialized = true;
-    StartCoroutine(DelayMethod(3.5f, () =>
+    StartCoroutine(LegoGeneric.DelayMethod(3.5f, () =>
     {
       SceneManager.LoadScene("Calibration");
     }));
@@ -35,7 +33,7 @@ public class Init : MonoBehaviour
     if (LegoData.isCalibrated)
     {
       text_.text = "Main画面へ移行します。";
-      StartCoroutine(DelayMethod(3.5f, () =>
+      StartCoroutine(LegoGeneric.DelayMethod(3.5f, () =>
       {
         SceneManager.LoadScene("Main");
       }));
@@ -43,16 +41,10 @@ public class Init : MonoBehaviour
     else
     {
       text_.text = "Calibration Dataがありません。\nCalibration画面に移行します。";
-      StartCoroutine(DelayMethod(3.5f, () =>
+      StartCoroutine(LegoGeneric.DelayMethod(3.5f, () =>
       {
         SceneManager.LoadScene("Calibration");
       }));
     }
-  }
-
-  private IEnumerator DelayMethod(float waitTime, Action action)
-  {
-    yield return new WaitForSeconds(waitTime);
-    action();
   }
 }
