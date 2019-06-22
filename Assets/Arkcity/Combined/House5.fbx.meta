@@ -1,0 +1,217 @@
+fileFormatVersion: 2
+guid: a3c5632856396bb4e938c443ddd32791
+timeCreated: 1517579998
+licenseType: Store
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Combined_Root_01___Default__UnityEngine_Material__Mesh_Parent
+    100002: Combined_Root_23___Default__UnityEngine_Material__Mesh_Parent
+    100004: Combined_Root_door2__UnityEngine_Material__Mesh_Parent
+    100006: Combined_Root_foundation__UnityEngine_Material__Mesh_Parent
+    100008: Combined_Root_Material__16252__UnityEngine_Material__Mesh_Parent
+    100010: Combined_Root_Mesh
+    100012: Combined_Root_Mesh_1
+    100014: Combined_Root_Mesh_10
+    100016: Combined_Root_Mesh_11
+    100018: Combined_Root_Mesh_12
+    100020: Combined_Root_Mesh_13
+    100022: Combined_Root_Mesh_14
+    100024: Combined_Root_Mesh_15
+    100026: Combined_Root_Mesh_2
+    100028: Combined_Root_Mesh_3
+    100030: Combined_Root_Mesh_4
+    100032: Combined_Root_Mesh_5
+    100034: Combined_Root_Mesh_6
+    100036: Combined_Root_Mesh_7
+    100038: Combined_Root_Mesh_8
+    100040: Combined_Root_Mesh_9
+    100042: Combined_Root_No_Name__UnityEngine_Material__Mesh_Parent
+    100044: Combined_Root_red_wood__UnityEngine_Material__Mesh_Parent
+    100046: Combined_Root_roof_red__UnityEngine_Material__Mesh_Parent
+    100048: Combined_Root_stairs__UnityEngine_Material__Mesh_Parent
+    100050: Combined_Root_TranspStuff__UnityEngine_Material__Mesh_Parent
+    100052: Combined_Root_white_planks__UnityEngine_Material__Mesh_Parent
+    100054: Combined_Root_window1__UnityEngine_Material__Mesh_Parent
+    100056: Combined_Root_window_2_1__UnityEngine_Material__Mesh_Parent
+    100058: Combined_Root_window__UnityEngine_Material__Mesh_Parent
+    100060: Combined_Root_wood__UnityEngine_Material__Mesh_Parent
+    100062: Combined_Root_wood_planks__UnityEngine_Material__Mesh_Parent
+    100064: //RootNode
+    400000: Combined_Root_01___Default__UnityEngine_Material__Mesh_Parent
+    400002: Combined_Root_23___Default__UnityEngine_Material__Mesh_Parent
+    400004: Combined_Root_door2__UnityEngine_Material__Mesh_Parent
+    400006: Combined_Root_foundation__UnityEngine_Material__Mesh_Parent
+    400008: Combined_Root_Material__16252__UnityEngine_Material__Mesh_Parent
+    400010: Combined_Root_Mesh
+    400012: Combined_Root_Mesh_1
+    400014: Combined_Root_Mesh_10
+    400016: Combined_Root_Mesh_11
+    400018: Combined_Root_Mesh_12
+    400020: Combined_Root_Mesh_13
+    400022: Combined_Root_Mesh_14
+    400024: Combined_Root_Mesh_15
+    400026: Combined_Root_Mesh_2
+    400028: Combined_Root_Mesh_3
+    400030: Combined_Root_Mesh_4
+    400032: Combined_Root_Mesh_5
+    400034: Combined_Root_Mesh_6
+    400036: Combined_Root_Mesh_7
+    400038: Combined_Root_Mesh_8
+    400040: Combined_Root_Mesh_9
+    400042: Combined_Root_No_Name__UnityEngine_Material__Mesh_Parent
+    400044: Combined_Root_red_wood__UnityEngine_Material__Mesh_Parent
+    400046: Combined_Root_roof_red__UnityEngine_Material__Mesh_Parent
+    400048: Combined_Root_stairs__UnityEngine_Material__Mesh_Parent
+    400050: Combined_Root_TranspStuff__UnityEngine_Material__Mesh_Parent
+    400052: Combined_Root_white_planks__UnityEngine_Material__Mesh_Parent
+    400054: Combined_Root_window1__UnityEngine_Material__Mesh_Parent
+    400056: Combined_Root_window_2_1__UnityEngine_Material__Mesh_Parent
+    400058: Combined_Root_window__UnityEngine_Material__Mesh_Parent
+    400060: Combined_Root_wood__UnityEngine_Material__Mesh_Parent
+    400062: Combined_Root_wood_planks__UnityEngine_Material__Mesh_Parent
+    400064: //RootNode
+    2100000: window1
+    2100002: red_wood
+    2100004: wood
+    2100006: Material__16252
+    2100008: roof_red
+    2100010: foundation
+    2100012: wood_planks
+    2100014: window
+    2100016: white_planks
+    2100018: No_Name
+    2100020: _01___Default
+    2100022: stairs
+    2100024: _23___Default
+    2100026: TranspStuff
+    2100028: window_2_1
+    2100030: door2
+    2300000: Combined_Root_Mesh
+    2300002: Combined_Root_Mesh_1
+    2300004: Combined_Root_Mesh_10
+    2300006: Combined_Root_Mesh_11
+    2300008: Combined_Root_Mesh_12
+    2300010: Combined_Root_Mesh_13
+    2300012: Combined_Root_Mesh_14
+    2300014: Combined_Root_Mesh_15
+    2300016: Combined_Root_Mesh_2
+    2300018: Combined_Root_Mesh_3
+    2300020: Combined_Root_Mesh_4
+    2300022: Combined_Root_Mesh_5
+    2300024: Combined_Root_Mesh_6
+    2300026: Combined_Root_Mesh_7
+    2300028: Combined_Root_Mesh_8
+    2300030: Combined_Root_Mesh_9
+    3300000: Combined_Root_Mesh
+    3300002: Combined_Root_Mesh_1
+    3300004: Combined_Root_Mesh_10
+    3300006: Combined_Root_Mesh_11
+    3300008: Combined_Root_Mesh_12
+    3300010: Combined_Root_Mesh_13
+    3300012: Combined_Root_Mesh_14
+    3300014: Combined_Root_Mesh_15
+    3300016: Combined_Root_Mesh_2
+    3300018: Combined_Root_Mesh_3
+    3300020: Combined_Root_Mesh_4
+    3300022: Combined_Root_Mesh_5
+    3300024: Combined_Root_Mesh_6
+    3300026: Combined_Root_Mesh_7
+    3300028: Combined_Root_Mesh_8
+    3300030: Combined_Root_Mesh_9
+    4300000: Combined_Root_Mesh
+    4300002: Combined_Root_Mesh_1
+    4300004: Combined_Root_Mesh_2
+    4300006: Combined_Root_Mesh_3
+    4300008: Combined_Root_Mesh_4
+    4300010: Combined_Root_Mesh_5
+    4300012: Combined_Root_Mesh_6
+    4300014: Combined_Root_Mesh_7
+    4300016: Combined_Root_Mesh_8
+    4300018: Combined_Root_Mesh_9
+    4300020: Combined_Root_Mesh_10
+    4300022: Combined_Root_Mesh_11
+    4300024: Combined_Root_Mesh_12
+    4300026: Combined_Root_Mesh_13
+    4300028: Combined_Root_Mesh_14
+    4300030: Combined_Root_Mesh_15
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -39,7 +39,7 @@ public class LegoCreateLandscape : MonoBehaviour
         {
           if (x == 0 && y == 0)
           {
-            landscapeLegoMap[x, y].thisType
+            //landscapeLegoMap[x, y].thisType
           }
           else if (x == 0)
           {
@@ -54,7 +54,7 @@ public class LegoCreateLandscape : MonoBehaviour
         {
 
         }
-
+        DiscriminateLegoType(LegoColor.Red);
       }
     }
 
@@ -65,8 +65,11 @@ public class LegoCreateLandscape : MonoBehaviour
       switch (legoColor)
       {
           
-          default:
+          default:;
+          break;
       }
+
+      return LandscapeType.Building;
     }
   }
 }

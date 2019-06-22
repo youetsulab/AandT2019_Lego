@@ -1,0 +1,137 @@
+fileFormatVersion: 2
+guid: f7b14078b922e184683feb7a2b362109
+timeCreated: 1517579306
+licenseType: Store
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Combined_FountainRoot_1__UnityEngine_Material__Mesh_Parent
+    100002: Combined_FountainRoot_2__UnityEngine_Material__Mesh_Parent
+    100004: Combined_FountainRoot_3__UnityEngine_Material__Mesh_Parent
+    100006: Combined_FountainRoot_4__UnityEngine_Material__Mesh_Parent
+    100008: Combined_FountainRoot_Mesh
+    100010: Combined_FountainRoot_Mesh_1
+    100012: Combined_FountainRoot_Mesh_2
+    100014: Combined_FountainRoot_Mesh_3
+    100016: Combined_FountainRoot_Mesh_4
+    100018: Combined_FountainRoot_Mesh_5
+    100020: Combined_FountainRoot_No_Name__UnityEngine_Material__Mesh_Parent
+    100022: Combined_FountainRoot_White__UnityEngine_Material__Mesh_Parent
+    100024: //RootNode
+    400000: Combined_FountainRoot_1__UnityEngine_Material__Mesh_Parent
+    400002: Combined_FountainRoot_2__UnityEngine_Material__Mesh_Parent
+    400004: Combined_FountainRoot_3__UnityEngine_Material__Mesh_Parent
+    400006: Combined_FountainRoot_4__UnityEngine_Material__Mesh_Parent
+    400008: Combined_FountainRoot_Mesh
+    400010: Combined_FountainRoot_Mesh_1
+    400012: Combined_FountainRoot_Mesh_2
+    400014: Combined_FountainRoot_Mesh_3
+    400016: Combined_FountainRoot_Mesh_4
+    400018: Combined_FountainRoot_Mesh_5
+    400020: Combined_FountainRoot_No_Name__UnityEngine_Material__Mesh_Parent
+    400022: Combined_FountainRoot_White__UnityEngine_Material__Mesh_Parent
+    400024: //RootNode
+    2100000: _1
+    2100002: _4
+    2100004: _2
+    2100006: _3
+    2100008: White
+    2100010: No_Name
+    2300000: Combined_FountainRoot_Mesh
+    2300002: Combined_FountainRoot_Mesh_1
+    2300004: Combined_FountainRoot_Mesh_2
+    2300006: Combined_FountainRoot_Mesh_3
+    2300008: Combined_FountainRoot_Mesh_4
+    2300010: Combined_FountainRoot_Mesh_5
+    3300000: Combined_FountainRoot_Mesh
+    3300002: Combined_FountainRoot_Mesh_1
+    3300004: Combined_FountainRoot_Mesh_2
+    3300006: Combined_FountainRoot_Mesh_3
+    3300008: Combined_FountainRoot_Mesh_4
+    3300010: Combined_FountainRoot_Mesh_5
+    4300000: Combined_FountainRoot_Mesh
+    4300002: Combined_FountainRoot_Mesh_1
+    4300004: Combined_FountainRoot_Mesh_2
+    4300006: Combined_FountainRoot_Mesh_3
+    4300008: Combined_FountainRoot_Mesh_4
+    4300010: Combined_FountainRoot_Mesh_5
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
