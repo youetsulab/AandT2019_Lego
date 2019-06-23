@@ -79,12 +79,6 @@ public class LegoCreateLandscape : MonoBehaviour
     ConvertLegoBlockInfo2LandscapeInfo();
   }
 
-  // Update is called once per frame
-  void Update()
-  {
-
-  }
-
   void ConvertLegoBlockInfo2LandscapeInfo()
   {
     LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
@@ -110,5 +104,22 @@ public class LegoCreateLandscape : MonoBehaviour
         }
       }
     }
+  }
+
+  /// <summary>
+  /// 景観作成
+  /// ・各オブジェクトの向きを指定
+  /// ・各オブジェクトの種類の詳細を指定
+  /// ・高さによる種類の変化を設定
+  /// ・他オブジェクトとの隣接関係を設定
+  /// 例：
+  /// ・橋や道路、交差点など、高さが違う場合は立体交差は歩道橋など
+  /// ・１マスのみの場合や孤立している場合のことも考える。
+  /// ・２マス分の建物
+  /// ・川や海、高さが違う場合は滝など
+  /// ・水のマスが１マスのみの場合は噴水など
+  /// </summary>
+  void CreateLandscape()
+  {
   }
 }
