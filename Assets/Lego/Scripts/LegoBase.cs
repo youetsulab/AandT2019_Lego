@@ -230,8 +230,8 @@ public class LegoBase : MonoBehaviour
           {
             for (int cx = 0; cx < cellWidth; cx++)
             {
-              cellColorMap[cy * cellWidth + cx] = DiscriminateColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
-              cellFloorMap[cy * cellWidth + cx] = DiscriminateLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
+              cellColorMap[cy * cellWidth + cx] = DiscernColor(cameraMap[x * cellWidth + cx, y * cellHeight + cy].color);
+              cellFloorMap[cy * cellWidth + cx] = DiscernLegoHeight(cameraMap[x * cellWidth + cx, y * cellHeight + cy].depth);
             }
           }
           landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorMap, Enum.GetNames(typeof(LegoColor)).Length);
@@ -242,7 +242,7 @@ public class LegoBase : MonoBehaviour
       return landscapeMap;
     }
 
-    LegoColor DiscriminateColor(Color c)
+    LegoColor DiscernColor(Color c)
     {
       HSV hsv = LegoGeneric.RGB2HSV(c);
 
@@ -265,7 +265,7 @@ public class LegoBase : MonoBehaviour
       else return max;
     }
 
-    int DiscriminateLegoHeight(ushort depth)
+    int DiscernLegoHeight(ushort depth)
     {
       ushort baseDepth = LegoData.CalibrationData.baseCenterDepth;
       if (depth > baseDepth - 3) return 0;
