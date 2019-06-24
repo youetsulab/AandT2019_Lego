@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 #region Struct define
 public enum LegoColor
@@ -18,6 +19,9 @@ internal struct RawLegoPixelInfo
 
 public class LegoBase : MonoBehaviour
 {
+  #region Constant Value
+  #endregion
+
   #region Memeber Value
   [SerializeField]
   private RawImage colorImage_, debugImage1_, debugImage2_, debugImage3_;
@@ -25,7 +29,7 @@ public class LegoBase : MonoBehaviour
   private List<LegoBlockInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
   private int createNumCount_;
-  private LegoBlockInfo[,] currentLandscapeMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH,LegoData.LANDSCAPE_MAP_HEIGHT];
+  private LegoBlockInfo[,] currentLandscapeMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
   private static readonly int MAX_CREATE_NUM = 60;
   private float timeLeft__1FPS_, timeLeft__15FPS_;
   #endregion
@@ -286,11 +290,17 @@ public class LegoBase : MonoBehaviour
   {
     LegoData.legoMap = currentLandscapeMap_;
 
+    LegoGeneric.SaveDataAsJsonfile(currentLandscapeMap_);
+
+    /*
     //kinectは用済みなので削除する。また必要になる場合は削除せずに保持しておいたほうが良い可能性がある。
     GameObject mainCamera = GameObject.Find("Kinect Camera");
     SceneManager.MoveGameObjectToScene(mainCamera, SceneManager.GetActiveScene());
     SceneManager.LoadScene("Landscape");
+    */
   }
+
+  
 }
 
 

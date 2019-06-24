@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using System;
+using System.IO;
 
 public struct HSV
 {
@@ -10,6 +11,21 @@ public struct HSV
   public int h;
   public int s;
   public int v;
+}
+
+public static class JsonHelper
+{
+  public static T[] FromJson<T>(string json)
+  {
+    Wrapper_Array<T> wrapper = UnityEngine.JsonUtility.FromJson<Wrapper_Array<T>>(json);
+    return wrapper.array;
+  }
+
+  [Serializable]
+  public class Wrapper_Array<T>
+  {
+    public T[] array;
+  }
 }
 
 public static class LegoGeneric
@@ -141,5 +157,40 @@ public static class LegoGeneric
   {
     yield return new WaitForSeconds(waitTime);
     action();
+  }
+  public static void SaveDataAsJsonfile(LegoBlockInfo[,] data)
+  {
+    var path = Application.dataPath + LegoData.SAVE_FILE_PATH;
+    var writer = new StreamWriter(path, false);
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        var json = JsonUtility.ToJson(data[x, y]);
+        writer.WriteLine(json);
+        writer.Flush();
+      }
+    }
+    writer.Close();
+  }
+
+  public static LegoBlockInfo[,] LoadJsonfile()
+  {
+    LegoBlockInfo[,] legoMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_WIDTH];
+    var info = new FileInfo(Application.dataPath + LegoData.SAVE_FILE_PATH);
+    var reader = new StreamReader(info.OpenRead());
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        var json = reader.ReadToEnd();
+        var data = JsonUtility.FromJson<LegoBlockInfo>(json);
+        legoMap_[x, y] = data;
+      }
+    }
+
+    return legoMap_;
   }
 }

@@ -82,7 +82,8 @@ public class LegoCreateLandscape : MonoBehaviour
 
   void ConvertLegoBlockInfo2LandscapeInfo()
   {
-    LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
+    //LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
+    LegoBlockInfo[,] legoBlockMap = LegoGeneric.LoadJsonfile();
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
