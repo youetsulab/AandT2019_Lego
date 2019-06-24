@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public struct LegoBlockInfo
+{
+  public LegoColor legoColor;
+  public int height;
+}
+
 public static class LegoData
 {
   #region Local Class
@@ -105,4 +111,5 @@ public static class LegoData
 
   public static bool isCalibrated = false;
   public static bool isInitialized = false;
+  public static LegoBlockInfo[,] legoMap = new LegoBlockInfo[LANDSCAPE_MAP_WIDTH, LANDSCAPE_MAP_HEIGHT];
 }
