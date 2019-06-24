@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public struct LegoBlockInfo
 {
   public LegoColor legoColor;
-  public int floor;
+  public int height;
 }
 
 public static class LegoData

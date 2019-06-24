@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 #region Struct define
 public enum LegoColor
@@ -77,7 +78,7 @@ public class LegoBase : MonoBehaviour
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
       {
         Color color;
-        if (currentLandscapeMap_[x, y].floor == 0) color = Color.white;
+        if (currentLandscapeMap_[x, y].height == 0) color = Color.white;
         else
         {
           switch (currentLandscapeMap_[x, y].legoColor)
@@ -113,7 +114,7 @@ public class LegoBase : MonoBehaviour
           debugTexture1.SetPixel(x, y, color);
         }
 
-        switch (currentLandscapeMap_[x, y].floor)
+        switch (currentLandscapeMap_[x, y].height)
         {
           case 0:
             color = Color.white;
@@ -166,11 +167,11 @@ public class LegoBase : MonoBehaviour
           while (i < landscapeMapList_.Count)
           {
             legoColor[i] = landscapeMapList_[i][x, y].legoColor;
-            legoHeight[i] = landscapeMapList_[i][x, y].floor;
+            legoHeight[i] = landscapeMapList_[i][x, y].height;
             i++;
           }
           lsMap[x, y].legoColor = LegoGeneric.CalcMode(legoColor, Enum.GetNames(typeof(LegoColor)).Length);
-          lsMap[x, y].floor = LegoGeneric.CalcMode(legoHeight, LegoData.BUILDING_HIERARCHY_NUM);
+          lsMap[x, y].height = LegoGeneric.CalcMode(legoHeight, LegoData.BUILDING_HIERARCHY_NUM);
         }
       }
       return lsMap;
@@ -235,7 +236,7 @@ public class LegoBase : MonoBehaviour
             }
           }
           landscapeMap[x, y].legoColor = LegoGeneric.CalcMode(cellColorMap, Enum.GetNames(typeof(LegoColor)).Length);
-          landscapeMap[x, y].floor = LegoGeneric.CalcMode(cellFloorMap, LegoData.BUILDING_HIERARCHY_NUM);
+          landscapeMap[x, y].height = LegoGeneric.CalcMode(cellFloorMap, LegoData.BUILDING_HIERARCHY_NUM);
         }
       }
 
@@ -284,6 +285,11 @@ public class LegoBase : MonoBehaviour
   public void OnButtonClicked()
   {
     LegoData.legoMap = currentLandscapeMap_;
+
+    //kinectは用済みなので削除する。また必要になる場合は削除せずに保持しておいたほうが良い可能性がある。
+    GameObject mainCamera = GameObject.Find("Kinect Camera");
+    SceneManager.MoveGameObjectToScene(mainCamera, SceneManager.GetActiveScene());
+    SceneManager.LoadScene("Landscape");
   }
 }
 

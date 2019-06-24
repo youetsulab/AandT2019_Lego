@@ -34,3 +34,8 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Heavy Assets
+Assets/Arkcity/
+Assets/Stones_and_buried_treasure/
+Assets/Sun_Temple/

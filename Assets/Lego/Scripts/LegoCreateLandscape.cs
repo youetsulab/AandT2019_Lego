@@ -6,6 +6,7 @@ enum LandscapeType_OverView
 {
   Building, Water, Nature, Road, Spaces,
 }
+
 enum LandscapeType_Details
 {                         //LandscapeType_Overview
   House, Shop, Landmark,  //Building
@@ -88,7 +89,7 @@ public class LegoCreateLandscape : MonoBehaviour
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
       {
         landscapeLegoMap_[x, y] = new LandscapeLegoInfo(legoBlockMap[x, y].legoColor);
-        landscapeLegoMap_[x, y].height = legoBlockMap[x, y].floor;
+        landscapeLegoMap_[x, y].height = legoBlockMap[x, y].height;
         if (x == 0 || y == 0)
         {
           if (x == 0 && y == 0) continue;
