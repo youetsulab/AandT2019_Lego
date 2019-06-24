@@ -13,17 +13,54 @@ public struct HSV
   public int v;
 }
 
-public static class JsonHelper
+public static class JsonHelper_TwodimensionalArray
 {
-  public static T[] FromJson<T>(string json)
+  //filenameは.jsonまでつける。
+  public static void SaveAsJson<T>(T[,] obj, int width, int height, string filename)
   {
-    Wrapper_Array<T> wrapper = UnityEngine.JsonUtility.FromJson<Wrapper_Array<T>>(json);
-    return wrapper.array;
+    Wrapper<T> wrapper = new Wrapper<T>();
+    T[] array = new T[width * height];
+
+    for (int y = 0; y < height; y++)
+    {
+      for (int x = 0; x < width; x++)
+      {
+        array[y * width + x] = obj[x, y];
+      }
+    }
+    wrapper.array = array;
+    wrapper.width = width;
+    wrapper.height = height;
+
+    var json = JsonUtility.ToJson(wrapper);
+    var path = Application.dataPath + LegoData.SAVE_FILE_PATH + filename;
+    var writer = new StreamWriter(path, false);
+    writer.WriteLine(json);
+    writer.Flush();
+    writer.Close();
+  }
+  public static T[,] LoadJson<T>(string filename)
+  {
+    var info = new FileInfo(Application.dataPath + LegoData.SAVE_FILE_PATH + filename);
+    var reader = new StreamReader(info.OpenRead());
+    var json = reader.ReadToEnd();
+    Wrapper<T> data = JsonUtility.FromJson<Wrapper<T>>(json);
+    T[,] array_2D = new T[data.width, data.height];
+
+    for (int y = 0; y < data.height; y++)
+    {
+      for (int x = 0; x < data.width; x++)
+      {
+        array_2D[x, y] = data.array[y * data.width + x];
+      }
+    }
+    return array_2D;
   }
 
   [Serializable]
-  public class Wrapper_Array<T>
+  private class Wrapper<T>
   {
+    public int width, height;
     public T[] array;
   }
 }
