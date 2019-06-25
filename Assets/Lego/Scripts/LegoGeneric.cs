@@ -195,7 +195,7 @@ public static class LegoGeneric
     yield return new WaitForSeconds(waitTime);
     action();
   }
-  public static void SaveDataAsJsonfile(LegoBlockInfo[,] data)
+    public static void SaveDataAsJsonfile(LegoBlockInfo[,] data)
   {
     var path = Application.dataPath + LegoData.SAVE_FILE_PATH;
     var writer = new StreamWriter(path, false);

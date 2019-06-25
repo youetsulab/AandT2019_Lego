@@ -24,8 +24,9 @@ public class LegoBase : MonoBehaviour
 
   #region Memeber Value
   [SerializeField]
-  private RawImage colorImage_, debugImage1_, debugImage2_, debugImage3_;
+  private RawImage colorImage_, trimRectImage_;
   private KinectManager manager_;
+  private LegoCreateTex legoCreateTex_;
   private List<LegoBlockInfo[,]> landscapeMapList_;
   private int rawLegoImageWidth_, rawLegoImageHeight_;
   private int createNumCount_;
@@ -44,6 +45,8 @@ public class LegoBase : MonoBehaviour
 
     timeLeft__15FPS_ = 0.04f;
     timeLeft__1FPS_ = 1.0f;
+
+    legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
   }
 
   void Update()
@@ -65,122 +68,42 @@ public class LegoBase : MonoBehaviour
 
     if (createNumCount_ >= MAX_CREATE_NUM)
     {
-      CreateLandScapeTexture();
+      Texture2D debugTexture1 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
+      Texture2D debugTexture2 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
+
+      currentLandscapeMap_ = CalcLandscapeMapMode();
+      legoCreateTex_.CreateTexture(currentLandscapeMap_);
+
       landscapeMapList_.Clear();
       createNumCount_ = 0;
     }
   }
 
-  void CreateLandScapeTexture()
+
+  LegoBlockInfo[,] CalcLandscapeMapMode()
   {
-    Texture2D debugTexture1 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
-    Texture2D debugTexture2 = new Texture2D(LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, TextureFormat.RGBA32, false);
-    currentLandscapeMap_ = CalcLandscapeMapMode();
+    LegoBlockInfo[,] lsMap = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
       {
-        Color color;
-        if (currentLandscapeMap_[x, y].height == 0) color = Color.white;
-        else
+        int i = 0;
+        LegoColor[] legoColor = new LegoColor[landscapeMapList_.Count];
+        int[] legoHeight = new int[landscapeMapList_.Count];
+        while (i < landscapeMapList_.Count)
         {
-          switch (currentLandscapeMap_[x, y].legoColor)
-          {
-            case LegoColor.Black:
-              color = Color.black;
-              break;
-
-            case LegoColor.Red:
-              color = Color.red;
-              break;
-
-            case LegoColor.Blue:
-              color = Color.blue;
-              break;
-
-            case LegoColor.Green:
-              color = Color.green;
-              break;
-
-            case LegoColor.Yellow:
-              color = Color.yellow;
-              break;
-
-            case LegoColor.None:
-              color = Color.gray;
-              break;
-
-            default:
-              color = Color.white;
-              break;
-          }
-          debugTexture1.SetPixel(x, y, color);
+          legoColor[i] = landscapeMapList_[i][x, y].legoColor;
+          legoHeight[i] = landscapeMapList_[i][x, y].height;
+          i++;
         }
-
-        switch (currentLandscapeMap_[x, y].height)
-        {
-          case 0:
-            color = Color.white;
-            break;
-
-          case 1:
-            color = Color.green;
-            break;
-
-          case 2:
-            color = Color.yellow;
-            break;
-
-          case 3:
-            color = Color.blue;
-            break;
-
-          case 4:
-            color = Color.red;
-            break;
-
-          case 5:
-            color = Color.black;
-            break;
-
-          default:
-            color = Color.cyan;
-            break;
-        }
-        debugTexture2.SetPixel(x, y, color);
+        lsMap[x, y].legoColor = LegoGeneric.CalcMode(legoColor, Enum.GetNames(typeof(LegoColor)).Length);
+        lsMap[x, y].height = LegoGeneric.CalcMode(legoHeight, LegoData.BUILDING_HIERARCHY_NUM);
       }
     }
-    debugTexture1.Apply();
-    debugTexture2.Apply();
-    debugImage2_.texture = debugTexture1;
-    debugImage3_.texture = debugTexture2;
-
-    //[TODO] LegoBlockInfoの統計情報（色、高さ）を計算する。
-    LegoBlockInfo[,] CalcLandscapeMapMode()
-    {
-      LegoBlockInfo[,] lsMap = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
-
-      for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
-      {
-        for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
-        {
-          int i = 0;
-          LegoColor[] legoColor = new LegoColor[landscapeMapList_.Count];
-          int[] legoHeight = new int[landscapeMapList_.Count];
-          while (i < landscapeMapList_.Count)
-          {
-            legoColor[i] = landscapeMapList_[i][x, y].legoColor;
-            legoHeight[i] = landscapeMapList_[i][x, y].height;
-            i++;
-          }
-          lsMap[x, y].legoColor = LegoGeneric.CalcMode(legoColor, Enum.GetNames(typeof(LegoColor)).Length);
-          lsMap[x, y].height = LegoGeneric.CalcMode(legoHeight, LegoData.BUILDING_HIERARCHY_NUM);
-        }
-      }
-      return lsMap;
-    }
+    return lsMap;
   }
+
 
   //LegoBlockInfo[,] CreateLandscapeMap()
   void CreateLandscapeMap()
@@ -214,7 +137,7 @@ public class LegoBase : MonoBehaviour
         }
       }
       texture.Apply();
-      debugImage1_.texture = texture;
+      trimRectImage_.texture = texture;
       return cameramap;
     }
 
@@ -290,7 +213,7 @@ public class LegoBase : MonoBehaviour
   {
     LegoData.legoMap = currentLandscapeMap_;
 
-    LegoGeneric.SaveDataAsJsonfile(currentLandscapeMap_);
+    JsonHelper_TwodimensionalArray.SaveAsJson(currentLandscapeMap_, LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, "savedata1.json");
 
     /*
     //kinectは用済みなので削除する。また必要になる場合は削除せずに保持しておいたほうが良い可能性がある。
@@ -300,7 +223,7 @@ public class LegoBase : MonoBehaviour
     */
   }
 
-  
+
 }
 
 

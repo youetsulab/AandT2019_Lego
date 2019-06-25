@@ -74,10 +74,14 @@ class LandscapeLegoInfo
 public class LegoCreateLandscape : MonoBehaviour
 {
   private LandscapeLegoInfo[,] landscapeLegoMap_ = new LandscapeLegoInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT];
+  private LegoCreateTex legoCreateTex_;
   // Start is called before the first frame update
   void Start()
   {
-    ConvertLegoBlockInfo2LandscapeInfo();
+    LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("savedata1.json");
+    legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
+    legoCreateTex_.CreateTexture(legoBlockMap);
+    //ConvertLegoBlockInfo2LandscapeInfo();
   }
 
   void ConvertLegoBlockInfo2LandscapeInfo()
