@@ -81,14 +81,11 @@ public class LegoCreateLandscape : MonoBehaviour
     LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("savedata1.json");
     legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
     legoCreateTex_.CreateTexture(legoBlockMap);
-    //ConvertLegoBlockInfo2LandscapeInfo();
+    ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
   }
 
-  void ConvertLegoBlockInfo2LandscapeInfo()
+  void ConvertLegoBlockInfo2LandscapeInfo(LegoBlockInfo[,] legoBlockMap)
   {
-    //LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
-    LegoBlockInfo[,] legoBlockMap = LegoGeneric.LoadJsonfile();
-
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
@@ -125,7 +122,13 @@ public class LegoCreateLandscape : MonoBehaviour
   /// ・川や海、高さが違う場合は滝など
   /// ・水のマスが１マスのみの場合は噴水など
   /// </summary>
+  void UpdateLandscapeMap()
+  {
+    
+  }
+
   void CreateLandscape()
   {
+
   }
 }
