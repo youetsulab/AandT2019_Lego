@@ -77,13 +77,14 @@ public class LegoCreateLandscape : MonoBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    ConvertLegoBlockInfo2LandscapeInfo();
+    //ConvertLegoBlockInfo2LandscapeInfo();
+    JsonHelper_TwodimensionalArray.LoadJson<int>("s.json");
   }
 
   void ConvertLegoBlockInfo2LandscapeInfo()
   {
     //LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
-    LegoBlockInfo[,] legoBlockMap = LegoGeneric.LoadJsonfile();
+    LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("s.json");
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {

@@ -211,23 +211,4 @@ public static class LegoGeneric
     }
     writer.Close();
   }
-
-  public static LegoBlockInfo[,] LoadJsonfile()
-  {
-    LegoBlockInfo[,] legoMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_WIDTH];
-    var info = new FileInfo(Application.dataPath + LegoData.SAVE_FILE_PATH);
-    var reader = new StreamReader(info.OpenRead());
-
-    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
-    {
-      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
-      {
-        var json = reader.ReadToEnd();
-        var data = JsonUtility.FromJson<LegoBlockInfo>(json);
-        legoMap_[x, y] = data;
-      }
-    }
-
-    return legoMap_;
-  }
 }
