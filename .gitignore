@@ -37,9 +37,17 @@ sysinfo.txt
 
 # Heavy Assets
 Assets/Arkcity/
+Assets/Arkcity.meta
 Assets/Stones_and_buried_treasure/
+Assets/Stones_and_buried_treasure.meta
 Assets/Sun_Temple/
+Assets/Sun_Temple.meta
 Assets/StandardAssets/
+Assets/StandardAssets.meta
+Assets/RealSenseSDK2.0/
+Assets/RealSenseSDK2.0.meta
+Assets/SteamVR/
+Assets/SteamVR.meta
 
 # Kinect Demo
 Assets/Kinect/Demo
