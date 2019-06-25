@@ -12,7 +12,7 @@ enum LandscapeType_Details
   House, Shop, Landmark,  //Building
   River, Sea,             //Water
   Forest, Park,           //Nature
-  Road, Bridge, Crossroad,//Road 
+  Road_Straight, Road_Curve, Road_Intersection_T, Road_Intersection_X, Road_Stop, Road_Crosswalk, Bridge,//Road 
   Space                   //Spaces
 }
 
@@ -81,7 +81,8 @@ public class LegoCreateLandscape : MonoBehaviour
     LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("savedata1.json");
     legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
     legoCreateTex_.CreateTexture(legoBlockMap);
-    ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
+    //ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
+    CreateLandscape();
   }
 
   void ConvertLegoBlockInfo2LandscapeInfo(LegoBlockInfo[,] legoBlockMap)
@@ -124,11 +125,19 @@ public class LegoCreateLandscape : MonoBehaviour
   /// </summary>
   void UpdateLandscapeMap()
   {
-    
+
   }
 
+  /// <summary>
+  /// 景観を作成するメソッド
+  /// 配置されるオブジェクトはunity上で10x10とする。向きはunity上でz軸正向きを北とし、kinectの画像で上を北とする。
+  /// >予想されるメンバ関数
+  /// ・オブジェクトを配置
+  /// 
+  /// </summary>
   void CreateLandscape()
   {
-
+    LegoObjects.LoadGameObjects();
+    Instantiate(LegoObjects.road_straight, new Vector3(20f, 0f, 20f), Quaternion.Euler(0f,90f,0f));
   }
 }
