@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public struct LegoBlockInfo
 {
   public LegoColor legoColor;
@@ -107,6 +109,7 @@ public static class LegoData
   public static readonly int LANDSCAPE_MAP_WIDTH = 16;
   public static readonly float MAX_DEPTH_NUM = 3975f;
   public static readonly int BUILDING_HIERARCHY_NUM = 6;
+  public static readonly string SAVE_FILE_PATH = "/Lego/SaveData/";
   #endregion
 
   public static bool isCalibrated = false;

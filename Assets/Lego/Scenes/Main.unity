@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1229493064}
+      - m_Target: {fileID: 0}
         m_MethodName: OnButtonClicked
         m_Mode: 1
         m_Arguments:
@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 901790186}
   - component: {fileID: 901790185}
   m_Layer: 5
-  m_Name: DebugImage3
+  m_Name: LegoHeightImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -645,6 +645,7 @@ GameObject:
   - component: {fileID: 1229493060}
   - component: {fileID: 1229493059}
   - component: {fileID: 1229493064}
+  - component: {fileID: 1229493063}
   m_Layer: 5
   m_Name: LegoBaseCanvas
   m_TagString: Untagged
@@ -736,6 +737,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1229493063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229493058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a73953fe1276f4f9c18518df28832e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  legoColorImage_: {fileID: 2010229961}
+  legoHeightImage_: {fileID: 901790185}
 --- !u!114 &1229493064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,9 +764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorImage_: {fileID: 422080781}
-  debugImage1_: {fileID: 1687063168}
-  debugImage2_: {fileID: 2010229961}
-  debugImage3_: {fileID: 901790185}
+  trimRectImage_: {fileID: 1687063168}
 --- !u!1 &1687063166
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,7 +777,7 @@ GameObject:
   - component: {fileID: 1687063169}
   - component: {fileID: 1687063168}
   m_Layer: 5
-  m_Name: DebugImage1
+  m_Name: TrimRectImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -836,7 +849,7 @@ GameObject:
   - component: {fileID: 2010229962}
   - component: {fileID: 2010229961}
   m_Layer: 5
-  m_Name: DebugImage2
+  m_Name: LegoColorImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
