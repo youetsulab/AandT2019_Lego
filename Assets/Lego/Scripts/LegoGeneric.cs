@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using System;
+using System.IO;
 
 public struct HSV
 {
@@ -10,6 +11,58 @@ public struct HSV
   public int h;
   public int s;
   public int v;
+}
+
+public static class JsonHelper_TwodimensionalArray
+{
+  //filenameは.jsonまでつける。
+  public static void SaveAsJson<T>(T[,] obj, int width, int height, string filename)
+  {
+    Wrapper<T> wrapper = new Wrapper<T>();
+    T[] array = new T[width * height];
+
+    for (int y = 0; y < height; y++)
+    {
+      for (int x = 0; x < width; x++)
+      {
+        array[y * width + x] = obj[x, y];
+      }
+    }
+    wrapper.array = array;
+    wrapper.width = width;
+    wrapper.height = height;
+
+    var json = JsonUtility.ToJson(wrapper);
+    var path = Application.dataPath + LegoData.SAVE_FILE_PATH + filename;
+    var writer = new StreamWriter(path, false);
+    writer.WriteLine(json);
+    writer.Flush();
+    writer.Close();
+  }
+  public static T[,] LoadJson<T>(string filename)
+  {
+    var info = new FileInfo(Application.dataPath + LegoData.SAVE_FILE_PATH + filename);
+    var reader = new StreamReader(info.OpenRead());
+    var json = reader.ReadToEnd();
+    Wrapper<T> data = JsonUtility.FromJson<Wrapper<T>>(json);
+    T[,] array_2D = new T[data.width, data.height];
+
+    for (int y = 0; y < data.height; y++)
+    {
+      for (int x = 0; x < data.width; x++)
+      {
+        array_2D[x, y] = data.array[y * data.width + x];
+      }
+    }
+    return array_2D;
+  }
+
+  [Serializable]
+  private class Wrapper<T>
+  {
+    public int width, height;
+    public T[] array;
+  }
 }
 
 public static class LegoGeneric
@@ -141,5 +194,40 @@ public static class LegoGeneric
   {
     yield return new WaitForSeconds(waitTime);
     action();
+  }
+    public static void SaveDataAsJsonfile(LegoBlockInfo[,] data)
+  {
+    var path = Application.dataPath + LegoData.SAVE_FILE_PATH;
+    var writer = new StreamWriter(path, false);
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        var json = JsonUtility.ToJson(data[x, y]);
+        writer.WriteLine(json);
+        writer.Flush();
+      }
+    }
+    writer.Close();
+  }
+
+  public static LegoBlockInfo[,] LoadJsonfile()
+  {
+    LegoBlockInfo[,] legoMap_ = new LegoBlockInfo[LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_WIDTH];
+    var info = new FileInfo(Application.dataPath + LegoData.SAVE_FILE_PATH);
+    var reader = new StreamReader(info.OpenRead());
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        var json = reader.ReadToEnd();
+        var data = JsonUtility.FromJson<LegoBlockInfo>(json);
+        legoMap_[x, y] = data;
+      }
+    }
+
+    return legoMap_;
   }
 }
