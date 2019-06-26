@@ -9,8 +9,8 @@ enum LandscapeType_OverView
 
 enum LandscapeType_Details
 {                         //LandscapeType_Overview
-  House, Shop, Landmark,  //Building
-  River, Sea,             //Water
+  House, Shop, TokyoTower,  //Building
+  River_Straight, River_Curve, River_Intersection_T, Sea, Fountain,             //Water
   Forest, Park,           //Nature
   Road_Straight, Road_Curve, Road_Intersection_T, Road_Intersection_X, Road_Stop, Road_Crosswalk, Bridge,//Road 
   Space                   //Spaces
@@ -138,6 +138,6 @@ public class LegoCreateLandscape : MonoBehaviour
   void CreateLandscape()
   {
     LegoObjects.LoadGameObjects();
-    Instantiate(LegoObjects.road_straight, new Vector3(20f, 0f, 20f), Quaternion.Euler(0f,90f,0f));
+    Instantiate(LegoObjects.road_straight, new Vector3(20f, 0f, 20f), Quaternion.Euler(0f, 90f, 0f));
   }
 }
