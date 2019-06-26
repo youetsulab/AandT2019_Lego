@@ -9,10 +9,10 @@ enum LandscapeType_OverView
 
 enum LandscapeType_Details
 {                         //LandscapeType_Overview
-  House, Shop, Landmark,  //Building
-  River, Sea,             //Water
+  House, Shop, TokyoTower,  //Building
+  River_Straight, River_Curve, River_Intersection_T, Sea, Fountain,             //Water
   Forest, Park,           //Nature
-  Road, Bridge, Crossroad,//Road 
+  Road_Straight, Road_Curve, Road_Intersection_T, Road_Intersection_X, Road_Stop, Road_Crosswalk, Bridge,//Road 
   Space                   //Spaces
 }
 
@@ -81,14 +81,12 @@ public class LegoCreateLandscape : MonoBehaviour
     LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("savedata1.json");
     legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
     legoCreateTex_.CreateTexture(legoBlockMap);
-    //ConvertLegoBlockInfo2LandscapeInfo();
+    //ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
+    CreateLandscape();
   }
 
-  void ConvertLegoBlockInfo2LandscapeInfo()
+  void ConvertLegoBlockInfo2LandscapeInfo(LegoBlockInfo[,] legoBlockMap)
   {
-    //LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
-    LegoBlockInfo[,] legoBlockMap = LegoGeneric.LoadJsonfile();
-
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
       for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
@@ -125,7 +123,21 @@ public class LegoCreateLandscape : MonoBehaviour
   /// ・川や海、高さが違う場合は滝など
   /// ・水のマスが１マスのみの場合は噴水など
   /// </summary>
+  void UpdateLandscapeMap()
+  {
+
+  }
+
+  /// <summary>
+  /// 景観を作成するメソッド
+  /// 配置されるオブジェクトはunity上で10x10とする。向きはunity上でz軸正向きを北とし、kinectの画像で上を北とする。
+  /// >予想されるメンバ関数
+  /// ・オブジェクトを配置
+  /// 
+  /// </summary>
   void CreateLandscape()
   {
+    LegoObjects.LoadGameObjects();
+    Instantiate(LegoObjects.road_straight, new Vector3(20f, 0f, 20f), Quaternion.Euler(0f, 90f, 0f));
   }
 }
