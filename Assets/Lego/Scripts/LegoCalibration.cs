@@ -140,29 +140,6 @@ public class LegoCalibration : MonoBehaviour
           else progressFlag_--;
           break;
 
-        /* 
-        case 4:
-          Debug.Log("Color");
-          Vector2[] vecXY = new Vector2[4];
-          Color[] colorXY = new Color[4];
-          HSV[] hsvXY = new HSV[4];
-          for (int i = 0; i < 4; i++)
-          {
-            vecXY[i] = manager_.GetColorMapPosForDepthPos(new Vector2(baseXYAndDepth_[i].x, baseXYAndDepth_[i].y));
-            colorXY[i] = colorTexture_.GetPixel((int)vecXY[i].x, (int)vecXY[i].y);
-            hsvXY[i] = LegoGeneric.RGB2HSV(colorXY[i]);
-            //Debug.Log("XY" + i + ":" + colorXY[i].r + ", " + colorXY[i].g + ", " + colorXY[i].b + ", " + colorXY[i].a);
-            Debug.Log("XY" + i + ":" + " H:" + hsvXY[i].h + ", S:" + hsvXY[i].s + ", V:" + hsvXY[i].v);
-          }
-          Debug.Log("Center XY:" + (int)baseCenter_.x + ", " + (int)baseCenter_.y + "Depth value:" + (depthMap_[(int)baseCenter_.y * LegoData.DEPTH_CAMERA_WIDTH + (int)baseCenter_.x] >> 3));
-          Color centerColor = colorTexture_.GetPixel((int)baseCenter_.x, (int)baseCenter_.y);
-          HSV centerHsv = LegoGeneric.RGB2HSV(centerColor);
-          Debug.Log("Center " + " R:" + centerColor.r + ", G:" + centerColor.g + ", B:" + centerColor.b);
-          Debug.Log("Center " + " H:" + centerHsv.h + ", S:" + centerHsv.s + ", V:" + centerHsv.v);
-          break;
-        */
-
-
         case 4:
           LegoData.CalibrationData.PushCalibrationData(baseEdgeXY_, baseDepthList_, baseCenterXY_, baseCenterDepth_);
           SceneManager.LoadScene("Main");
