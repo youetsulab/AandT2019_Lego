@@ -67,6 +67,122 @@ class LandscapeLegoInfo
         break;
     }
   }
+
+  public GameObject GetLegoObject()
+  {
+    GameObject obj = LegoObjects.space;
+
+    switch (this.myType_Detail_OverView)
+    {
+      case LandscapeType_OverView.Building:
+        obj = GetBuildingObject();
+        break;
+
+      case LandscapeType_OverView.Road:
+        obj = GetRoadObject();
+        break;
+
+      case LandscapeType_OverView.Water:
+        obj = GetWaterObject();
+        break;
+
+      case LandscapeType_OverView.Nature:
+        obj = GetNatureObject();
+        break;
+
+      default:
+        break;
+    }
+    return obj;
+
+
+    GameObject GetBuildingObject()
+    {
+      switch (this.myType_Detail)
+      {
+        case LandscapeType_Details.House:
+          return LegoObjects.building_1;
+
+        case LandscapeType_Details.Shop:
+          return LegoObjects.building_2;
+
+        case LandscapeType_Details.Skyscraper:
+          return LegoObjects.eiffelTower;
+
+        default:
+          return LegoObjects.space;
+      }
+    }
+
+    GameObject GetRoadObject()
+    {
+      switch (this.myType_Detail)
+      {
+        case LandscapeType_Details.Road_Straight:
+          return LegoObjects.road_straight;
+
+        case LandscapeType_Details.Road_Curve:
+          return LegoObjects.road_curve;
+
+        case LandscapeType_Details.Road_Intersection_T:
+          return LegoObjects.road_intersection_T;
+
+        case LandscapeType_Details.Road_Intersection_X:
+          return LegoObjects.road_intersection_X;
+
+        case LandscapeType_Details.Road_Stop:
+          return LegoObjects.road_stop;
+
+        case LandscapeType_Details.Road_CrossWalk:
+          return LegoObjects.road_crossWalk;
+
+        case LandscapeType_Details.Bridge:
+          return LegoObjects.bridge;
+
+        default:
+          return LegoObjects.space;
+      }
+    }
+
+    GameObject GetWaterObject()
+    {
+      switch (this.myType_Detail)
+      {
+        case LandscapeType_Details.River_Straight:
+          return LegoObjects.river_straight;
+
+        case LandscapeType_Details.River_Intersection_T:
+          return LegoObjects.river_intersection_T;
+
+        case LandscapeType_Details.River_Curve:
+          return LegoObjects.river_curve;
+
+        case LandscapeType_Details.Sea:
+          return LegoObjects.space;
+
+        case LandscapeType_Details.Fountain:
+          return LegoObjects.space;
+
+        default:
+          return LegoObjects.space;
+      }
+    }
+
+    GameObject GetNatureObject()
+    {
+      switch (this.myType_Detail)
+      {
+        case LandscapeType_Details.Forest:
+          return LegoObjects.forest_1;
+
+        case LandscapeType_Details.Park:
+          return LegoObjects.space;
+
+        default:
+          return LegoObjects.space;
+      }
+    }
+  }
 }
 
 public class LegoCreateLandscape : MonoBehaviour
@@ -81,7 +197,7 @@ public class LegoCreateLandscape : MonoBehaviour
     legoCreateTex_.CreateTexture(legoBlockMap);
     ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
     UpdateLandscapeMap();
-    
+    CreateLandscape();
   }
 
   void ConvertLegoBlockInfo2LandscapeInfo(LegoBlockInfo[,] legoBlockMap)
@@ -322,5 +438,43 @@ public class LegoCreateLandscape : MonoBehaviour
       return Direction.West;
     else
       return Direction.North;
+  }
+
+  void CreateLandscape()
+  {
+    LegoObjects.LoadGameObjects();
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        GameObject obj = landscapeLegoMap_[x, y].GetLegoObject();
+        float rotationAngle;
+        switch (landscapeLegoMap_[x, y].myDirection)
+        {
+          case Direction.North:
+            rotationAngle = 0f;
+            break;
+
+          case Direction.East:
+            rotationAngle = -90f;
+            break;
+
+          case Direction.West:
+            rotationAngle = 90f;
+            break;
+
+          case Direction.South:
+            rotationAngle = 180f;
+            break;
+
+          default:
+            rotationAngle = 0f;
+            break;
+        }
+
+        Instantiate(obj, new Vector3(x * LegoData.LANDSCAPE_OBJECT_WIDTH, 0f, y * LegoData.LANDSCAPE_OBJECT_HEIGHT), Quaternion.Euler(0, rotationAngle, 0));
+      }
+    }
   }
 }

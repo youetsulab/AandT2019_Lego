@@ -15,6 +15,9 @@ public static class LegoObjects
   //Nature
   public static GameObject forest_1;
 
+  //Space
+  public static GameObject space;
+
   public static void LoadGameObjects()
   {
     //Road
@@ -24,7 +27,7 @@ public static class LegoObjects
     road_curve = (GameObject)Resources.Load("Road/Road_Curve");
     road_stop = (GameObject)Resources.Load("Road/Road_Stop");
     road_crossWalk = (GameObject)Resources.Load("Road/Road_Crosswalk");
-    bridge = (GameObject)Resources.Load("Road/Road_Bridge");
+    bridge = (GameObject)Resources.Load("Road/Bridge");
 
     //Building
     building_1 = (GameObject)Resources.Load("Building/Building_1");
@@ -38,5 +41,8 @@ public static class LegoObjects
 
     //Nature
     forest_1 = (GameObject)Resources.Load("Nature/Forest_1");
+
+    //Space
+    space = (GameObject)Resources.Load("Space/Space");
   }
 }
