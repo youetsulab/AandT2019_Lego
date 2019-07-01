@@ -34,3 +34,16 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Heavy Assets
+Assets/RealSenseSDK2.0/
+Assets/RealSenseSDK2.0.meta
+Assets/SteamVR/
+Assets/SteamVR.meta
+Assets/SteamVR_Input/
+Assets/SteamVR_Input.meta
+Assets/Models/
+Assets/Models.meta
+
+# Kinect Demo
+Assets/Kinect/Demo
