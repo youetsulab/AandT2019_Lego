@@ -3,16 +3,17 @@
 public static class LegoObjects
 {
   //Road
-  public static GameObject road_straight, road_intersection_T, road_intersection_X, road_curve, road_stop, road_crossWalk, road_bridge;
+  public static GameObject road_straight, road_intersection_T, road_intersection_X, road_curve, road_stop, road_crossWalk, bridge;
 
   //Building
   public static GameObject building_1, building_2;
+  public static GameObject eiffelTower;
 
   //Water
-  public static GameObject water_river_straight_1, water_river_straight_2, water_river_curve;
+  public static GameObject river_straight, river_curve, river_intersection_T;
 
   //Nature
-  public static GameObject Nature_forest_1;
+  public static GameObject forest_1;
 
   public static void LoadGameObjects()
   {
@@ -23,18 +24,19 @@ public static class LegoObjects
     road_curve = (GameObject)Resources.Load("Road/Road_Curve");
     road_stop = (GameObject)Resources.Load("Road/Road_Stop");
     road_crossWalk = (GameObject)Resources.Load("Road/Road_Crosswalk");
-    road_bridge = (GameObject)Resources.Load("Road/Road_Bridge");
+    bridge = (GameObject)Resources.Load("Road/Road_Bridge");
 
     //Building
     building_1 = (GameObject)Resources.Load("Building/Building_1");
     building_2 = (GameObject)Resources.Load("Building/Building_2");
+    eiffelTower = (GameObject)Resources.Load("Building/EiffelTower");
 
     //Water
-    water_river_straight_1 = (GameObject)Resources.Load("Water/Water_River_Straight_1");
-    water_river_straight_2 = (GameObject)Resources.Load("Water/Water_River_Straight_2");
-    water_river_curve = (GameObject)Resources.Load("Water/Water_River_Curve");
+    river_straight = (GameObject)Resources.Load("Water/River_Straight");
+    river_curve = (GameObject)Resources.Load("Water/River_Curve");
+    river_intersection_T = (GameObject)Resources.Load("Water/River_Intersection_T");
 
     //Nature
-    Nature_forest_1 = (GameObject)Resources.Load("Nature/Forest_1");
+    forest_1 = (GameObject)Resources.Load("Nature/Forest_1");
   }
 }
