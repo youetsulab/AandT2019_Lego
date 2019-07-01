@@ -111,5 +111,4 @@ public class LegoCreateTex : MonoBehaviour
     }
     texture.Apply();
   }
-
 }

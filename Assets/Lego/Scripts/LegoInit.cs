@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Init : MonoBehaviour
+public class LegoInit : MonoBehaviour
 {
   [SerializeField]
   private Text text_;

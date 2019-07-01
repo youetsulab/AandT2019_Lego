@@ -6,11 +6,8 @@ using UnityEngine.SceneManagement;
 using System.IO;
 
 #region Struct define
-public enum LegoColor
-{
-  White, Green, Blue, Red, Yellow, YellowishGreen, Brown, Black, Orange, None
-}
-internal struct RawLegoPixelInfo
+
+struct RawLegoPixelInfo
 {
   public ushort depth;
   public Color color;
@@ -104,8 +101,6 @@ public class LegoBase : MonoBehaviour
     return lsMap;
   }
 
-
-  //LegoBlockInfo[,] CreateLandscapeMap()
   void CreateLandscapeMap()
   {
     #region Main

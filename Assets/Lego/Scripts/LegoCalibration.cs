@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using System.IO;
 
-struct BasePixelInfo
+internal struct BasePixelInfo
 {
   public int sectionNumber;
   public ushort depth;
