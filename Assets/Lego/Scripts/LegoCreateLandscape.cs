@@ -193,6 +193,7 @@ public class LegoCreateLandscape : MonoBehaviour
   void Start()
   {
     LegoBlockInfo[,] legoBlockMap = JsonHelper_TwodimensionalArray.LoadJson<LegoBlockInfo>("savedata2.json");
+    //LegoBlockInfo[,] legoBlockMap = LegoData.legoMap;
     legoCreateTex_ = gameObject.GetComponent<LegoCreateTex>();
     legoCreateTex_.CreateTexture(legoBlockMap);
     ConvertLegoBlockInfo2LandscapeInfo(legoBlockMap);
@@ -442,7 +443,7 @@ public class LegoCreateLandscape : MonoBehaviour
 
   void CreateLandscape()
   {
-    LegoObjects.LoadGameObjects();
+    if(!LegoObjects.IsLoaded) LegoObjects.LoadGameObjects();
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {

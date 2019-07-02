@@ -1,11 +1,9 @@
-﻿using System;
-
-public enum LegoColor
+﻿public enum LegoColor
 {
   White, Green, Blue, Red, Yellow, YellowishGreen, Brown, Black, Orange, None
 }
 
-[Serializable]
+[System.Serializable]
 public struct LegoBlockInfo
 {
   public LegoColor legoColor;

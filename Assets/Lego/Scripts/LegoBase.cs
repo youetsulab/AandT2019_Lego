@@ -207,15 +207,12 @@ public class LegoBase : MonoBehaviour
   public void OnButtonClicked()
   {
     LegoData.legoMap = currentLandscapeMap_;
+    JsonHelper_TwodimensionalArray.SaveAsJson(currentLandscapeMap_, LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, "savedata3.json");
 
-    JsonHelper_TwodimensionalArray.SaveAsJson(currentLandscapeMap_, LegoData.LANDSCAPE_MAP_WIDTH, LegoData.LANDSCAPE_MAP_HEIGHT, "savedata1.json");
-
-    /*
     //kinectは用済みなので削除する。また必要になる場合は削除せずに保持しておいたほうが良い可能性がある。
     GameObject mainCamera = GameObject.Find("Kinect Camera");
     SceneManager.MoveGameObjectToScene(mainCamera, SceneManager.GetActiveScene());
     SceneManager.LoadScene("Landscape");
-    */
   }
 
 

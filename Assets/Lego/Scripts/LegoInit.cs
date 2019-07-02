@@ -15,6 +15,8 @@ public class LegoInit : MonoBehaviour
     {
       LegoData.isCalibrated = true;
     }
+
+    if (!LegoObjects.IsLoaded) LegoObjects.LoadGameObjects();
   }
 
   public void OnClickButton_yes()
