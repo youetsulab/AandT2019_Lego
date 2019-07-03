@@ -72,7 +72,7 @@ class LandscapeLegoInfo
   {
     GameObject obj = LegoObjects.space;
 
-    switch (this.myType_Detail_OverView)
+    switch (this.overView)
     {
       case LandscapeType_OverView.Building:
         obj = GetBuildingObject();
@@ -98,7 +98,7 @@ class LandscapeLegoInfo
 
     GameObject GetBuildingObject()
     {
-      switch (this.myType_Detail)
+      switch (this.detail)
       {
         case LandscapeType_Details.House:
           return LegoObjects.building_1;
@@ -116,7 +116,7 @@ class LandscapeLegoInfo
 
     GameObject GetRoadObject()
     {
-      switch (this.myType_Detail)
+      switch (this.detail)
       {
         case LandscapeType_Details.Road_Straight:
           return LegoObjects.road_straight;
@@ -146,7 +146,7 @@ class LandscapeLegoInfo
 
     GameObject GetWaterObject()
     {
-      switch (this.myType_Detail)
+      switch (this.detail)
       {
         case LandscapeType_Details.River_Straight:
           return LegoObjects.river_straight;
@@ -170,7 +170,7 @@ class LandscapeLegoInfo
 
     GameObject GetNatureObject()
     {
-      switch (this.myType_Detail)
+      switch (this.detail)
       {
         case LandscapeType_Details.Forest:
           return LegoObjects.forest_1;
@@ -242,50 +242,48 @@ public class LegoCreateLandscape : MonoBehaviour
   void UpdateLandscapeMap()
   {
 
-        for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        if (landscapeLegoMap_[x, y].height != 0)
         {
-            for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
-            {
-                if (landscapeLegoMap_[x, y].height != 0)
-                {
-                    switch (landscapeLegoMap_[x, y].overView)
-                    {
-                        case LandscapeType_OverView.Building:
-                            landscapeLegoMap_[x, y].detail = SetBuildingDetails(landscapeLegoMap_[x, y]);
-                            landscapeLegoMap_[x, y].direction = SetBuildingDirection(landscapeLegoMap_[x, y]);
-                            break;
+          switch (landscapeLegoMap_[x, y].overView)
+          {
+            case LandscapeType_OverView.Building:
+              landscapeLegoMap_[x, y].detail = SetBuildingDetails(landscapeLegoMap_[x, y]);
+              landscapeLegoMap_[x, y].direction = SetBuildingDirection(landscapeLegoMap_[x, y]);
+              break;
 
-                        case LandscapeType_OverView.Water:
-                            landscapeLegoMap_[x, y].detail = SetWaterDetails(landscapeLegoMap_[x, y]);
-                            SetSeaDetails(x, y);
-                            landscapeLegoMap_[x, y].direction = SetWaterDirection(landscapeLegoMap_[x, y]);
-                            break;
+            case LandscapeType_OverView.Water:
+              landscapeLegoMap_[x, y].detail = SetWaterDetails(landscapeLegoMap_[x, y]);
+              SetSeaDetails(x, y);
+              landscapeLegoMap_[x, y].direction = SetWaterDirection(landscapeLegoMap_[x, y]);
+              break;
 
-                        case LandscapeType_OverView.Nature:
-                            landscapeLegoMap_[x, y].detail = SetNatureDetails(landscapeLegoMap_[x, y]);
-                            landscapeLegoMap_[x, y].direction = Direction.North;
-                            break;
+            case LandscapeType_OverView.Nature:
+              landscapeLegoMap_[x, y].detail = SetNatureDetails(landscapeLegoMap_[x, y]);
+              landscapeLegoMap_[x, y].direction = Direction.North;
+              break;
 
-                        case LandscapeType_OverView.Road:
-                            landscapeLegoMap_[x, y].detail = SetRoadDetails(landscapeLegoMap_[x, y]);
-                            landscapeLegoMap_[x, y].direction = SetRoadDirection(landscapeLegoMap_[x, y]);
-                            break;
+            case LandscapeType_OverView.Road:
+              landscapeLegoMap_[x, y].detail = SetRoadDetails(landscapeLegoMap_[x, y]);
+              landscapeLegoMap_[x, y].direction = SetRoadDirection(landscapeLegoMap_[x, y]);
+              break;
 
-                        case LandscapeType_OverView.Spaces:
-                            landscapeLegoMap_[x, y].detail = LandscapeType_Details.Space;
-                            landscapeLegoMap_[x, y].direction = Direction.North;
-                            break;
+            case LandscapeType_OverView.Spaces:
+              landscapeLegoMap_[x, y].detail = LandscapeType_Details.Space;
+              landscapeLegoMap_[x, y].direction = Direction.North;
+              break;
 
             default:
               break;
           }
         }
 
-                if (landscapeLegoMap_[x, y].overView != LandscapeType_OverView.Spaces)
-                {
-                    Debug.Log("x:" + x + " y:" + y + " Detail:" + landscapeLegoMap_[x, y].detail + " Direction:" + landscapeLegoMap_[x, y].direction);
-                }
-            }
+        if (landscapeLegoMap_[x, y].overView != LandscapeType_OverView.Spaces)
+        {
+          Debug.Log("x:" + x + " y:" + y + " Detail:" + landscapeLegoMap_[x, y].detail + " Direction:" + landscapeLegoMap_[x, y].direction);
         }
       }
     }
@@ -301,215 +299,205 @@ public class LegoCreateLandscape : MonoBehaviour
       return LandscapeType_Details.House;
   }
 
+  Direction SetBuildingDirection(LandscapeLegoInfo landscapeLegoMap)
+  {
+    if (landscapeLegoMap.north == LandscapeType_OverView.Road)//北南西東の順に見ていき、Roadがあった方向を向きに設定
+      return Direction.North;
+    else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
+      return Direction.South;
+    else if (landscapeLegoMap.east == LandscapeType_OverView.Road)
+      return Direction.East;
+    else if (landscapeLegoMap.west == LandscapeType_OverView.Road)
+      return Direction.West;
+    else
+      return Direction.North;
+  }
+
   LandscapeType_Details SetWaterDetails(LandscapeLegoInfo landscapeLegoMap)
   {
-        if (landscapeLegoMap.height >= 2 && landscapeLegoMap.height < 5)//高さが2～4のBuildingをShopと設定しておく
-            return LandscapeType_Details.Shop;
-        else if(landscapeLegoMap.height == 5)//高さが5のBuildingはSkyscraper(摩天楼、高層ビル)としておく、Tokyotowerでもよい?いっぱい並んでいるとこわいので別枠？
-            return LandscapeType_Details.Skyscraper;
-        else
-            return LandscapeType_Details.House;//高さが1のときはHouseと設定しておく
-    }
-   
-    Direction SetBuildingDirection(LandscapeLegoInfo landscapeLegoMap)
+    if (landscapeLegoMap.height >= 2)//高さが2以上あるなら噴水(Fountain)
+      return LandscapeType_Details.Fountain;
+
+    int Count = 0;
+
+    if (landscapeLegoMap.north == LandscapeType_OverView.Water)
+      Count++;
+    if (landscapeLegoMap.south == LandscapeType_OverView.Water)
+      Count++;
+    if (landscapeLegoMap.east == LandscapeType_OverView.Water)
+      Count++;
+    if (landscapeLegoMap.west == LandscapeType_OverView.Water)
+      Count++;
+
+    if (Count == 1)//東西南北のWaterの数で種類を判定
+      return LandscapeType_Details.River_Straight;
+    else if (Count == 2)
     {
-        if (landscapeLegoMap.north == LandscapeType_OverView.Road)//北南西東の順に見ていき、Roadがあった方向を向きに設定
-            return Direction.North;
-        else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
-            return Direction.South;
-        else if (landscapeLegoMap.east == LandscapeType_OverView.Road)
-            return Direction.East;
-        else if (landscapeLegoMap.west == LandscapeType_OverView.Road)
-            return Direction.West;
-        else
-            return Direction.North;
+      if ((landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water)
+          || (landscapeLegoMap.east == LandscapeType_OverView.Water && landscapeLegoMap.west == LandscapeType_OverView.Water))
+        return LandscapeType_Details.River_Straight;
+      else
+        return LandscapeType_Details.River_Curve;
     }
-    
-  LandscapeTye_Details SetWaterDetails(LandscapeLegoInfo landscapeLegoMap)
+    else if (Count == 3)
+      return LandscapeType_Details.River_Intersection_T;
+
+    return LandscapeType_Details.Space;//一つだけあるRoadはSpaceにしておく
+  }
+
+  void SetSeaDetails(int x, int y)//River_Curve, River_Intersection_Tが連続していたらSeaとしておく
   {
-        if (landscapeLegoMap.height >= 2)//高さが2以上あるなら噴水(Fountain)
-            return LandscapeType_Details.Fountain;
-
-        int Count = 0;
-
-        if (landscapeLegoMap.north == LandscapeType_OverView.Water)
-            Count++;
-        if (landscapeLegoMap.south == LandscapeType_OverView.Water)
-            Count++;
-        if (landscapeLegoMap.east == LandscapeType_OverView.Water)
-            Count++;
-        if (landscapeLegoMap.west == LandscapeType_OverView.Water)
-            Count++;
-
-        if (Count == 1)//東西南北のWaterの数で種類を判定
-            return LandscapeType_Details.River_Straight;
-        else if (Count == 2)
-        {
-            if ((landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water)
-                || (landscapeLegoMap.east == LandscapeType_OverView.Water && landscapeLegoMap.west == LandscapeType_OverView.Water))
-                return LandscapeType_Details.River_Straight;
-            else
-                return LandscapeType_Details.River_Curve;
-        }
-        else if (Count == 3)
-            return LandscapeType_Details.River_Intersection_T;
-
-        return LandscapeType_Details.Space;//一つだけあるRoadはSpaceにしておく
-    }
-
-    void SetSeaDetails(int x, int y)//River_Curve, River_Intersection_Tが連続していたらSeaとしておく
+    if (landscapeLegoMap_[x, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y].detail == LandscapeType_Details.River_Intersection_T)
     {
-        if (landscapeLegoMap_[x, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y].detail == LandscapeType_Details.River_Intersection_T)
-        {
-            if (landscapeLegoMap_[x - 1, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x - 1, y].detail == LandscapeType_Details.River_Intersection_T 
-                || landscapeLegoMap_[x, y - 1].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y - 1].detail == LandscapeType_Details.River_Intersection_T 
-                || landscapeLegoMap_[x + 1, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x + 1, y].detail == LandscapeType_Details.River_Intersection_T 
-                || landscapeLegoMap_[x, y + 1].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y + 1].detail == LandscapeType_Details.River_Intersection_T)
-                landscapeLegoMap_[x, y].detail = LandscapeType_Details.Sea;
-        }
+      if (landscapeLegoMap_[x - 1, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x - 1, y].detail == LandscapeType_Details.River_Intersection_T
+          || landscapeLegoMap_[x, y - 1].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y - 1].detail == LandscapeType_Details.River_Intersection_T
+          || landscapeLegoMap_[x + 1, y].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x + 1, y].detail == LandscapeType_Details.River_Intersection_T
+          || landscapeLegoMap_[x, y + 1].detail == LandscapeType_Details.River_Curve || landscapeLegoMap_[x, y + 1].detail == LandscapeType_Details.River_Intersection_T)
+        landscapeLegoMap_[x, y].detail = LandscapeType_Details.Sea;
     }
+  }
 
-Direction SetWaterDirection(LandscapeLegoInfo landscapeLegoMap)
-{
-        //　□←ここ
-        //□□□    River_Intersection_Tの一本出てる方を向きにする
-        if (landscapeLegoMap.detail == LandscapeType_Details.River_Intersection_T)
-        {
-            if (landscapeLegoMap.south != LandscapeType_OverView.Water)
-                return Direction.North;
-            else if (landscapeLegoMap.north != LandscapeType_OverView.Water)
-                return Direction.South;
-            else if (landscapeLegoMap.west != LandscapeType_OverView.Water)
-                return Direction.East;
-            else if (landscapeLegoMap.east != LandscapeType_OverView.Water)
-                return Direction.West;
-        }
-
-        //　□←ここ
-        //□□      北・西River_Curveの北部分の向きにする
-        if (landscapeLegoMap.detail == LandscapeType_Details.River_Curve)
-        {
-            if (landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.east == LandscapeType_OverView.Water)
-                return Direction.North;
-            else if (landscapeLegoMap.south == LandscapeType_OverView.Water && landscapeLegoMap.west == LandscapeType_OverView.Water)
-                return Direction.South;
-            else if (landscapeLegoMap.east == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water)
-                return Direction.East;
-            else if (landscapeLegoMap.west == LandscapeType_OverView.Water && landscapeLegoMap.north == LandscapeType_OverView.Water)
-                return Direction.West;
-        }
-
-        //River_Straight、その他
-        if (landscapeLegoMap.north == LandscapeType_OverView.Water)
-            return Direction.North;
-        else if (landscapeLegoMap.south == LandscapeType_OverView.Water)
-            return Direction.South;
-        else if (landscapeLegoMap.east == LandscapeType_OverView.Water)
-            return Direction.East;
-        else if (landscapeLegoMap.west == LandscapeType_OverView.Water)
-            return Direction.West;
-        else
-            return Direction.North;
-    }
-
-    LandscapeType_Details SetNatureDetails(LandscapeLegoInfo landscapeLegoMap)
+  Direction SetWaterDirection(LandscapeLegoInfo landscapeLegoMap)
+  {
+    //　□←ここ
+    //□□□    River_Intersection_Tの一本出てる方を向きにする
+    if (landscapeLegoMap.detail == LandscapeType_Details.River_Intersection_T)
     {
-        int Count = 0;
-        if (landscapeLegoMap.north == LandscapeType_OverView.Nature)
-            Count++;
-        if (landscapeLegoMap.south == LandscapeType_OverView.Nature)
-            Count++;
-        if (landscapeLegoMap.east == LandscapeType_OverView.Nature)
-            Count++;
-        if (landscapeLegoMap.west == LandscapeType_OverView.Nature)
-            Count++;
-
-        if (Count == 0)//東西南北のNatureの数で種類を判定
-            return LandscapeType_Details.Park;
-        else if (Count == 1)
-            return LandscapeType_Details.StreetTree;
-        else if (Count == 2)
-            return LandscapeType_Details.StreetTree;
-        else if (Count == 3)
-            return LandscapeType_Details.Forest;
-        else
-            return LandscapeType_Details.Forest;
+      if (landscapeLegoMap.south != LandscapeType_OverView.Water)
+        return Direction.North;
+      else if (landscapeLegoMap.north != LandscapeType_OverView.Water)
+        return Direction.South;
+      else if (landscapeLegoMap.west != LandscapeType_OverView.Water)
+        return Direction.East;
+      else if (landscapeLegoMap.east != LandscapeType_OverView.Water)
+        return Direction.West;
     }
 
-   LandscapeType_Details SetRoadDetails(LandscapeLegoInfo landscapeLegoMap)
+    //　□←ここ
+    //□□      北・西River_Curveの北部分の向きにする
+    if (landscapeLegoMap.detail == LandscapeType_Details.River_Curve)
     {
-        if ((landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water) || (landscapeLegoMap.east == LandscapeType_OverView.Water
-            && landscapeLegoMap.west == LandscapeType_OverView.Water))//南北か東西がWaterで挟まれているときBridgeと判定
-            return LandscapeType_Details.Bridge;
-
-        int Count = 0;
-        if (landscapeLegoMap.north == LandscapeType_OverView.Road)
-            Count++;
-        if(landscapeLegoMap.south == LandscapeType_OverView.Road)
-            Count++;
-        if (landscapeLegoMap.east == LandscapeType_OverView.Road)
-            Count++;
-        if (landscapeLegoMap.west == LandscapeType_OverView.Road)
-            Count++;
-
-        if (Count == 1)//東西南北のRoadの数で種類を判定
-            return LandscapeType_Details.Road_Straight;
-        else if (Count == 2)
-        {
-            if ((landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
-                || (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road))
-                return LandscapeType_Details.Road_Straight;
-            else
-                return LandscapeType_Details.Road_Curve;
-        }
-        else if (Count == 3)
-            return LandscapeType_Details.Road_Intersection_T;
-        else if (Count == 4)
-            return LandscapeType_Details.Road_Intersection_X;
-
-        return LandscapeType_Details.Space;//一つだけあるRoadはSpaceにしておく
+      if (landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.east == LandscapeType_OverView.Water)
+        return Direction.North;
+      else if (landscapeLegoMap.south == LandscapeType_OverView.Water && landscapeLegoMap.west == LandscapeType_OverView.Water)
+        return Direction.South;
+      else if (landscapeLegoMap.east == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water)
+        return Direction.East;
+      else if (landscapeLegoMap.west == LandscapeType_OverView.Water && landscapeLegoMap.north == LandscapeType_OverView.Water)
+        return Direction.West;
     }
 
-    Direction SetRoadDirection(LandscapeLegoInfo landscapeLegoMap)
+    //River_Straight、その他
+    if (landscapeLegoMap.north == LandscapeType_OverView.Water)
+      return Direction.North;
+    else if (landscapeLegoMap.south == LandscapeType_OverView.Water)
+      return Direction.South;
+    else if (landscapeLegoMap.east == LandscapeType_OverView.Water)
+      return Direction.East;
+    else if (landscapeLegoMap.west == LandscapeType_OverView.Water)
+      return Direction.West;
+    else
+      return Direction.North;
+  }
+
+  LandscapeType_Details SetNatureDetails(LandscapeLegoInfo landscapeLegoMap)
+  {
+    int Count = 0;
+    if (landscapeLegoMap.north == LandscapeType_OverView.Nature)
+      Count++;
+    if (landscapeLegoMap.south == LandscapeType_OverView.Nature)
+      Count++;
+    if (landscapeLegoMap.east == LandscapeType_OverView.Nature)
+      Count++;
+    if (landscapeLegoMap.west == LandscapeType_OverView.Nature)
+      Count++;
+
+    if (Count == 0)//東西南北のNatureの数で種類を判定
+      return LandscapeType_Details.Park;
+    else if (Count == 1)
+      return LandscapeType_Details.StreetTree;
+    else if (Count == 2)
+      return LandscapeType_Details.StreetTree;
+    else if (Count == 3)
+      return LandscapeType_Details.Forest;
+    else
+      return LandscapeType_Details.Forest;
+  }
+
+  LandscapeType_Details SetRoadDetails(LandscapeLegoInfo landscapeLegoMap)
+  {
+    if ((landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water) || (landscapeLegoMap.east == LandscapeType_OverView.Water
+        && landscapeLegoMap.west == LandscapeType_OverView.Water))//南北か東西がWaterで挟まれているときBridgeと判定
+      return LandscapeType_Details.Bridge;
+
+    int Count = 0;
+    if (landscapeLegoMap.north == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.south == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.east == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.west == LandscapeType_OverView.Road)
+      Count++;
+
+    if (Count == 1)//東西南北のRoadの数で種類を判定
+      return LandscapeType_Details.Road_Straight;
+    else if (Count == 2)
     {
-        //　□←ここ
-        //□□□    Road_Intersection_Tの一本出てる方を向きにする
-        if (landscapeLegoMap.detail == LandscapeType_Details.Road_Intersection_T)
-        {
-            if (landscapeLegoMap.south != LandscapeType_OverView.Road)
-                return Direction.North;
-            else if (landscapeLegoMap.north != LandscapeType_OverView.Road)
-                return Direction.South;
-            else if (landscapeLegoMap.west != LandscapeType_OverView.Road)
-                return Direction.East;
-            else if (landscapeLegoMap.east != LandscapeType_OverView.Road)
-                return Direction.West;
-        }
-
-        //　□←ここ
-        //□□      北・西Road_Curveの北部分の向きにする
-        if (landscapeLegoMap.detail == LandscapeType_Details.Road_Curve)
-        {
-            if (landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.east == LandscapeType_OverView.Road)
-                return Direction.North;
-            else if (landscapeLegoMap.south == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
-                return Direction.South;
-            else if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
-                return Direction.East;
-            else if (landscapeLegoMap.west == LandscapeType_OverView.Road && landscapeLegoMap.north == LandscapeType_OverView.Road)
-                return Direction.West;
-        }
-
-        //Road_Straight、その他
-        if (landscapeLegoMap.north == LandscapeType_OverView.Road)
-            return Direction.North;
-        else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
-            return Direction.South;
-        else if (landscapeLegoMap.east == LandscapeType_OverView.Road)
-            return Direction.East;
-        else if (landscapeLegoMap.west == LandscapeType_OverView.Road)
-            return Direction.West;
-        else
-            return Direction.North;
+      if ((landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
+          || (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road))
+        return LandscapeType_Details.Road_Straight;
+      else
+        return LandscapeType_Details.Road_Curve;
     }
+    else if (Count == 3)
+      return LandscapeType_Details.Road_Intersection_T;
+    else if (Count == 4)
+      return LandscapeType_Details.Road_Intersection_X;
+
+    return LandscapeType_Details.Space;//一つだけあるRoadはSpaceにしておく
+  }
+
+  Direction SetRoadDirection(LandscapeLegoInfo landscapeLegoMap)
+  {
+    //　□←ここ
+    //□□□    Road_Intersection_Tの一本出てる方を向きにする
+    if (landscapeLegoMap.detail == LandscapeType_Details.Road_Intersection_T)
+    {
+      if (landscapeLegoMap.south != LandscapeType_OverView.Road)
+        return Direction.North;
+      else if (landscapeLegoMap.north != LandscapeType_OverView.Road)
+        return Direction.South;
+      else if (landscapeLegoMap.west != LandscapeType_OverView.Road)
+        return Direction.East;
+      else if (landscapeLegoMap.east != LandscapeType_OverView.Road)
+        return Direction.West;
+    }
+
+    //　□←ここ
+    //□□      北・西Road_Curveの北部分の向きにする
+    if (landscapeLegoMap.detail == LandscapeType_Details.Road_Curve)
+    {
+      if (landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.east == LandscapeType_OverView.Road)
+        return Direction.North;
+      else if (landscapeLegoMap.south == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
+        return Direction.South;
+      else if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
+        return Direction.East;
+      else if (landscapeLegoMap.west == LandscapeType_OverView.Road && landscapeLegoMap.north == LandscapeType_OverView.Road)
+        return Direction.West;
+    }
+
+    //Road_Straight、その他
+    if (landscapeLegoMap.north == LandscapeType_OverView.Road)
+      return Direction.North;
+    else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
+      return Direction.South;
+    else if (landscapeLegoMap.east == LandscapeType_OverView.Road)
+      return Direction.East;
+    else if (landscapeLegoMap.west == LandscapeType_OverView.Road)
+      return Direction.West;
+    else
+      return Direction.North;
+  }
 }
