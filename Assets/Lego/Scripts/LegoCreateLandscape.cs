@@ -11,7 +11,7 @@ enum LandscapeType_Details
 {                                                                                                           //LandscapeType_Overview
   House, Shop, Skyscraper/*TokyoTower*/,                                                                    //Building
   River_Straight, River_Curve, River_Intersection_T, Sea, Fountain,                                         //Water
-  Forest, Park,                                                                                             //Nature
+  Forest, Park, StreetTree,                                                                                 //Nature
   Road_Straight, Road_Curve, Road_Intersection_T, Road_Intersection_X, Road_Stop, Road_CrossWalk, Bridge,   //Road
   Space                                                                                                     //Spaces
 }
@@ -283,9 +283,24 @@ public class LegoCreateLandscape : MonoBehaviour
 
     LandscapeType_Details SetNatureDetails(LandscapeLegoInfo landscapeLegoMap)
     {
-        if (landscapeLegoMap.north != LandscapeType_OverView.Nature && landscapeLegoMap.south != LandscapeType_OverView.Nature && landscapeLegoMap.east != LandscapeType_OverView.Nature
-            && landscapeLegoMap.west != LandscapeType_OverView.Nature)
+        int Count = 0;
+        if (landscapeLegoMap.north == LandscapeType_OverView.Nature)
+            Count++;
+        if (landscapeLegoMap.south == LandscapeType_OverView.Nature)
+            Count++;
+        if (landscapeLegoMap.east == LandscapeType_OverView.Nature)
+            Count++;
+        if (landscapeLegoMap.west == LandscapeType_OverView.Nature)
+            Count++;
+
+        if (Count == 0)//東西南北のNatureの数で種類を判定
             return LandscapeType_Details.Park;
+        else if (Count == 1)
+            return LandscapeType_Details.StreetTree;
+        else if (Count == 2)
+            return LandscapeType_Details.StreetTree;
+        else if (Count == 3)
+            return LandscapeType_Details.Forest;
         else
             return LandscapeType_Details.Forest;
     }
