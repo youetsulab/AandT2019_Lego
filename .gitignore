@@ -44,6 +44,8 @@ Assets/SteamVR_Input/
 Assets/SteamVR_Input.meta
 Assets/Models/
 Assets/Models.meta
+Assets/_TerrainAutoUpgrade/
+Assets/_TerrainAutoUpgrade.meta
 
 # Kinect Demo
 Assets/Kinect/Demo
