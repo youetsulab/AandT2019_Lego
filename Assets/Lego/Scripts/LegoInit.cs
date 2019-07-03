@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Init : MonoBehaviour
+public class LegoInit : MonoBehaviour
 {
   [SerializeField]
   private Text text_;
@@ -15,6 +15,8 @@ public class Init : MonoBehaviour
     {
       LegoData.isCalibrated = true;
     }
+
+    if (!LegoObjects.IsLoaded) LegoObjects.LoadGameObjects();
   }
 
   public void OnClickButton_yes()

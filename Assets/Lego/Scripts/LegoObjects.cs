@@ -2,6 +2,11 @@
 
 public static class LegoObjects
 {
+  private static bool isLoaded = false;
+
+  public static bool IsLoaded{
+    get{return isLoaded;}
+  }
   //Road
   public static GameObject road_straight, road_intersection_T, road_intersection_X, road_curve, road_stop, road_crossWalk, bridge;
 
@@ -44,5 +49,7 @@ public static class LegoObjects
 
     //Space
     space = (GameObject)Resources.Load("Space/Space");
+
+    isLoaded = true;
   }
 }

@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-[Serializable]
-public struct LegoBlockInfo
-{
-  public LegoColor legoColor;
-  public int height;
-}
+
 
 public static class LegoData
 {
