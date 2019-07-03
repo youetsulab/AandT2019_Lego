@@ -394,41 +394,68 @@ public class LegoCreateLandscape : MonoBehaviour
   LandscapeType_Details SetRoadDetails(LandscapeLegoInfo landscapeLegoMap)
   {
     if ((landscapeLegoMap.north == LandscapeType_OverView.Water && landscapeLegoMap.south == LandscapeType_OverView.Water) || (landscapeLegoMap.east == LandscapeType_OverView.Water
-        && landscapeLegoMap.west == LandscapeType_OverView.Water))
+        && landscapeLegoMap.west == LandscapeType_OverView.Water))//南北か東西がWaterで挟まれているときBridgeと判定
       return LandscapeType_Details.Bridge;
-    else if (landscapeLegoMap.north == LandscapeType_OverView.Road)
-    {
-      if (landscapeLegoMap.south == LandscapeType_OverView.Road)
-      {
-        if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
-          return LandscapeType_Details.Road_Intersection_X;//n & s & e & w == 1
-        else if (landscapeLegoMap.east == LandscapeType_OverView.Road || landscapeLegoMap.west == LandscapeType_OverView.Road)
-          return LandscapeType_Details.Road_Intersection_T;//n & s & e == 1 or n & s & w == 1
 
-        return LandscapeType_Details.Road_Straight;//n & s == 1
-      }
-      else if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
-        return LandscapeType_Details.Road_Intersection_T;//n & e & w == 1
-      else if (landscapeLegoMap.east == LandscapeType_OverView.Road || landscapeLegoMap.west == LandscapeType_OverView.Road)
-        return LandscapeType_Details.Road_Curve;//n & e == 1 or n & w == 1
+    int Count = 0;
+    if (landscapeLegoMap.north == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.south == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.east == LandscapeType_OverView.Road)
+      Count++;
+    if (landscapeLegoMap.west == LandscapeType_OverView.Road)
+      Count++;
 
-      return LandscapeType_Details.Road_Straight;//n == 1
-    }
-    else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
-    {
-      if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
-        return LandscapeType_Details.Road_Intersection_T;//s & e & w == 1
-      else if (landscapeLegoMap.east == LandscapeType_OverView.Road || landscapeLegoMap.west == LandscapeType_OverView.Road)
-        return LandscapeType_Details.Road_Curve;//s & e == 1 or s & w == 1
-
-      return LandscapeType_Details.Road_Straight;//s == 1
-    }
-    else
+    if (Count == 1)//東西南北のRoadの数で種類を判定
       return LandscapeType_Details.Road_Straight;
+    else if (Count == 2)
+    {
+      if ((landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
+          || (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road))
+        return LandscapeType_Details.Road_Straight;
+      else
+        return LandscapeType_Details.Road_Curve;
+    }
+    else if (Count == 3)
+      return LandscapeType_Details.Road_Intersection_T;
+    else if (Count == 4)
+      return LandscapeType_Details.Road_Intersection_X;
+
+    return LandscapeType_Details.Space;//一つだけあるRoadはSpaceにしておく
   }
 
   Direction SetRoadDirection(LandscapeLegoInfo landscapeLegoMap)
   {
+    //　□←ここ
+    //□□□    Road_Intersection_Tの一本出てる方を向きにする
+    if (landscapeLegoMap.myType_Detail == LandscapeType_Details.Road_Intersection_T)
+    {
+      if (landscapeLegoMap.south != LandscapeType_OverView.Road)
+        return Direction.North;
+      else if (landscapeLegoMap.north != LandscapeType_OverView.Road)
+        return Direction.South;
+      else if (landscapeLegoMap.west != LandscapeType_OverView.Road)
+        return Direction.East;
+      else if (landscapeLegoMap.east != LandscapeType_OverView.Road)
+        return Direction.West;
+    }
+
+    //　□←ここ
+    //□□      北・西Road_Curveの北部分の向きにする
+    if (landscapeLegoMap.myType_Detail == LandscapeType_Details.Road_Curve)
+    {
+      if (landscapeLegoMap.north == LandscapeType_OverView.Road && landscapeLegoMap.east == LandscapeType_OverView.Road)
+        return Direction.North;
+      else if (landscapeLegoMap.south == LandscapeType_OverView.Road && landscapeLegoMap.west == LandscapeType_OverView.Road)
+        return Direction.South;
+      else if (landscapeLegoMap.east == LandscapeType_OverView.Road && landscapeLegoMap.south == LandscapeType_OverView.Road)
+        return Direction.East;
+      else if (landscapeLegoMap.west == LandscapeType_OverView.Road && landscapeLegoMap.north == LandscapeType_OverView.Road)
+        return Direction.West;
+    }
+
+    //Road_Straight、その他
     if (landscapeLegoMap.north == LandscapeType_OverView.Road)
       return Direction.North;
     else if (landscapeLegoMap.south == LandscapeType_OverView.Road)
@@ -440,10 +467,9 @@ public class LegoCreateLandscape : MonoBehaviour
     else
       return Direction.North;
   }
-
   void CreateLandscape()
   {
-    if(!LegoObjects.IsLoaded) LegoObjects.LoadGameObjects();
+    if (!LegoObjects.IsLoaded) LegoObjects.LoadGameObjects();
 
     for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
     {
