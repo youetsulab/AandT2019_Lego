@@ -500,4 +500,42 @@ public class LegoCreateLandscape : MonoBehaviour
     else
       return Direction.North;
   }
+  
+  void CreateLandscape()
+  {
+    LegoObjects.LoadGameObjects();
+
+    for (int y = 0; y < LegoData.LANDSCAPE_MAP_HEIGHT; y++)
+    {
+      for (int x = 0; x < LegoData.LANDSCAPE_MAP_WIDTH; x++)
+      {
+        GameObject obj = landscapeLegoMap_[x, y].GetLegoObject();
+        float rotationAngle;
+        switch (landscapeLegoMap_[x, y].direction)
+        {
+          case Direction.North:
+            rotationAngle = 0f;
+            break;
+
+          case Direction.East:
+            rotationAngle = -90f;
+            break;
+
+          case Direction.West:
+            rotationAngle = 90f;
+            break;
+
+          case Direction.South:
+            rotationAngle = 180f;
+            break;
+
+          default:
+            rotationAngle = 0f;
+            break;
+        }
+
+        Instantiate(obj, new Vector3(x * LegoData.LANDSCAPE_OBJECT_WIDTH, 0f, y * LegoData.LANDSCAPE_OBJECT_HEIGHT), Quaternion.Euler(0, rotationAngle, 0));
+      }
+    }
+  }
 }
